@@ -52,7 +52,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>PdbOnly</DebugType>
-    <OutputPath>..\bin\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\ICSharpCode.NRefactory.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'net_4_5_Debug' ">
     <Optimize>False</Optimize>
@@ -295,12 +296,7 @@
     <Compile Include="PatternMatching\AnyNodeOrNull.cs" />
     <Compile Include="Editor\ITextPasteHandler.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Completion\" />
-    <Folder Include="TypeSystem\" />
-    <Folder Include="Utils\CompositeFormatStringParser\" />
-    <Folder Include="Refactoring\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="..\doc\Pattern Matching.html">
       <Link>PatternMatching\Pattern Matching.html</Link>
