@@ -39,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <DocumentationFile>bin\Release\ICSharpCode.NRefactory.Cecil.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ICSharpCode.NRefactory.Cecil.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'net_4_5_Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
