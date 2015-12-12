@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mono.CSharp.Linq
+namespace ICSharpCode.NRefactory.MonoCSharp.Linq
 {
 	public class QueryExpression : AQueryClause
 	{
@@ -69,7 +69,7 @@ namespace Mono.CSharp.Linq
 			{
 			}
 
-			protected override void Error_TypeDoesNotContainDefinition (ResolveContext ec, TypeSpec type, string name)
+			public override void Error_TypeDoesNotContainDefinition (ResolveContext ec, TypeSpec type, string name)
 			{
 				ec.Report.Error (1935, loc, "An implementation of `{0}' query expression pattern could not be found. " +
 					"Are you missing `System.Linq' using directive or `System.Core.dll' assembly reference?",

@@ -1197,12 +1197,13 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 		/// <returns>0 = neither is better; 1 = t1 is better; 2 = t2 is better</returns>
 		public int BetterConversion(IType s, IType t1, IType t2)
 		{
-			bool ident1 = IdentityConversion(s, t1);
-			bool ident2 = IdentityConversion(s, t2);
+            bool ident1 = IdentityConversion(s, t1);
+            bool ident2 = IdentityConversion(s, t2);
 			if (ident1 && !ident2)
 				return 1;
 			if (ident2 && !ident1)
 				return 2;
+
 			return BetterConversionTarget(t1, t2);
 		}
 		

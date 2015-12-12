@@ -296,7 +296,12 @@
     <Compile Include="PatternMatching\AnyNodeOrNull.cs" />
     <Compile Include="Editor\ITextPasteHandler.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Completion\" />
+    <Folder Include="TypeSystem\" />
+    <Folder Include="Utils\CompositeFormatStringParser\" />
+    <Folder Include="Refactoring\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\doc\Pattern Matching.html">
       <Link>PatternMatching\Pattern Matching.html</Link>

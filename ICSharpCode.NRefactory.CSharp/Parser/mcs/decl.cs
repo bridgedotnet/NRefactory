@@ -32,7 +32,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 #endif
 
-namespace Mono.CSharp {
+namespace ICSharpCode.NRefactory.MonoCSharp {
 
 	//
 	// Better name would be DottenName
@@ -194,11 +194,6 @@ namespace Mono.CSharp {
 				return name;
 
 			return name + "`" + args.Count;
-		}
-
-		public static string MakeName (string name, int count)
-		{
-			return name + "`" + count;
 		}
 	}
 
@@ -675,13 +670,13 @@ namespace Mono.CSharp {
 		// Does extension methods look up to find a method which matches name and extensionType.
 		// Search starts from this namespace and continues hierarchically up to top level.
 		//
-		public ExtensionMethodCandidates LookupExtensionMethod (TypeSpec extensionType, string name, int arity)
+		public ExtensionMethodCandidates LookupExtensionMethod (string name, int arity)
 		{
 			var m = Parent;
 			do {
 				var ns = m as NamespaceContainer;
 				if (ns != null)
-					return ns.LookupExtensionMethod (this, extensionType, name, arity, 0);
+					return ns.LookupExtensionMethod (this, name, arity, 0);
 
 				m = m.Parent;
 			} while (m != null);
@@ -1130,7 +1125,7 @@ namespace Mono.CSharp {
 
 		public virtual string GetSignatureForError ()
 		{
-			var bf = MemberDefinition as Property.BackingField;
+			var bf = MemberDefinition as Property.BackingFieldDeclaration;
 			string name;
 			if (bf == null) {
 				name = Name;

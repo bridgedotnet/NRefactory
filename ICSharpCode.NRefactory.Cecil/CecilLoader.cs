@@ -32,6 +32,8 @@ using Mono.Cecil;
 
 namespace ICSharpCode.NRefactory.TypeSystem
 {
+	using BlobReader = ICSharpCode.NRefactory.TypeSystem.Implementation.BlobReader;
+
 	/// <summary>
 	/// Allows loading an IProjectContent from an already compiled assembly.
 	/// </summary>
@@ -370,7 +372,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
 				return interningProvider.Intern(new ParameterizedTypeReference(baseType, para));
 			} else if (type is GenericParameter) {
 				GenericParameter typeGP = (GenericParameter)type;
-				return TypeParameterReference.Create(typeGP.Owner is MethodDefinition ? SymbolKind.Method : SymbolKind.TypeDefinition, typeGP.Position);
+				return TypeParameterReference.Create(typeGP.Owner is MethodReference ? SymbolKind.Method : SymbolKind.TypeDefinition, typeGP.Position);
 			} else if (type.IsNested) {
 				ITypeReference typeRef = CreateType(type.DeclaringType, typeAttributes, ref typeIndex);
 				int partTypeParameterCount;
@@ -724,6 +726,15 @@ namespace ICSharpCode.NRefactory.TypeSystem
 		}
 		#endregion
 		
+		#region Type Parameter Attributes
+		void AddAttributes(GenericParameter genericParameter, IUnresolvedTypeParameter targetTP)
+		{
+			if (genericParameter.HasCustomAttributes) {
+				AddCustomAttributes(genericParameter.CustomAttributes, targetTP.Attributes);
+			}
+		}
+		#endregion
+		
 		#region MarshalAsAttribute (ConvertMarshalInfo)
 		static readonly ITypeReference marshalAsAttributeTypeRef = typeof(MarshalAsAttribute).ToTypeReference();
 		static readonly ITypeReference unmanagedTypeTypeRef = typeof(UnmanagedType).ToTypeReference();
@@ -864,6 +875,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
 			for (int i = 0; i < typeParameters.Count; i++) {
 				var tp = (DefaultUnresolvedTypeParameter)typeParameters[i];
 				AddConstraints(tp, typeDefinition.GenericParameters[i]);
+				AddAttributes(typeDefinition.GenericParameters[i], tp);
 				tp.ApplyInterningProvider(interningProvider);
 			}
 		}
@@ -1330,6 +1342,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
 				for (int i = 0; i < method.GenericParameters.Count; i++) {
 					var tp = (DefaultUnresolvedTypeParameter)m.TypeParameters[i];
 					AddConstraints(tp, method.GenericParameters[i]);
+					AddAttributes(method.GenericParameters[i], tp);
 					tp.ApplyInterningProvider(interningProvider);
 				}
 			}
@@ -1344,6 +1357,9 @@ namespace ICSharpCode.NRefactory.TypeSystem
 				foreach (ParameterDefinition p in method.Parameters) {
 					m.Parameters.Add(ReadParameter(p));
 				}
+			}
+			if (method.CallingConvention == MethodCallingConvention.VarArg) {
+				m.Parameters.Add(new DefaultUnresolvedParameter(SpecialType.ArgList, string.Empty));
 			}
 			
 			// mark as extension method if the attribute is set

@@ -19,7 +19,7 @@ using System.Text;
 using System.Xml;
 using System.Linq;
 
-namespace Mono.CSharp
+namespace ICSharpCode.NRefactory.MonoCSharp
 {
 	//
 	// Implements XML documentation generation.
@@ -695,7 +695,7 @@ namespace Mono.CSharp
 			return host.GetSignatureForError ();
 		}
 
-		public ExtensionMethodCandidates LookupExtensionMethod (TypeSpec extensionType, string name, int arity)
+		public ExtensionMethodCandidates LookupExtensionMethod (string name, int arity)
 		{
 			return null;
 		}

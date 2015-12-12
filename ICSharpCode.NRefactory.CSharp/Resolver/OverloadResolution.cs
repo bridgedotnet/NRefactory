@@ -592,7 +592,7 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 						candidate.AddError(OverloadResolutionErrors.ArgumentTypeMismatch);
 				} else {
 					if ((!c.IsValid && !c.IsUserDefined && !c.IsMethodGroupConversion) && parameterType.Kind != TypeKind.Unknown)
-						candidate.AddError(OverloadResolutionErrors.ArgumentTypeMismatch);
+						 candidate.AddError(OverloadResolutionErrors.ArgumentTypeMismatch);
 				}
 			}
 		}
@@ -944,7 +944,7 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 				throw new InvalidOperationException();
 
 			return new CSharpInvocationResolveResult(
-				this.IsExtensionMethodInvocation ? new TypeResolveResult(member.DeclaringType) : targetResolveResult,
+				this.IsExtensionMethodInvocation ? new TypeResolveResult(member.DeclaringType ?? SpecialType.UnknownType) : targetResolveResult,
 				member,
 				GetArgumentsWithConversions(targetResolveResult, member),
 				this.BestCandidateErrors,

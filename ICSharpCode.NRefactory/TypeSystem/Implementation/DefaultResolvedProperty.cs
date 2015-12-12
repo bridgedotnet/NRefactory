@@ -29,6 +29,8 @@ namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 		readonly IList<IParameter> parameters;
 		IMethod getter;
 		IMethod setter;
+		const Accessibility InvalidAccessibility = (Accessibility)0xff;
+		volatile Accessibility cachedAccessiblity = InvalidAccessibility;
 		
 		public DefaultResolvedProperty(IUnresolvedProperty unresolved, ITypeResolveContext parentContext)
 			: base(unresolved, parentContext)
@@ -39,6 +41,28 @@ namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 		
 		public IList<IParameter> Parameters {
 			get { return parameters; }
+		}
+		
+		public override Accessibility Accessibility {
+			get {
+				var acc = cachedAccessiblity;
+				if (acc == InvalidAccessibility)
+					return cachedAccessiblity = ComputeAccessibility();
+				else
+					return acc;
+			}
+		}
+		
+		Accessibility ComputeAccessibility()
+		{
+			var baseAcc = base.Accessibility;
+			if (IsOverride && !(CanGet && CanSet)) {
+				foreach (var baseMember in InheritanceHelper.GetBaseMembers(this, false)) {
+					if (!baseMember.IsOverride)
+						return baseMember.Accessibility;
+				}
+			}
+			return baseAcc;
 		}
 		
 		public bool CanGet {
@@ -63,7 +87,8 @@ namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 		
 		public override ISymbolReference ToReference()
 		{
-			var declTypeRef = this.DeclaringType.ToTypeReference();
+			var declType = this.DeclaringType;
+			var declTypeRef = declType != null ? declType.ToTypeReference() : SpecialType.UnknownType;
 			if (IsExplicitInterfaceImplementation && ImplementedInterfaceMembers.Count == 1) {
 				return new ExplicitInterfaceImplementationMemberReference(declTypeRef, ImplementedInterfaceMembers[0].ToReference());
 			} else {

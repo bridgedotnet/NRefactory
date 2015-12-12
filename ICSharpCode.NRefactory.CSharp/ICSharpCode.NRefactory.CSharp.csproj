@@ -414,5 +414,8 @@
   <ItemGroup>
     <None Include="Parser\mcs\cs-parser.jay" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="PatternMatching\" />
+    <Folder Include="IndentEngine\" />
+  </ItemGroup>
 </Project>

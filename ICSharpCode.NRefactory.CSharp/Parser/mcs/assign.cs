@@ -20,7 +20,7 @@ using IKVM.Reflection.Emit;
 using System.Reflection.Emit;
 #endif
 
-namespace Mono.CSharp {
+namespace ICSharpCode.NRefactory.MonoCSharp {
 
 	/// <summary>
 	///   This interface is implemented by expressions that can be assigned to.
@@ -421,7 +421,13 @@ namespace Mono.CSharp {
 		{
 			source.FlowAnalysis (fc);
 
-			if (target is ArrayAccess || target is IndexerExpr || target is PropertyExpr)
+			if (target is ArrayAccess || target is IndexerExpr) {
+				target.FlowAnalysis (fc);
+				return;
+			}
+
+			var pe = target as PropertyExpr;
+			if (pe != null && !pe.IsAutoPropertyAccess)
 				target.FlowAnalysis (fc);
 		}
 
@@ -494,6 +500,12 @@ namespace Mono.CSharp {
 			var fe = target as FieldExpr;
 			if (fe != null) {
 				fe.SetFieldAssigned (fc);
+				return;
+			}
+
+			var pe = target as PropertyExpr;
+			if (pe != null) {
+				pe.SetBackingFieldAssigned (fc);
 				return;
 			}
 		}
