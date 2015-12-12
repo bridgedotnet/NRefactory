@@ -788,10 +788,11 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 						if (op == BinaryOperatorType.Equality || op == BinaryOperatorType.InEquality) {
 							if (lhsType.IsReferenceType == true && rhsType.IsReferenceType == true) {
 								// If it's a reference comparison
+                                // CheckStringOperator was introduced to fix #687
 								if (op == BinaryOperatorType.Equality)
-									methodGroup = operators.ReferenceEqualityOperators;
+									methodGroup = CheckStringOperator(operators.ReferenceEqualityOperators, lhs, rhs);
 								else
-									methodGroup = operators.ReferenceInequalityOperators;
+                                    methodGroup = CheckStringOperator(operators.ReferenceInequalityOperators, lhs, rhs);
 								break;
 							} else if (lhsType.Kind == TypeKind.Null && IsNullableTypeOrNonValueType(rhs.Type)
 							           || IsNullableTypeOrNonValueType(lhs.Type) && rhsType.Kind == TypeKind.Null) {
@@ -893,6 +894,41 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 				                                   builtinOperatorOR.BestCandidate is OverloadResolution.ILiftedOperator);
 			}
 		}
+
+        // CheckStringOperator was introduced to fix #687
+        private CSharpOperators.OperatorMethod[] CheckStringOperator(CSharpOperators.OperatorMethod[] operatorMethod, ResolveResult lhs, ResolveResult rhs)
+        {
+            bool both = false;
+            IType lhsType = NullableType.GetUnderlyingType(lhs.Type);
+            IType rhsType = NullableType.GetUnderlyingType(rhs.Type);
+
+            if (lhsType.IsKnownType(KnownTypeCode.String) || rhsType.IsKnownType(KnownTypeCode.String))
+            {
+                both = true;
+            }
+            else
+            {
+                var isSubClasses = conversions.IsImplicitReferenceConversion(lhsType, rhsType) || conversions.IsImplicitReferenceConversion(rhsType, lhsType);
+
+                if (!isSubClasses)
+                {
+                    var l_operator = lhsType.GetMethods().FirstOrDefault(m => m.IsOperator && m.Name == "op_Implicit" &&
+                        m.ReturnType.IsKnownType(KnownTypeCode.String) && m.Parameters.Count == 1 &&
+                        m.Parameters[0].Type.Equals(lhsType));
+
+                    var r_operator = rhsType.GetMethods().FirstOrDefault(m => m.IsOperator && m.Name == "op_Implicit" &&
+                        m.ReturnType.IsKnownType(KnownTypeCode.String) && m.Parameters.Count == 1 &&
+                        m.Parameters[0].Type.Equals(rhsType));
+
+                    if (l_operator != null && r_operator != null)
+                    {
+                        both = true;
+                    }
+                }                
+            }
+
+            return both ? operatorMethod : new CSharpOperators.OperatorMethod[] { operatorMethod[0] };
+        }
 		
 		bool IsNullableTypeOrNonValueType(IType type)
 		{
@@ -2252,7 +2288,7 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 				if (invoke != null) {
 					input = new MethodGroupResolveResult(
 						input, invoke.Name,
-						methods: new[] { new MethodListWithDeclaringType(invoke.DeclaringType) { invoke } },
+						methods: new[] { new MethodListWithDeclaringType(input.Type) { invoke } },
 						typeArguments: EmptyList<IType>.Instance
 					);
 				}
