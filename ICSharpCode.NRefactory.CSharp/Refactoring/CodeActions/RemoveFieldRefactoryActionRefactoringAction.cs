@@ -31,30 +31,30 @@ using ICSharpCode.NRefactory.Semantics;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-//	[ContextAction("Removes a field from a class", Description = "It removes also the empty assingments and the usages")]
-	public class RemoveFieldRefactoryAction : ICodeActionProvider
-	{
-		public IEnumerable<CodeAction> GetActions(RefactoringContext context)
-		{
-			var fieldDeclaration = GetFieldDeclaration(context);
+//    [ContextAction("Removes a field from a class", Description = "It removes also the empty assingments and the usages")]
+    public class RemoveFieldRefactoryAction : ICodeActionProvider
+    {
+        public IEnumerable<CodeAction> GetActions(RefactoringContext context)
+        {
+            var fieldDeclaration = GetFieldDeclaration(context);
             if(fieldDeclaration==null)
-			    yield break;
+                yield break;
 
-			
-			yield return new CodeAction(string.Format(context.TranslateString("Remove field '{0}'"), fieldDeclaration.Name)
-			                            , script => GenerateNewScript(
+
+            yield return new CodeAction(string.Format(context.TranslateString("Remove field '{0}'"), fieldDeclaration.Name)
+                                        , script => GenerateNewScript(
                 script, fieldDeclaration, context), fieldDeclaration);
-		}
-		
-		
-		void GenerateNewScript(Script script, FieldDeclaration fieldDeclaration, RefactoringContext context)
+        }
+
+
+        void GenerateNewScript(Script script, FieldDeclaration fieldDeclaration, RefactoringContext context)
         {
             var firstOrNullObject = fieldDeclaration.Variables.FirstOrNullObject();
-		    if(firstOrNullObject==null)
+            if(firstOrNullObject==null)
                 return;
-			var matchedNodes = ComputeMatchNodes(context, firstOrNullObject);
+            var matchedNodes = ComputeMatchNodes(context, firstOrNullObject);
 
-		    foreach (var matchNode in matchedNodes)
+            foreach (var matchNode in matchedNodes)
             {
                 var parent = matchNode.Parent;
                 if (matchNode is VariableInitializer)
@@ -78,33 +78,33 @@ namespace ICSharpCode.NRefactory.CSharp
             }
         }
 
-	    private static List<AstNode> ComputeMatchNodes(RefactoringContext context, VariableInitializer firstOrNullObject)
-	    {
-	        var referenceFinder = new FindReferences();
-	        var matchedNodes = new List<AstNode>();
+        private static List<AstNode> ComputeMatchNodes(RefactoringContext context, VariableInitializer firstOrNullObject)
+        {
+            var referenceFinder = new FindReferences();
+            var matchedNodes = new List<AstNode>();
 
-	        var resolveResult = context.Resolver.Resolve(firstOrNullObject);
-	        var member = resolveResult as MemberResolveResult;
+            var resolveResult = context.Resolver.Resolve(firstOrNullObject);
+            var member = resolveResult as MemberResolveResult;
             if (member == null)//not a member is unexpected case, so is better to return no match than to break the code
                 return matchedNodes;
 
-	        FoundReferenceCallback callback = (matchNode, result) => matchedNodes.Add(matchNode);
+            FoundReferenceCallback callback = (matchNode, result) => matchedNodes.Add(matchNode);
 
-	        var searchScopes = referenceFinder.GetSearchScopes(member.Member);
-	        referenceFinder.FindReferencesInFile(searchScopes,
-	                                             context.UnresolvedFile,
-	                                             context.RootNode as SyntaxTree,
-	                                             context.Compilation, callback,
-	                                             context.CancellationToken);
-	        return matchedNodes;
-	    }
+            var searchScopes = referenceFinder.GetSearchScopes(member.Member);
+            referenceFinder.FindReferencesInFile(searchScopes,
+                                                 context.UnresolvedFile,
+                                                 context.RootNode as SyntaxTree,
+                                                 context.Compilation, callback,
+                                                 context.CancellationToken);
+            return matchedNodes;
+        }
 
-	    FieldDeclaration GetFieldDeclaration(RefactoringContext context)
-		{
-			var result = context.GetNode<FieldDeclaration>();
+        FieldDeclaration GetFieldDeclaration(RefactoringContext context)
+        {
+            var result = context.GetNode<FieldDeclaration>();
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 }
 

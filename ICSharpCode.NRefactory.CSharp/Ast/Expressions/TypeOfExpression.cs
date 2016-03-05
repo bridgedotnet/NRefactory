@@ -27,58 +27,58 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// typeof(Type)
-	/// </summary>
-	public class TypeOfExpression : Expression
-	{
-		public readonly static TokenRole TypeofKeywordRole = new TokenRole ("typeof");
-		
-		public CSharpTokenNode TypeOfToken {
-			get { return GetChildByRole (TypeofKeywordRole); }
-		}
-		
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
-		
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole(Roles.Type, value); }
-		}
-		
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
-		
-		public TypeOfExpression ()
-		{
-		}
-		
-		public TypeOfExpression (AstType type)
-		{
-			AddChild (type, Roles.Type);
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitTypeOfExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitTypeOfExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitTypeOfExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			TypeOfExpression o = other as TypeOfExpression;
-			return o != null && this.Type.DoMatch(o.Type, match);
-		}
-	}
+    /// <summary>
+    /// typeof(Type)
+    /// </summary>
+    public class TypeOfExpression : Expression
+    {
+        public readonly static TokenRole TypeofKeywordRole = new TokenRole ("typeof");
+
+        public CSharpTokenNode TypeOfToken {
+            get { return GetChildByRole (TypeofKeywordRole); }
+        }
+
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
+
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole(Roles.Type, value); }
+        }
+
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
+
+        public TypeOfExpression ()
+        {
+        }
+
+        public TypeOfExpression (AstType type)
+        {
+            AddChild (type, Roles.Type);
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitTypeOfExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitTypeOfExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitTypeOfExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            TypeOfExpression o = other as TypeOfExpression;
+            return o != null && this.Type.DoMatch(o.Type, match);
+        }
+    }
 }

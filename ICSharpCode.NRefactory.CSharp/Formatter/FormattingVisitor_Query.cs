@@ -28,97 +28,97 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	partial class FormattingVisitor
-	{
-		int GetUpdatedStartLocation(QueryExpression queryExpression)
-		{
-			//TODO
-			return queryExpression.StartLocation.Column;
-		}
+    partial class FormattingVisitor
+    {
+        int GetUpdatedStartLocation(QueryExpression queryExpression)
+        {
+            //TODO
+            return queryExpression.StartLocation.Column;
+        }
 
-		public override void VisitQueryExpression(QueryExpression queryExpression)
-		{
-			var oldIndent = curIndent.Clone();
+        public override void VisitQueryExpression(QueryExpression queryExpression)
+        {
+            var oldIndent = curIndent.Clone();
 
-			var column = GetUpdatedStartLocation(queryExpression);
+            var column = GetUpdatedStartLocation(queryExpression);
 
-			int extraSpaces = column - 1 - (curIndent.CurIndent / options.TabSize);
-			if (extraSpaces < 0) {
-				//This check should probably be removed in the future, when GetUpdatedStartLocation is implemented
-				extraSpaces = 0;
-			}
+            int extraSpaces = column - 1 - (curIndent.CurIndent / options.TabSize);
+            if (extraSpaces < 0) {
+                //This check should probably be removed in the future, when GetUpdatedStartLocation is implemented
+                extraSpaces = 0;
+            }
 
-			curIndent.ExtraSpaces = extraSpaces;
-			VisitChildren(queryExpression);
+            curIndent.ExtraSpaces = extraSpaces;
+            VisitChildren(queryExpression);
 
-			curIndent = oldIndent;
-		}
+            curIndent = oldIndent;
+        }
 
-		public override void VisitQueryFromClause(QueryFromClause queryFromClause)
-		{
-			FixClauseIndentation(queryFromClause, queryFromClause.FromKeyword);
-		}
+        public override void VisitQueryFromClause(QueryFromClause queryFromClause)
+        {
+            FixClauseIndentation(queryFromClause, queryFromClause.FromKeyword);
+        }
 
-		public override void VisitQueryContinuationClause(QueryContinuationClause queryContinuationClause)
-		{
-			VisitChildren(queryContinuationClause);
-		}
+        public override void VisitQueryContinuationClause(QueryContinuationClause queryContinuationClause)
+        {
+            VisitChildren(queryContinuationClause);
+        }
 
-		public override void VisitQueryGroupClause(QueryGroupClause queryGroupClause)
-		{
-			FixClauseIndentation(queryGroupClause, queryGroupClause.GroupKeyword);
-		}
+        public override void VisitQueryGroupClause(QueryGroupClause queryGroupClause)
+        {
+            FixClauseIndentation(queryGroupClause, queryGroupClause.GroupKeyword);
+        }
 
-		public override void VisitQueryJoinClause(QueryJoinClause queryJoinClause)
-		{
-			FixClauseIndentation(queryJoinClause, queryJoinClause.JoinKeyword);
-		}
+        public override void VisitQueryJoinClause(QueryJoinClause queryJoinClause)
+        {
+            FixClauseIndentation(queryJoinClause, queryJoinClause.JoinKeyword);
+        }
 
-		public override void VisitQueryLetClause(QueryLetClause queryLetClause)
-		{
-			FixClauseIndentation(queryLetClause, queryLetClause.LetKeyword);
-		}
+        public override void VisitQueryLetClause(QueryLetClause queryLetClause)
+        {
+            FixClauseIndentation(queryLetClause, queryLetClause.LetKeyword);
+        }
 
-		public override void VisitQuerySelectClause(QuerySelectClause querySelectClause)
-		{
-			FixClauseIndentation(querySelectClause, querySelectClause.SelectKeyword);
-		}
+        public override void VisitQuerySelectClause(QuerySelectClause querySelectClause)
+        {
+            FixClauseIndentation(querySelectClause, querySelectClause.SelectKeyword);
+        }
 
-		public override void VisitQueryOrderClause(QueryOrderClause queryOrderClause)
-		{
-			FixClauseIndentation(queryOrderClause, queryOrderClause.OrderbyToken);
-		}
+        public override void VisitQueryOrderClause(QueryOrderClause queryOrderClause)
+        {
+            FixClauseIndentation(queryOrderClause, queryOrderClause.OrderbyToken);
+        }
 
-		public override void VisitQueryWhereClause(QueryWhereClause queryWhereClause)
-		{
-			FixClauseIndentation(queryWhereClause, queryWhereClause.WhereKeyword);
-		}
+        public override void VisitQueryWhereClause(QueryWhereClause queryWhereClause)
+        {
+            FixClauseIndentation(queryWhereClause, queryWhereClause.WhereKeyword);
+        }
 
-		void FixClauseIndentation(QueryClause clause, AstNode keyword) {
-			var parentExpression = clause.GetParent<QueryExpression>();
-			bool isFirstClause = parentExpression.Clauses.First() == clause;
-			if (!isFirstClause) {
-				PlaceOnNewLine(policy.NewLineBeforeNewQueryClause, keyword);
-			}
+        void FixClauseIndentation(QueryClause clause, AstNode keyword) {
+            var parentExpression = clause.GetParent<QueryExpression>();
+            bool isFirstClause = parentExpression.Clauses.First() == clause;
+            if (!isFirstClause) {
+                PlaceOnNewLine(policy.NewLineBeforeNewQueryClause, keyword);
+            }
 
-			int extraSpaces = options.IndentSize;
-			curIndent.ExtraSpaces += extraSpaces;
-			foreach (var child in clause.Children) {
-				var expression = child as Expression;
-				if (expression != null) {
-					FixIndentation(child);
-					child.AcceptVisitor(this);
-				}
+            int extraSpaces = options.IndentSize;
+            curIndent.ExtraSpaces += extraSpaces;
+            foreach (var child in clause.Children) {
+                var expression = child as Expression;
+                if (expression != null) {
+                    FixIndentation(child);
+                    child.AcceptVisitor(this);
+                }
 
-				var tokenNode = child as CSharpTokenNode;
-				if (tokenNode != null) {
-					if (tokenNode.GetNextSibling(NoWhitespacePredicate).StartLocation.Line != tokenNode.EndLocation.Line) {
-						ForceSpacesAfter(tokenNode, false);
-					}
-				}
-			}
-			curIndent.ExtraSpaces -= extraSpaces;
-		}
-	}
+                var tokenNode = child as CSharpTokenNode;
+                if (tokenNode != null) {
+                    if (tokenNode.GetNextSibling(NoWhitespacePredicate).StartLocation.Line != tokenNode.EndLocation.Line) {
+                        ForceSpacesAfter(tokenNode, false);
+                    }
+                }
+            }
+            curIndent.ExtraSpaces -= extraSpaces;
+        }
+    }
 }
 

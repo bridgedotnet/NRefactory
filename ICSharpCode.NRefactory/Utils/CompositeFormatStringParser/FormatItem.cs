@@ -26,68 +26,68 @@
 
 namespace ICSharpCode.NRefactory.Utils
 {
-	public class FormatItem : FormatStringSegmentBase
-	{
-		public FormatItem (int index, int? alignment = null, string formatString = null)
-		{
-			Index = index;
-			Alignment = alignment;
-			FormatString = formatString;
-		}
+    public class FormatItem : FormatStringSegmentBase
+    {
+        public FormatItem (int index, int? alignment = null, string formatString = null)
+        {
+            Index = index;
+            Alignment = alignment;
+            FormatString = formatString;
+        }
 
-		public int Index { get; private set; }
+        public int Index { get; private set; }
 
-		public int? Alignment { get; private set; }
+        public int? Alignment { get; private set; }
 
-		public string FormatString { get; private set; }
+        public string FormatString { get; private set; }
 
-		#region Equality
-		public override bool Equals (object obj)
-		{
-			if (obj == null)
-				return false;
-			if (obj.GetType () != typeof(FormatItem))
-				return false;
-			var other = (FormatItem)obj;
-				
-			return FieldsEquals (other);
-		}
-			
-		public bool Equals (FormatItem other)
-		{
-			if (other == null)
-				return false;
-				
-			return FieldsEquals (other);
-		}
+        #region Equality
+        public override bool Equals (object obj)
+        {
+            if (obj == null)
+                return false;
+            if (obj.GetType () != typeof(FormatItem))
+                return false;
+            var other = (FormatItem)obj;
 
-		bool FieldsEquals (FormatItem other)
-		{
-			return Index == other.Index &&
-				Alignment == other.Alignment &&
-				FormatString == other.FormatString &&
-				StartLocation == other.StartLocation &&
-				EndLocation == other.EndLocation;
-		}
-			
-		public override int GetHashCode ()
-		{
-			unchecked {
-				int hash = 23;
-				hash = hash * 37 + Index.GetHashCode ();
-				hash = hash * 37 + Alignment.GetHashCode ();
-				hash = hash * 37 + FormatString.GetHashCode ();
-				hash = hash * 37 + StartLocation.GetHashCode ();
-				hash = hash * 37 + EndLocation.GetHashCode ();
-				return hash;
-			}
-		}
-		#endregion
+            return FieldsEquals (other);
+        }
 
-		public override string ToString ()
-		{
-			return string.Format ("[FormatItem: Index={0}, Alignment={1}, FormatString={2}, StartLocation={3}, EndLocation={4}]", Index, Alignment, FormatString, StartLocation, EndLocation);
-		}
-	}
+        public bool Equals (FormatItem other)
+        {
+            if (other == null)
+                return false;
+
+            return FieldsEquals (other);
+        }
+
+        bool FieldsEquals (FormatItem other)
+        {
+            return Index == other.Index &&
+                Alignment == other.Alignment &&
+                FormatString == other.FormatString &&
+                StartLocation == other.StartLocation &&
+                EndLocation == other.EndLocation;
+        }
+
+        public override int GetHashCode ()
+        {
+            unchecked {
+                int hash = 23;
+                hash = hash * 37 + Index.GetHashCode ();
+                hash = hash * 37 + Alignment.GetHashCode ();
+                hash = hash * 37 + FormatString.GetHashCode ();
+                hash = hash * 37 + StartLocation.GetHashCode ();
+                hash = hash * 37 + EndLocation.GetHashCode ();
+                return hash;
+            }
+        }
+        #endregion
+
+        public override string ToString ()
+        {
+            return string.Format ("[FormatItem: Index={0}, Alignment={1}, FormatString={2}, StartLocation={3}, EndLocation={4}]", Index, Alignment, FormatString, StartLocation, EndLocation);
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 ﻿// 
 // AnonymousTypeCreateExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -28,64 +28,64 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// new { [ExpressionList] }
-	/// </summary>
-	public class AnonymousTypeCreateExpression : Expression
-	{
-		public readonly static TokenRole NewKeywordRole = new TokenRole ("new");
-		
-		public CSharpTokenNode NewToken {
-			get { return GetChildByRole (NewKeywordRole); }
-		}
-		
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
-		
-		public AstNodeCollection<Expression> Initializers {
-			get { return GetChildrenByRole (Roles.Expression); }
-		}
-		
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
-		
-		public AnonymousTypeCreateExpression ()
-		{
-		}
-		
-		public AnonymousTypeCreateExpression (IEnumerable<Expression> initializers)
-		{
-			foreach (var ini in initializers) {
-				AddChild (ini, Roles.Expression);
-			}
-		}
-		
-		public AnonymousTypeCreateExpression (params Expression[] initializer) : this ((IEnumerable<Expression>)initializer)
-		{
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitAnonymousTypeCreateExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitAnonymousTypeCreateExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitAnonymousTypeCreateExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			var o = other as AnonymousTypeCreateExpression;
-			return o != null && this.Initializers.DoMatch(o.Initializers, match);
-		}
-	}
+    /// <summary>
+    /// new { [ExpressionList] }
+    /// </summary>
+    public class AnonymousTypeCreateExpression : Expression
+    {
+        public readonly static TokenRole NewKeywordRole = new TokenRole ("new");
+
+        public CSharpTokenNode NewToken {
+            get { return GetChildByRole (NewKeywordRole); }
+        }
+
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
+
+        public AstNodeCollection<Expression> Initializers {
+            get { return GetChildrenByRole (Roles.Expression); }
+        }
+
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
+
+        public AnonymousTypeCreateExpression ()
+        {
+        }
+
+        public AnonymousTypeCreateExpression (IEnumerable<Expression> initializers)
+        {
+            foreach (var ini in initializers) {
+                AddChild (ini, Roles.Expression);
+            }
+        }
+
+        public AnonymousTypeCreateExpression (params Expression[] initializer) : this ((IEnumerable<Expression>)initializer)
+        {
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitAnonymousTypeCreateExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitAnonymousTypeCreateExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitAnonymousTypeCreateExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            var o = other as AnonymousTypeCreateExpression;
+            return o != null && this.Initializers.DoMatch(o.Initializers, match);
+        }
+    }
 }
 

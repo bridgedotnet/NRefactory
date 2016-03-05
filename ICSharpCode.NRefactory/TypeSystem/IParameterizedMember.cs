@@ -22,19 +22,19 @@ using System.Diagnostics.Contracts;
 
 namespace ICSharpCode.NRefactory.TypeSystem
 {
-	/// <summary>
-	/// Represents a method or property.
-	/// </summary>
-	public interface IUnresolvedParameterizedMember : IUnresolvedMember
-	{
-		IList<IUnresolvedParameter> Parameters { get; }
-	}
-	
-	/// <summary>
-	/// Represents a method or property.
-	/// </summary>
-	public interface IParameterizedMember : IMember
-	{
-		IList<IParameter> Parameters { get; }
-	}
+    /// <summary>
+    /// Represents a method or property.
+    /// </summary>
+    public interface IUnresolvedParameterizedMember : IUnresolvedMember
+    {
+        IList<IUnresolvedParameter> Parameters { get; }
+    }
+
+    /// <summary>
+    /// Represents a method or property.
+    /// </summary>
+    public interface IParameterizedMember : IMember
+    {
+        IList<IParameter> Parameters { get; }
+    }
 }

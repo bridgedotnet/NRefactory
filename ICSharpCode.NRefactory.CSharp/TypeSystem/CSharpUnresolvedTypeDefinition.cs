@@ -23,28 +23,28 @@ using ICSharpCode.NRefactory.Utils;
 
 namespace ICSharpCode.NRefactory.CSharp.TypeSystem
 {
-	[Serializable, FastSerializerVersion(TypeSystemConvertVisitor.version)]
-	public class CSharpUnresolvedTypeDefinition : DefaultUnresolvedTypeDefinition
-	{
-		readonly UsingScope usingScope;
-		
-		public CSharpUnresolvedTypeDefinition(UsingScope usingScope, string name)
-			: base(usingScope.NamespaceName, name)
-		{
-			this.usingScope = usingScope;
-			this.AddDefaultConstructorIfRequired = true;
-		}
-		
-		public CSharpUnresolvedTypeDefinition(CSharpUnresolvedTypeDefinition declaringTypeDefinition, string name)
-			: base(declaringTypeDefinition, name)
-		{
-			this.usingScope = declaringTypeDefinition.usingScope;
-			this.AddDefaultConstructorIfRequired = true;
-		}
-		
-		public override ITypeResolveContext CreateResolveContext(ITypeResolveContext parentContext)
-		{
-			return new CSharpTypeResolveContext(parentContext.CurrentAssembly, usingScope.Resolve(parentContext.Compilation), parentContext.CurrentTypeDefinition);
-		}
-	}
+    [Serializable, FastSerializerVersion(TypeSystemConvertVisitor.version)]
+    public class CSharpUnresolvedTypeDefinition : DefaultUnresolvedTypeDefinition
+    {
+        readonly UsingScope usingScope;
+
+        public CSharpUnresolvedTypeDefinition(UsingScope usingScope, string name)
+            : base(usingScope.NamespaceName, name)
+        {
+            this.usingScope = usingScope;
+            this.AddDefaultConstructorIfRequired = true;
+        }
+
+        public CSharpUnresolvedTypeDefinition(CSharpUnresolvedTypeDefinition declaringTypeDefinition, string name)
+            : base(declaringTypeDefinition, name)
+        {
+            this.usingScope = declaringTypeDefinition.usingScope;
+            this.AddDefaultConstructorIfRequired = true;
+        }
+
+        public override ITypeResolveContext CreateResolveContext(ITypeResolveContext parentContext)
+        {
+            return new CSharpTypeResolveContext(parentContext.CurrentAssembly, usingScope.Resolve(parentContext.Compilation), parentContext.CurrentTypeDefinition);
+        }
+    }
 }

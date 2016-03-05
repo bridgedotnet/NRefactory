@@ -1,6 +1,6 @@
 ﻿// 
 // ThisReferenceExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,46 +26,46 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// this
-	/// </summary>
-	public class ThisReferenceExpression : Expression
-	{
-		public TextLocation Location {
-			get;
-			set;
-		}
-		
-		public override TextLocation StartLocation {
-			get {
-				return Location;
-			}
-		}
-		public override TextLocation EndLocation {
-			get {
-				return new TextLocation (Location.Line, Location.Column + "this".Length);
-			}
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitThisReferenceExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitThisReferenceExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitThisReferenceExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			ThisReferenceExpression o = other as ThisReferenceExpression;
-			return o != null;
-		}
-	}
+    /// <summary>
+    /// this
+    /// </summary>
+    public class ThisReferenceExpression : Expression
+    {
+        public TextLocation Location {
+            get;
+            set;
+        }
+
+        public override TextLocation StartLocation {
+            get {
+                return Location;
+            }
+        }
+        public override TextLocation EndLocation {
+            get {
+                return new TextLocation (Location.Line, Location.Column + "this".Length);
+            }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitThisReferenceExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitThisReferenceExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitThisReferenceExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            ThisReferenceExpression o = other as ThisReferenceExpression;
+            return o != null;
+        }
+    }
 }

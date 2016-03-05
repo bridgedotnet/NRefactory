@@ -1,6 +1,6 @@
 // 
 // WhitespaceNode.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -27,65 +27,65 @@
 using System;
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// A Whitespace node contains only whitespaces.
-	/// </summary>
-	public class WhitespaceNode : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Whitespace;
-			}
-		}
+    /// <summary>
+    /// A Whitespace node contains only whitespaces.
+    /// </summary>
+    public class WhitespaceNode : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Whitespace;
+            }
+        }
 
-		public string WhiteSpaceText {
-			get;
-			set;
-		}
+        public string WhiteSpaceText {
+            get;
+            set;
+        }
 
-		TextLocation startLocation;
-		public override TextLocation StartLocation {
-			get { 
-				return startLocation;
-			}
-		}
-		
-		public override TextLocation EndLocation {
-			get {
-				return new TextLocation (startLocation.Line, startLocation.Column + WhiteSpaceText.Length);
-			}
-		}
+        TextLocation startLocation;
+        public override TextLocation StartLocation {
+            get { 
+                return startLocation;
+            }
+        }
 
-		public WhitespaceNode(string whiteSpaceText) : this (whiteSpaceText, TextLocation.Empty)
-		{
-		}
+        public override TextLocation EndLocation {
+            get {
+                return new TextLocation (startLocation.Line, startLocation.Column + WhiteSpaceText.Length);
+            }
+        }
 
-		public WhitespaceNode(string whiteSpaceText, TextLocation startLocation)
-		{
-			this.WhiteSpaceText = WhiteSpaceText;
-			this.startLocation = startLocation;
-		}
+        public WhitespaceNode(string whiteSpaceText) : this (whiteSpaceText, TextLocation.Empty)
+        {
+        }
 
-		public override void AcceptVisitor(IAstVisitor visitor)
-		{
-			visitor.VisitWhitespace (this);
-		}
+        public WhitespaceNode(string whiteSpaceText, TextLocation startLocation)
+        {
+            this.WhiteSpaceText = WhiteSpaceText;
+            this.startLocation = startLocation;
+        }
 
-		public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-		{
-			return visitor.VisitWhitespace (this);
-		}
+        public override void AcceptVisitor(IAstVisitor visitor)
+        {
+            visitor.VisitWhitespace (this);
+        }
 
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitWhitespace (this, data);
-		}
+        public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
+        {
+            return visitor.VisitWhitespace (this);
+        }
 
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			var o = other as WhitespaceNode;
-			return o != null && o.WhiteSpaceText == WhiteSpaceText;
-		}
-	}
+        public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitWhitespace (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            var o = other as WhitespaceNode;
+            return o != null && o.WhiteSpaceText == WhiteSpaceText;
+        }
+    }
 }
 

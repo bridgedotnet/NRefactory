@@ -1,6 +1,6 @@
 // 
 // ICompletionData.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -28,26 +28,26 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.Completion
 {
-	public interface ICompletionData
-	{
-		CompletionCategory CompletionCategory { get; set; }
-		
-		string DisplayText { get; set; }
+    public interface ICompletionData
+    {
+        CompletionCategory CompletionCategory { get; set; }
 
-		string Description { get; set; }
-		
-		string CompletionText { get; set; }
-		
-		DisplayFlags DisplayFlags { get; set; }
-		
-		bool HasOverloads { 
-			get;
-		}
-		
-		IEnumerable<ICompletionData> OverloadedData {
-			get;
-		}
-		
-		void AddOverload (ICompletionData data);
-	}
+        string DisplayText { get; set; }
+
+        string Description { get; set; }
+
+        string CompletionText { get; set; }
+
+        DisplayFlags DisplayFlags { get; set; }
+
+        bool HasOverloads { 
+            get;
+        }
+
+        IEnumerable<ICompletionData> OverloadedData {
+            get;
+        }
+
+        void AddOverload (ICompletionData data);
+    }
 }

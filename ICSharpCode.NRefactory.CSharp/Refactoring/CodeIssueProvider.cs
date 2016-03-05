@@ -1,6 +1,6 @@
 ﻿// 
 // IInspector.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -29,48 +29,48 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	/// <summary>
-	/// The code issue provider gets a list of all code issues in a syntax tree.
-	/// </summary>
-	public abstract class CodeIssueProvider
-	{
-		SubIssueAttribute[] subIssueAttributes;
+    /// <summary>
+    /// The code issue provider gets a list of all code issues in a syntax tree.
+    /// </summary>
+    public abstract class CodeIssueProvider
+    {
+        SubIssueAttribute[] subIssueAttributes;
 
-		public bool HasSubIssues {
-			get {
-				Initialize ();
-				return subIssueAttributes.Length > 0;
-			}
-		}
+        public bool HasSubIssues {
+            get {
+                Initialize ();
+                return subIssueAttributes.Length > 0;
+            }
+        }
 
-		public IEnumerable<SubIssueAttribute> SubIssues {
-			get {
-				Initialize ();
-				return subIssueAttributes;
-			}
-		}
+        public IEnumerable<SubIssueAttribute> SubIssues {
+            get {
+                Initialize ();
+                return subIssueAttributes;
+            }
+        }
 
-		static readonly SubIssueAttribute[] emptyAttributes = new SubIssueAttribute[0];
-		void Initialize()
-		{
-			if (subIssueAttributes != null)
-				return;
-			subIssueAttributes = GetType().GetCustomAttributes(typeof(SubIssueAttribute), false).OfType<SubIssueAttribute>().ToArray() ?? emptyAttributes;
-		}
+        static readonly SubIssueAttribute[] emptyAttributes = new SubIssueAttribute[0];
+        void Initialize()
+        {
+            if (subIssueAttributes != null)
+                return;
+            subIssueAttributes = GetType().GetCustomAttributes(typeof(SubIssueAttribute), false).OfType<SubIssueAttribute>().ToArray() ?? emptyAttributes;
+        }
 
-		/// <summary>
-		/// Gets all code issues inside a syntax tree.
-		/// </summary>
-		/// <param name='context'>
-		/// The refactoring context of the issues to get.
-		/// </param>
-		/// <param name='subIssue'>
-		/// The name of the sub issue to run.
-		/// </param>
-		public virtual IEnumerable<CodeIssue> GetIssues (BaseRefactoringContext context, string subIssue = null)
-		{
-			return GetIssues(context);
-		}
-	}
+        /// <summary>
+        /// Gets all code issues inside a syntax tree.
+        /// </summary>
+        /// <param name='context'>
+        /// The refactoring context of the issues to get.
+        /// </param>
+        /// <param name='subIssue'>
+        /// The name of the sub issue to run.
+        /// </param>
+        public virtual IEnumerable<CodeIssue> GetIssues (BaseRefactoringContext context, string subIssue = null)
+        {
+            return GetIssues(context);
+        }
+    }
 }
 

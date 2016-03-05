@@ -35,125 +35,125 @@ using System.Diagnostics;
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
 
-	/// <summary>
-	/// Finds references to <see cref="IVariable">IVariables</see>.
-	/// </summary>
-	/// <remarks>
-	/// This class is more efficient than <see cref="FindReferences"/>
-	/// if there is already a resolved tree or if multiple searches needs
-	/// to be performed.
-	/// </remarks>		
-	public class LocalReferenceFinder
-	{
-		LocalReferenceLocator locator;
+    /// <summary>
+    /// Finds references to <see cref="IVariable">IVariables</see>.
+    /// </summary>
+    /// <remarks>
+    /// This class is more efficient than <see cref="FindReferences"/>
+    /// if there is already a resolved tree or if multiple searches needs
+    /// to be performed.
+    /// </remarks>
+    public class LocalReferenceFinder
+    {
+        LocalReferenceLocator locator;
 
-		MultiDictionary<IVariable, ReferenceResult> references = new MultiDictionary<IVariable, ReferenceResult>();
-		
-		HashSet<AstNode> visitedRoots = new HashSet<AstNode>();
-		
-		public LocalReferenceFinder(CSharpAstResolver resolver)
-		{
-			locator = new LocalReferenceLocator(resolver, this);
-		}
+        MultiDictionary<IVariable, ReferenceResult> references = new MultiDictionary<IVariable, ReferenceResult>();
 
-		public LocalReferenceFinder(BaseRefactoringContext context) : this(context.Resolver)
-		{
-		}
+        HashSet<AstNode> visitedRoots = new HashSet<AstNode>();
 
-		void VisitIfNeccessary(AstNode rootNode)
-		{
-			// If any of the parent nodes are recorded as visited,
-			// we don't need to traverse rootNode this time.
-			var tmpRoot = rootNode;
-			while(tmpRoot != null){
-				if (visitedRoots.Contains(tmpRoot))
-					return;
-				tmpRoot = tmpRoot.Parent;
-			}
+        public LocalReferenceFinder(CSharpAstResolver resolver)
+        {
+            locator = new LocalReferenceLocator(resolver, this);
+        }
 
-			locator.ProccessRoot (rootNode);
-		}
+        public LocalReferenceFinder(BaseRefactoringContext context) : this(context.Resolver)
+        {
+        }
 
-		/// <summary>
-		/// Finds the references to <paramref name="variable"/>.
-		/// </summary>
-		/// <param name='rootNode'>
-		/// Root node for the search.
-		/// </param>
-		/// <param name='variable'>
-		/// The variable to find references for.
-		/// </param>
-		/// <remarks>
-		/// When a single <see cref="LocalReferenceFinder"/> is reused for multiple
-		/// searches, which references outside of <paramref name="rootNode"/> are
-		/// or are not reported is undefined.
-		/// </remarks>
-		public IList<ReferenceResult> FindReferences(AstNode rootNode, IVariable variable)
-		{
-			lock (locator) {
-				VisitIfNeccessary(rootNode);
-				var lookup = (ILookup<IVariable, ReferenceResult>)references;
-				if (!lookup.Contains(variable))
-					return new List<ReferenceResult>();
-				// Clone the list for thread safety
-				return references[variable].ToList();
-			}
-		}
+        void VisitIfNeccessary(AstNode rootNode)
+        {
+            // If any of the parent nodes are recorded as visited,
+            // we don't need to traverse rootNode this time.
+            var tmpRoot = rootNode;
+            while(tmpRoot != null){
+                if (visitedRoots.Contains(tmpRoot))
+                    return;
+                tmpRoot = tmpRoot.Parent;
+            }
 
-		class LocalReferenceLocator : DepthFirstAstVisitor
-		{
-			CSharpAstResolver resolver;
+            locator.ProccessRoot (rootNode);
+        }
 
-			LocalReferenceFinder referenceFinder;
+        /// <summary>
+        /// Finds the references to <paramref name="variable"/>.
+        /// </summary>
+        /// <param name='rootNode'>
+        /// Root node for the search.
+        /// </param>
+        /// <param name='variable'>
+        /// The variable to find references for.
+        /// </param>
+        /// <remarks>
+        /// When a single <see cref="LocalReferenceFinder"/> is reused for multiple
+        /// searches, which references outside of <paramref name="rootNode"/> are
+        /// or are not reported is undefined.
+        /// </remarks>
+        public IList<ReferenceResult> FindReferences(AstNode rootNode, IVariable variable)
+        {
+            lock (locator) {
+                VisitIfNeccessary(rootNode);
+                var lookup = (ILookup<IVariable, ReferenceResult>)references;
+                if (!lookup.Contains(variable))
+                    return new List<ReferenceResult>();
+                // Clone the list for thread safety
+                return references[variable].ToList();
+            }
+        }
 
-			public LocalReferenceLocator(CSharpAstResolver resolver, LocalReferenceFinder referenceFinder)
-			{
-				this.resolver = resolver;
-				this.referenceFinder = referenceFinder;
-			}
+        class LocalReferenceLocator : DepthFirstAstVisitor
+        {
+            CSharpAstResolver resolver;
 
-			IList<IVariable> processedVariables = new List<IVariable>();
+            LocalReferenceFinder referenceFinder;
 
-			public void ProccessRoot (AstNode rootNode)
-			{
-				rootNode.AcceptVisitor(this);
-				referenceFinder.visitedRoots.Add(rootNode);
-			}
+            public LocalReferenceLocator(CSharpAstResolver resolver, LocalReferenceFinder referenceFinder)
+            {
+                this.resolver = resolver;
+                this.referenceFinder = referenceFinder;
+            }
 
-			public override void VisitCSharpTokenNode(CSharpTokenNode token)
-			{
-				// Nothing
-			}
+            IList<IVariable> processedVariables = new List<IVariable>();
 
-			protected override void VisitChildren(AstNode node)
-			{
-				if (referenceFinder.visitedRoots.Contains(node))
-					return;
-				var localResolveResult = resolver.Resolve(node) as LocalResolveResult;
-				if (localResolveResult != null && !processedVariables.Contains(localResolveResult.Variable)) {
-					referenceFinder.references.Add(localResolveResult.Variable, new ReferenceResult(node, localResolveResult));
+            public void ProccessRoot (AstNode rootNode)
+            {
+                rootNode.AcceptVisitor(this);
+                referenceFinder.visitedRoots.Add(rootNode);
+            }
 
-					processedVariables.Add(localResolveResult.Variable);
-					base.VisitChildren(node);
-					Debug.Assert(processedVariables.Contains(localResolveResult.Variable), "Variable should still be in the list of processed variables.");
-					processedVariables.Remove(localResolveResult.Variable);
-				} else {
-					base.VisitChildren(node);
-				}
-			}
-		}
-	}
+            public override void VisitCSharpTokenNode(CSharpTokenNode token)
+            {
+                // Nothing
+            }
 
-	public class ReferenceResult
-	{
-		public ReferenceResult (AstNode node, LocalResolveResult resolveResult)
-		{
-			Node = node;
-			ResolveResult = resolveResult;
-		}
+            protected override void VisitChildren(AstNode node)
+            {
+                if (referenceFinder.visitedRoots.Contains(node))
+                    return;
+                var localResolveResult = resolver.Resolve(node) as LocalResolveResult;
+                if (localResolveResult != null && !processedVariables.Contains(localResolveResult.Variable)) {
+                    referenceFinder.references.Add(localResolveResult.Variable, new ReferenceResult(node, localResolveResult));
 
-		public AstNode Node { get; private set; }
+                    processedVariables.Add(localResolveResult.Variable);
+                    base.VisitChildren(node);
+                    Debug.Assert(processedVariables.Contains(localResolveResult.Variable), "Variable should still be in the list of processed variables.");
+                    processedVariables.Remove(localResolveResult.Variable);
+                } else {
+                    base.VisitChildren(node);
+                }
+            }
+        }
+    }
 
-		public LocalResolveResult ResolveResult { get; private set; }
-	}
+    public class ReferenceResult
+    {
+        public ReferenceResult (AstNode node, LocalResolveResult resolveResult)
+        {
+            Node = node;
+            ResolveResult = resolveResult;
+        }
+
+        public AstNode Node { get; private set; }
+
+        public LocalResolveResult ResolveResult { get; private set; }
+    }
 }

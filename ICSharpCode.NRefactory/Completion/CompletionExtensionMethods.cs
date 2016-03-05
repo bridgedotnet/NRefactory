@@ -29,44 +29,44 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.Completion
 {
-	public static class CompletionExtensionMethods
-	{
-		/// <summary>
-		/// Gets the EditorBrowsableState of an entity.
-		/// </summary>
-		/// <returns>
-		/// The editor browsable state.
-		/// </returns>
-		/// <param name='entity'>
-		/// Entity.
-		/// </param>
-		public static System.ComponentModel.EditorBrowsableState GetEditorBrowsableState(this IEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException ("entity");
+    public static class CompletionExtensionMethods
+    {
+        /// <summary>
+        /// Gets the EditorBrowsableState of an entity.
+        /// </summary>
+        /// <returns>
+        /// The editor browsable state.
+        /// </returns>
+        /// <param name='entity'>
+        /// Entity.
+        /// </param>
+        public static System.ComponentModel.EditorBrowsableState GetEditorBrowsableState(this IEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException ("entity");
 
-			var browsableState = entity.Attributes.FirstOrDefault(attr => attr.AttributeType.Name == "EditorBrowsableAttribute" && attr.AttributeType.Namespace == "System.ComponentModel");
-			if (browsableState != null && browsableState.PositionalArguments.Count == 1) {
-				if (browsableState.PositionalArguments [0].ConstantValue is int)
-					return (System.ComponentModel.EditorBrowsableState)(int)browsableState.PositionalArguments [0].ConstantValue;
-			}
-			return System.ComponentModel.EditorBrowsableState.Always;
-		}
-		
-		/// <summary>
-		/// Determines if an entity should be shown in the code completion window. This is the same as:
-		/// <c>GetEditorBrowsableState (entity) != System.ComponentModel.EditorBrowsableState.Never</c>
-		/// </summary>
-		/// <returns>
-		/// <c>true</c> if the entity should be shown; otherwise, <c>false</c>.
-		/// </returns>
-		/// <param name='entity'>
-		/// The entity.
-		/// </param>
-		public static bool IsBrowsable(this IEntity entity)
-		{
-			return GetEditorBrowsableState (entity) != System.ComponentModel.EditorBrowsableState.Never;
-		}
-	}
+            var browsableState = entity.Attributes.FirstOrDefault(attr => attr.AttributeType.Name == "EditorBrowsableAttribute" && attr.AttributeType.Namespace == "System.ComponentModel");
+            if (browsableState != null && browsableState.PositionalArguments.Count == 1) {
+                if (browsableState.PositionalArguments [0].ConstantValue is int)
+                    return (System.ComponentModel.EditorBrowsableState)(int)browsableState.PositionalArguments [0].ConstantValue;
+            }
+            return System.ComponentModel.EditorBrowsableState.Always;
+        }
+
+        /// <summary>
+        /// Determines if an entity should be shown in the code completion window. This is the same as:
+        /// <c>GetEditorBrowsableState (entity) != System.ComponentModel.EditorBrowsableState.Never</c>
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if the entity should be shown; otherwise, <c>false</c>.
+        /// </returns>
+        /// <param name='entity'>
+        /// The entity.
+        /// </param>
+        public static bool IsBrowsable(this IEntity entity)
+        {
+            return GetEditorBrowsableState (entity) != System.ComponentModel.EditorBrowsableState.Never;
+        }
+    }
 }
 

@@ -22,46 +22,46 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Resolver
 {
-	public sealed class CompositeResolveVisitorNavigator : IResolveVisitorNavigator
-	{
-		IResolveVisitorNavigator[] navigators;
-		
-		public CompositeResolveVisitorNavigator(params IResolveVisitorNavigator[] navigators)
-		{
-			if (navigators == null)
-				throw new ArgumentNullException("navigators");
-			this.navigators = navigators;
-			foreach (var n in navigators) {
-				if (n == null)
-					throw new ArgumentException("Array must not contain nulls.");
-			}
-		}
-		
-		public ResolveVisitorNavigationMode Scan(AstNode node)
-		{
-			bool needsScan = false;
-			foreach (var navigator in navigators) {
-				ResolveVisitorNavigationMode mode = navigator.Scan(node);
-				if (mode == ResolveVisitorNavigationMode.Resolve)
-					return mode; // resolve has highest priority
-				else if (mode == ResolveVisitorNavigationMode.Scan)
-					needsScan = true;
-			}
-			return needsScan ? ResolveVisitorNavigationMode.Scan : ResolveVisitorNavigationMode.Skip;
-		}
-		
-		public void Resolved(AstNode node, ResolveResult result)
-		{
-			foreach (var navigator in navigators) {
-				navigator.Resolved(node, result);
-			}
-		}
-		
-		public void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
-		{
-			foreach (var navigator in navigators) {
-				navigator.ProcessConversion(expression, result, conversion, targetType);
-			}
-		}
-	}
+    public sealed class CompositeResolveVisitorNavigator : IResolveVisitorNavigator
+    {
+        IResolveVisitorNavigator[] navigators;
+
+        public CompositeResolveVisitorNavigator(params IResolveVisitorNavigator[] navigators)
+        {
+            if (navigators == null)
+                throw new ArgumentNullException("navigators");
+            this.navigators = navigators;
+            foreach (var n in navigators) {
+                if (n == null)
+                    throw new ArgumentException("Array must not contain nulls.");
+            }
+        }
+
+        public ResolveVisitorNavigationMode Scan(AstNode node)
+        {
+            bool needsScan = false;
+            foreach (var navigator in navigators) {
+                ResolveVisitorNavigationMode mode = navigator.Scan(node);
+                if (mode == ResolveVisitorNavigationMode.Resolve)
+                    return mode; // resolve has highest priority
+                else if (mode == ResolveVisitorNavigationMode.Scan)
+                    needsScan = true;
+            }
+            return needsScan ? ResolveVisitorNavigationMode.Scan : ResolveVisitorNavigationMode.Skip;
+        }
+
+        public void Resolved(AstNode node, ResolveResult result)
+        {
+            foreach (var navigator in navigators) {
+                navigator.Resolved(node, result);
+            }
+        }
+
+        public void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
+        {
+            foreach (var navigator in navigators) {
+                navigator.ProcessConversion(expression, result, conversion, targetType);
+            }
+        }
+    }
 }

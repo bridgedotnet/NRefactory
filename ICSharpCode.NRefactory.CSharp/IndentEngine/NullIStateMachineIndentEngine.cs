@@ -27,189 +27,189 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// An empty IStateMachineIndentEngine implementation that does nothing.
-	/// </summary>
-	public sealed class NullIStateMachineIndentEngine : IStateMachineIndentEngine
-	{
-		readonly ICSharpCode.NRefactory.Editor.IDocument document;
-		int offset;
+    /// <summary>
+    /// An empty IStateMachineIndentEngine implementation that does nothing.
+    /// </summary>
+    public sealed class NullIStateMachineIndentEngine : IStateMachineIndentEngine
+    {
+        readonly ICSharpCode.NRefactory.Editor.IDocument document;
+        int offset;
 
-		public NullIStateMachineIndentEngine(ICSharpCode.NRefactory.Editor.IDocument document)
-		{
-			if (document == null)
-				throw new ArgumentNullException("document");
-			this.document = document;
-		}
+        public NullIStateMachineIndentEngine(ICSharpCode.NRefactory.Editor.IDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+            this.document = document;
+        }
 
-		#region IStateMachineIndentEngine implementation
-		public IStateMachineIndentEngine Clone()
-		{
-			return new NullIStateMachineIndentEngine(document) { offset = this.offset };
-		}
+        #region IStateMachineIndentEngine implementation
+        public IStateMachineIndentEngine Clone()
+        {
+            return new NullIStateMachineIndentEngine(document) { offset = this.offset };
+        }
 
-		bool IStateMachineIndentEngine.IsInsidePreprocessorDirective {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsidePreprocessorDirective {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsidePreprocessorComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsidePreprocessorComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideStringLiteral {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideStringLiteral {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideVerbatimString {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideVerbatimString {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideCharacter {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideCharacter {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideString {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideString {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideLineComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideLineComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideMultiLineComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideMultiLineComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideDocLineComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideDocLineComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideOrdinaryComment {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideOrdinaryComment {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.IsInsideOrdinaryCommentOrString {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.IsInsideOrdinaryCommentOrString {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.LineBeganInsideVerbatimString {
-			get {
-				return false;
-			}
-		}
+        bool IStateMachineIndentEngine.LineBeganInsideVerbatimString {
+            get {
+                return false;
+            }
+        }
 
-		bool IStateMachineIndentEngine.LineBeganInsideMultiLineComment {
-			get {
-				return false;
-			}
-		}
-		#endregion
+        bool IStateMachineIndentEngine.LineBeganInsideMultiLineComment {
+            get {
+                return false;
+            }
+        }
+        #endregion
 
-		#region IDocumentIndentEngine implementation
-		void IDocumentIndentEngine.Push(char ch)
-		{
-			offset++;
-		}
+        #region IDocumentIndentEngine implementation
+        void IDocumentIndentEngine.Push(char ch)
+        {
+            offset++;
+        }
 
-		void IDocumentIndentEngine.Reset()
-		{
-			this.offset = 0;
-		}
+        void IDocumentIndentEngine.Reset()
+        {
+            this.offset = 0;
+        }
 
-		void IDocumentIndentEngine.Update(int offset)
-		{
-			this.offset = offset;
-		}
+        void IDocumentIndentEngine.Update(int offset)
+        {
+            this.offset = offset;
+        }
 
-		IDocumentIndentEngine IDocumentIndentEngine.Clone()
-		{
-			return Clone();
-		}
+        IDocumentIndentEngine IDocumentIndentEngine.Clone()
+        {
+            return Clone();
+        }
 
-		ICSharpCode.NRefactory.Editor.IDocument IDocumentIndentEngine.Document {
-			get {
-				return document;
-			}
-		}
+        ICSharpCode.NRefactory.Editor.IDocument IDocumentIndentEngine.Document {
+            get {
+                return document;
+            }
+        }
 
-		string IDocumentIndentEngine.ThisLineIndent {
-			get {
-				return "";
-			}
-		}
+        string IDocumentIndentEngine.ThisLineIndent {
+            get {
+                return "";
+            }
+        }
 
-		string IDocumentIndentEngine.NextLineIndent {
-			get {
-				return "";
-			}
-		}
+        string IDocumentIndentEngine.NextLineIndent {
+            get {
+                return "";
+            }
+        }
 
-		string IDocumentIndentEngine.CurrentIndent {
-			get {
-				return "";
-			}
-		}
+        string IDocumentIndentEngine.CurrentIndent {
+            get {
+                return "";
+            }
+        }
 
-		bool IDocumentIndentEngine.NeedsReindent {
-			get {
-				return false;
-			}
-		}
+        bool IDocumentIndentEngine.NeedsReindent {
+            get {
+                return false;
+            }
+        }
 
-		int IDocumentIndentEngine.Offset {
-			get {
-				return offset;
-			}
-		}
-		TextLocation IDocumentIndentEngine.Location {
-			get {
-				return TextLocation.Empty;
-			}
-		}
+        int IDocumentIndentEngine.Offset {
+            get {
+                return offset;
+            }
+        }
+        TextLocation IDocumentIndentEngine.Location {
+            get {
+                return TextLocation.Empty;
+            }
+        }
 
-		/// <inheritdoc />
-		public bool EnableCustomIndentLevels
-		{
-			get { return false; }
-			set { }
-		}
+        /// <inheritdoc />
+        public bool EnableCustomIndentLevels
+        {
+            get { return false; }
+            set { }
+        }
 
-		#endregion
+        #endregion
 
-		#region ICloneable implementation
-		object ICloneable.Clone()
-		{
-			return Clone();
-		}
-		#endregion
-	}
+        #region ICloneable implementation
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+        #endregion
+    }
 }
 

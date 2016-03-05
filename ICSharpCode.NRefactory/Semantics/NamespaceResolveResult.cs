@@ -22,29 +22,29 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.Semantics
 {
-	/// <summary>
-	/// Represents that an expression resolved to a namespace.
-	/// </summary>
-	public class NamespaceResolveResult : ResolveResult
-	{
-		readonly INamespace ns;
-		
-		public NamespaceResolveResult(INamespace ns) : base(SpecialType.UnknownType)
-		{
-			this.ns = ns;
-		}
-		
-		public INamespace Namespace {
-			get { return ns; }
-		}
-		
-		public string NamespaceName {
-			get { return ns.FullName; }
-		}
-		
-		public override string ToString()
-		{
-			return string.Format(CultureInfo.InvariantCulture, "[{0} {1}]", GetType().Name, ns);
-		}
-	}
+    /// <summary>
+    /// Represents that an expression resolved to a namespace.
+    /// </summary>
+    public class NamespaceResolveResult : ResolveResult
+    {
+        readonly INamespace ns;
+
+        public NamespaceResolveResult(INamespace ns) : base(SpecialType.UnknownType)
+        {
+            this.ns = ns;
+        }
+
+        public INamespace Namespace {
+            get { return ns; }
+        }
+
+        public string NamespaceName {
+            get { return ns.FullName; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0} {1}]", GetType().Name, ns);
+        }
+    }
 }

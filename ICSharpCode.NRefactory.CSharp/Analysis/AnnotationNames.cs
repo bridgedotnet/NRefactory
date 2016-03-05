@@ -1,6 +1,6 @@
 // 
 // Annotations.cs
-//  
+//
 // Author:
 //       Luís Reis <luiscubal@gmail.com>
 // 
@@ -28,21 +28,21 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public static class AnnotationNames
-	{
-		//Used const instead of readonly to allow values to be used in switch cases.
+    public static class AnnotationNames
+    {
+        //Used const instead of readonly to allow values to be used in switch cases.
 
-		public const string AssertionMethodAttribute = "JetBrains.Annotations.AssertionMethodAttribute";
-		public const string AssertionConditionAttribute = "JetBrains.Annotations.AssertionConditionAttribute";
-		public const string AssertionConditionTypeAttribute = "JetBrains.Annotations.AssertionConditionType";
+        public const string AssertionMethodAttribute = "JetBrains.Annotations.AssertionMethodAttribute";
+        public const string AssertionConditionAttribute = "JetBrains.Annotations.AssertionConditionAttribute";
+        public const string AssertionConditionTypeAttribute = "JetBrains.Annotations.AssertionConditionType";
 
-		public const string AssertionConditionTypeIsTrue = "JetBrains.Annotations.AssertionConditionType.IS_TRUE";
-		public const string AssertionConditionTypeIsFalse = "JetBrains.Annotations.AssertionConditionType.IS_FALSE";
-		public const string AssertionConditionTypeIsNull = "JetBrains.Annotations.AssertionConditionType.IS_NULL";
-		public const string AssertionConditionTypeIsNotNull = "JetBrains.Annotations.AssertionConditionType.IS_NOT_NULL";
+        public const string AssertionConditionTypeIsTrue = "JetBrains.Annotations.AssertionConditionType.IS_TRUE";
+        public const string AssertionConditionTypeIsFalse = "JetBrains.Annotations.AssertionConditionType.IS_FALSE";
+        public const string AssertionConditionTypeIsNull = "JetBrains.Annotations.AssertionConditionType.IS_NULL";
+        public const string AssertionConditionTypeIsNotNull = "JetBrains.Annotations.AssertionConditionType.IS_NOT_NULL";
 
-		public const string NotNullAttribute = "JetBrains.Annotations.NotNullAttribute";
-		public const string CanBeNullAttribute = "JetBrains.Annotations.CanBeNullAttribute";
-	}
+        public const string NotNullAttribute = "JetBrains.Annotations.NotNullAttribute";
+        public const string CanBeNullAttribute = "JetBrains.Annotations.CanBeNullAttribute";
+    }
 }
 

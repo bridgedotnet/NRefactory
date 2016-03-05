@@ -32,121 +32,121 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public class EventDeclaration : EntityDeclaration
-	{
-		public static readonly TokenRole EventKeywordRole = new TokenRole ("event");
-		
-		public override SymbolKind SymbolKind {
-			get { return SymbolKind.Event; }
-		}
+    public class EventDeclaration : EntityDeclaration
+    {
+        public static readonly TokenRole EventKeywordRole = new TokenRole ("event");
 
-		public CSharpTokenNode EventToken {
-			get { return GetChildByRole (EventKeywordRole); }
-		}
+        public override SymbolKind SymbolKind {
+            get { return SymbolKind.Event; }
+        }
 
-		public AstNodeCollection<VariableInitializer> Variables {
-			get { return GetChildrenByRole (Roles.Variable); }
-		}
-		
-		// Hide .Name and .NameToken from users; the actual field names
-		// are stored in the VariableInitializer.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public override string Name {
-			get { return string.Empty; }
-			set { throw new NotSupportedException(); }
-		}
-		
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public override Identifier NameToken {
-			get { return Identifier.Null; }
-			set { throw new NotSupportedException(); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitEventDeclaration (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitEventDeclaration (this);
-		}
+        public CSharpTokenNode EventToken {
+            get { return GetChildByRole (EventKeywordRole); }
+        }
 
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitEventDeclaration (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			EventDeclaration o = other as EventDeclaration;
-			return o != null && this.MatchAttributesAndModifiers(o, match)
-				&& this.ReturnType.DoMatch(o.ReturnType, match) && this.Variables.DoMatch(o.Variables, match);
-		}
-	}
-	
-	public class CustomEventDeclaration : EntityDeclaration
-	{
-		public static readonly TokenRole EventKeywordRole = new TokenRole ("event");
-		public static readonly TokenRole AddKeywordRole = new TokenRole ("add");
-		public static readonly TokenRole RemoveKeywordRole = new TokenRole ("remove");
-		
-		public static readonly Role<Accessor> AddAccessorRole = new Role<Accessor>("AddAccessor", Accessor.Null);
-		public static readonly Role<Accessor> RemoveAccessorRole = new Role<Accessor>("RemoveAccessor", Accessor.Null);
-		
-		public override SymbolKind SymbolKind {
-			get { return SymbolKind.Event; }
-		}
-		
-		/// <summary>
-		/// Gets/Sets the type reference of the interface that is explicitly implemented.
-		/// Null node if this member is not an explicit interface implementation.
-		/// </summary>
-		public AstType PrivateImplementationType {
-			get { return GetChildByRole (PrivateImplementationTypeRole); }
-			set { SetChildByRole (PrivateImplementationTypeRole, value); }
-		}
-		
-		public CSharpTokenNode LBraceToken {
-			get { return GetChildByRole (Roles.LBrace); }
-		}
-		
-		public Accessor AddAccessor {
-			get { return GetChildByRole (AddAccessorRole); }
-			set { SetChildByRole (AddAccessorRole, value); }
-		}
-		
-		public Accessor RemoveAccessor {
-			get { return GetChildByRole (RemoveAccessorRole); }
-			set { SetChildByRole (RemoveAccessorRole, value); }
-		}
-		
-		public CSharpTokenNode RBraceToken {
-			get { return GetChildByRole (Roles.RBrace); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitCustomEventDeclaration (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitCustomEventDeclaration (this);
-		}
+        public AstNodeCollection<VariableInitializer> Variables {
+            get { return GetChildrenByRole (Roles.Variable); }
+        }
 
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitCustomEventDeclaration (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			CustomEventDeclaration o = other as CustomEventDeclaration;
-			return o != null && MatchString(this.Name, o.Name)
-				&& this.MatchAttributesAndModifiers(o, match) && this.ReturnType.DoMatch(o.ReturnType, match)
-				&& this.PrivateImplementationType.DoMatch(o.PrivateImplementationType, match)
-				&& this.AddAccessor.DoMatch(o.AddAccessor, match) && this.RemoveAccessor.DoMatch(o.RemoveAccessor, match);
-		}
-	}
+        // Hide .Name and .NameToken from users; the actual field names
+        // are stored in the VariableInitializer.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string Name {
+            get { return string.Empty; }
+            set { throw new NotSupportedException(); }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override Identifier NameToken {
+            get { return Identifier.Null; }
+            set { throw new NotSupportedException(); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitEventDeclaration (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitEventDeclaration (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitEventDeclaration (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            EventDeclaration o = other as EventDeclaration;
+            return o != null && this.MatchAttributesAndModifiers(o, match)
+                && this.ReturnType.DoMatch(o.ReturnType, match) && this.Variables.DoMatch(o.Variables, match);
+        }
+    }
+
+    public class CustomEventDeclaration : EntityDeclaration
+    {
+        public static readonly TokenRole EventKeywordRole = new TokenRole ("event");
+        public static readonly TokenRole AddKeywordRole = new TokenRole ("add");
+        public static readonly TokenRole RemoveKeywordRole = new TokenRole ("remove");
+
+        public static readonly Role<Accessor> AddAccessorRole = new Role<Accessor>("AddAccessor", Accessor.Null);
+        public static readonly Role<Accessor> RemoveAccessorRole = new Role<Accessor>("RemoveAccessor", Accessor.Null);
+
+        public override SymbolKind SymbolKind {
+            get { return SymbolKind.Event; }
+        }
+
+        /// <summary>
+        /// Gets/Sets the type reference of the interface that is explicitly implemented.
+        /// Null node if this member is not an explicit interface implementation.
+        /// </summary>
+        public AstType PrivateImplementationType {
+            get { return GetChildByRole (PrivateImplementationTypeRole); }
+            set { SetChildByRole (PrivateImplementationTypeRole, value); }
+        }
+
+        public CSharpTokenNode LBraceToken {
+            get { return GetChildByRole (Roles.LBrace); }
+        }
+
+        public Accessor AddAccessor {
+            get { return GetChildByRole (AddAccessorRole); }
+            set { SetChildByRole (AddAccessorRole, value); }
+        }
+
+        public Accessor RemoveAccessor {
+            get { return GetChildByRole (RemoveAccessorRole); }
+            set { SetChildByRole (RemoveAccessorRole, value); }
+        }
+
+        public CSharpTokenNode RBraceToken {
+            get { return GetChildByRole (Roles.RBrace); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitCustomEventDeclaration (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitCustomEventDeclaration (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitCustomEventDeclaration (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            CustomEventDeclaration o = other as CustomEventDeclaration;
+            return o != null && MatchString(this.Name, o.Name)
+                && this.MatchAttributesAndModifiers(o, match) && this.ReturnType.DoMatch(o.ReturnType, match)
+                && this.PrivateImplementationType.DoMatch(o.PrivateImplementationType, match)
+                && this.AddAccessor.DoMatch(o.AddAccessor, match) && this.RemoveAccessor.DoMatch(o.RemoveAccessor, match);
+        }
+    }
 }

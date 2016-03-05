@@ -28,58 +28,58 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// fixed (Type Variables) EmbeddedStatement
-	/// </summary>
-	public class FixedStatement : Statement
-	{
-		public static readonly TokenRole FixedKeywordRole = new TokenRole ("fixed");
-		
-		public CSharpTokenNode FixedToken {
-			get { return GetChildByRole (FixedKeywordRole); }
-		}
-		
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
-		
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole (Roles.Type, value); }
-		}
-		
-		public AstNodeCollection<VariableInitializer> Variables {
-			get { return GetChildrenByRole (Roles.Variable); }
-		}
-		
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
-		
-		public Statement EmbeddedStatement {
-			get { return GetChildByRole (Roles.EmbeddedStatement); }
-			set { SetChildByRole (Roles.EmbeddedStatement, value); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitFixedStatement (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitFixedStatement (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitFixedStatement (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			FixedStatement o = other as FixedStatement;
-			return o != null && this.Type.DoMatch(o.Type, match) && this.Variables.DoMatch(o.Variables, match) && this.EmbeddedStatement.DoMatch(o.EmbeddedStatement, match);
-		}
-	}
+    /// <summary>
+    /// fixed (Type Variables) EmbeddedStatement
+    /// </summary>
+    public class FixedStatement : Statement
+    {
+        public static readonly TokenRole FixedKeywordRole = new TokenRole ("fixed");
+
+        public CSharpTokenNode FixedToken {
+            get { return GetChildByRole (FixedKeywordRole); }
+        }
+
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
+
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole (Roles.Type, value); }
+        }
+
+        public AstNodeCollection<VariableInitializer> Variables {
+            get { return GetChildrenByRole (Roles.Variable); }
+        }
+
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
+
+        public Statement EmbeddedStatement {
+            get { return GetChildByRole (Roles.EmbeddedStatement); }
+            set { SetChildByRole (Roles.EmbeddedStatement, value); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitFixedStatement (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitFixedStatement (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitFixedStatement (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            FixedStatement o = other as FixedStatement;
+            return o != null && this.Type.DoMatch(o.Type, match) && this.Variables.DoMatch(o.Variables, match) && this.EmbeddedStatement.DoMatch(o.EmbeddedStatement, match);
+        }
+    }
 }

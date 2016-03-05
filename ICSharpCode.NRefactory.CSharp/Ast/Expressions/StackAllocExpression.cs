@@ -1,6 +1,6 @@
 ﻿// 
 // StackAllocExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,54 +26,54 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// stackalloc Type[Count]
-	/// </summary>
-	public class StackAllocExpression : Expression
-	{
-		public readonly static TokenRole StackallocKeywordRole = new TokenRole ("stackalloc");
-		
-		public CSharpTokenNode StackAllocToken {
-			get { return GetChildByRole (StackallocKeywordRole); }
-		}
-		
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole(Roles.Type, value); }
-		}
-		
-		public CSharpTokenNode LBracketToken {
-			get { return GetChildByRole (Roles.LBracket); }
-		}
-		
-		public Expression CountExpression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole (Roles.Expression, value); }
-		}
-		
-		public CSharpTokenNode RBracketToken {
-			get { return GetChildByRole (Roles.RBracket); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitStackAllocExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitStackAllocExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitStackAllocExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			StackAllocExpression o = other as StackAllocExpression;
-			return o != null && this.Type.DoMatch(o.Type, match) && this.CountExpression.DoMatch(o.CountExpression, match);
-		}
-	}
+    /// <summary>
+    /// stackalloc Type[Count]
+    /// </summary>
+    public class StackAllocExpression : Expression
+    {
+        public readonly static TokenRole StackallocKeywordRole = new TokenRole ("stackalloc");
+
+        public CSharpTokenNode StackAllocToken {
+            get { return GetChildByRole (StackallocKeywordRole); }
+        }
+
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole(Roles.Type, value); }
+        }
+
+        public CSharpTokenNode LBracketToken {
+            get { return GetChildByRole (Roles.LBracket); }
+        }
+
+        public Expression CountExpression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole (Roles.Expression, value); }
+        }
+
+        public CSharpTokenNode RBracketToken {
+            get { return GetChildByRole (Roles.RBracket); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitStackAllocExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitStackAllocExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitStackAllocExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            StackAllocExpression o = other as StackAllocExpression;
+            return o != null && this.Type.DoMatch(o.Type, match) && this.CountExpression.DoMatch(o.CountExpression, match);
+        }
+    }
 }

@@ -30,23 +30,23 @@ using ICSharpCode.NRefactory.CSharp.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Resolver
 {
-	/// <summary>
-	/// Represents a namespace resolve result that's resolved using an alias.
-	/// </summary>
-	public class AliasNamespaceResolveResult : NamespaceResolveResult
-	{
-		/// <summary>
-		/// The alias used.
-		/// </summary>
-		public string Alias {
-			get;
-			private set;
-		}
-		
-		public AliasNamespaceResolveResult(string alias, NamespaceResolveResult underlyingResult) : base (underlyingResult.Namespace)
-		{
-			this.Alias = alias;
-		}
-	}
+    /// <summary>
+    /// Represents a namespace resolve result that's resolved using an alias.
+    /// </summary>
+    public class AliasNamespaceResolveResult : NamespaceResolveResult
+    {
+        /// <summary>
+        /// The alias used.
+        /// </summary>
+        public string Alias {
+            get;
+            private set;
+        }
+
+        public AliasNamespaceResolveResult(string alias, NamespaceResolveResult underlyingResult) : base (underlyingResult.Namespace)
+        {
+            this.Alias = alias;
+        }
+    }
 }
 

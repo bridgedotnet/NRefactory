@@ -19,208 +19,208 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.MonoCSharp {
 
-	//
-	// A common base class for Completing expressions, it
-	// is just a very simple ExpressionStatement
-	//
-	public abstract class CompletingExpression : ExpressionStatement
-	{
-		public static void AppendResults (List<string> results, string prefix, IEnumerable<string> names)
-		{
-			foreach (string name in names) {
-				if (name == null)
-					continue;
+    //
+    // A common base class for Completing expressions, it
+    // is just a very simple ExpressionStatement
+    //
+    public abstract class CompletingExpression : ExpressionStatement
+    {
+        public static void AppendResults (List<string> results, string prefix, IEnumerable<string> names)
+        {
+            foreach (string name in names) {
+                if (name == null)
+                    continue;
 
-				if (prefix != null && !name.StartsWith (prefix))
-					continue;
+                if (prefix != null && !name.StartsWith (prefix))
+                    continue;
 
-				if (results.Contains (name))
-					continue;
+                if (results.Contains (name))
+                    continue;
 
-				if (prefix != null)
-					results.Add (name.Substring (prefix.Length));
-				else
-					results.Add (name);
-			}
-		}
+                if (prefix != null)
+                    results.Add (name.Substring (prefix.Length));
+                else
+                    results.Add (name);
+            }
+        }
 
-		public override bool ContainsEmitWithAwait ()
-		{
-			return false;
-		}
+        public override bool ContainsEmitWithAwait ()
+        {
+            return false;
+        }
 
-		public override Expression CreateExpressionTree (ResolveContext ec)
-		{
-			return null;
-		}
+        public override Expression CreateExpressionTree (ResolveContext ec)
+        {
+            return null;
+        }
 
-		public override void EmitStatement (EmitContext ec)
-		{
-			// Do nothing
-		}
+        public override void EmitStatement (EmitContext ec)
+        {
+            // Do nothing
+        }
 
-		public override void Emit (EmitContext ec)
-		{
-			// Do nothing
-		}
-	}
-	
-	public class CompletionSimpleName : CompletingExpression {
-		public string Prefix;
-		
-		public CompletionSimpleName (string prefix, Location l)
-		{
-			this.loc = l;
-			this.Prefix = prefix;
-		}
-		
-		protected override Expression DoResolve (ResolveContext ec)
-		{
-			var results = new List<string> ();
+        public override void Emit (EmitContext ec)
+        {
+            // Do nothing
+        }
+    }
 
-			ec.CurrentMemberDefinition.GetCompletionStartingWith (Prefix, results);
+    public class CompletionSimpleName : CompletingExpression {
+        public string Prefix;
 
-			throw new CompletionResult (Prefix, results.Distinct ().Select (l => l.Substring (Prefix.Length)).ToArray ());
-		}
+        public CompletionSimpleName (string prefix, Location l)
+        {
+            this.loc = l;
+            this.Prefix = prefix;
+        }
 
-		protected override void CloneTo (CloneContext clonectx, Expression t)
-		{
-			// Nothing
-		}
-	}
-	
-	public class CompletionMemberAccess : CompletingExpression {
-		Expression expr;
-		string partial_name;
-		TypeArguments targs;
-		
-		public CompletionMemberAccess (Expression e, string partial_name, Location l)
-		{
-			this.expr = e;
-			this.loc = l;
-			this.partial_name = partial_name;
-		}
+        protected override Expression DoResolve (ResolveContext ec)
+        {
+            var results = new List<string> ();
 
-		public CompletionMemberAccess (Expression e, string partial_name, TypeArguments targs, Location l)
-		{
-			this.expr = e;
-			this.loc = l;
-			this.partial_name = partial_name;
-			this.targs = targs;
-		}
-		
-		protected override Expression DoResolve (ResolveContext rc)
-		{
-			var sn = expr as SimpleName;
-			const ResolveFlags flags = ResolveFlags.VariableOrValue | ResolveFlags.Type;
+            ec.CurrentMemberDefinition.GetCompletionStartingWith (Prefix, results);
 
-			if (sn != null) {
-				expr = sn.LookupNameExpression (rc, MemberLookupRestrictions.ReadAccess | MemberLookupRestrictions.ExactArity);
+            throw new CompletionResult (Prefix, results.Distinct ().Select (l => l.Substring (Prefix.Length)).ToArray ());
+        }
 
-				//
-				// Resolve expression which does have type set as we need expression type
-				// with disable flow analysis as we don't know whether left side expression
-				// is used as variable or type
-				//
-				if (expr is VariableReference || expr is ConstantExpr || expr is Linq.TransparentMemberAccess) {
-					expr = expr.Resolve (rc);
-				} else if (expr is TypeParameterExpr) {
-					expr.Error_UnexpectedKind (rc, flags, sn.Location);
-					expr = null;
-				}
-			} else {
-				expr = expr.Resolve (rc, flags);
-			}
+        protected override void CloneTo (CloneContext clonectx, Expression t)
+        {
+            // Nothing
+        }
+    }
 
-			if (expr == null)
-				return null;
+    public class CompletionMemberAccess : CompletingExpression {
+        Expression expr;
+        string partial_name;
+        TypeArguments targs;
 
-			TypeSpec expr_type = expr.Type;
-			if (expr_type.IsPointer || expr_type.Kind == MemberKind.Void || expr_type == InternalType.NullLiteral || expr_type == InternalType.AnonymousMethod) {
-				expr.Error_OperatorCannotBeApplied (rc, loc, ".", expr_type);
-				return null;
-			}
+        public CompletionMemberAccess (Expression e, string partial_name, Location l)
+        {
+            this.expr = e;
+            this.loc = l;
+            this.partial_name = partial_name;
+        }
 
-			if (targs != null) {
-				if (!targs.Resolve (rc, true))
-					return null;
-			}
+        public CompletionMemberAccess (Expression e, string partial_name, TypeArguments targs, Location l)
+        {
+            this.expr = e;
+            this.loc = l;
+            this.partial_name = partial_name;
+            this.targs = targs;
+        }
 
-			var results = new List<string> ();
-			var nexpr = expr as NamespaceExpression;
-			if (nexpr != null) {
-				string namespaced_partial;
+        protected override Expression DoResolve (ResolveContext rc)
+        {
+            var sn = expr as SimpleName;
+            const ResolveFlags flags = ResolveFlags.VariableOrValue | ResolveFlags.Type;
 
-				if (partial_name == null)
-					namespaced_partial = nexpr.Namespace.Name;
-				else
-					namespaced_partial = nexpr.Namespace.Name + "." + partial_name;
+            if (sn != null) {
+                expr = sn.LookupNameExpression (rc, MemberLookupRestrictions.ReadAccess | MemberLookupRestrictions.ExactArity);
 
-				rc.CurrentMemberDefinition.GetCompletionStartingWith (namespaced_partial, results);
-				if (partial_name != null)
-					results = results.Select (l => l.Substring (partial_name.Length)).ToList ();
-			} else {
-				var r = MemberCache.GetCompletitionMembers (rc, expr_type, partial_name).Select (l => l.Name);
-				AppendResults (results, partial_name, r);
-			}
+                //
+                // Resolve expression which does have type set as we need expression type
+                // with disable flow analysis as we don't know whether left side expression
+                // is used as variable or type
+                //
+                if (expr is VariableReference || expr is ConstantExpr || expr is Linq.TransparentMemberAccess) {
+                    expr = expr.Resolve (rc);
+                } else if (expr is TypeParameterExpr) {
+                    expr.Error_UnexpectedKind (rc, flags, sn.Location);
+                    expr = null;
+                }
+            } else {
+                expr = expr.Resolve (rc, flags);
+            }
 
-			throw new CompletionResult (partial_name == null ? "" : partial_name, results.Distinct ().ToArray ());
-		}
+            if (expr == null)
+                return null;
 
-		protected override void CloneTo (CloneContext clonectx, Expression t)
-		{
-			CompletionMemberAccess target = (CompletionMemberAccess) t;
+            TypeSpec expr_type = expr.Type;
+            if (expr_type.IsPointer || expr_type.Kind == MemberKind.Void || expr_type == InternalType.NullLiteral || expr_type == InternalType.AnonymousMethod) {
+                expr.Error_OperatorCannotBeApplied (rc, loc, ".", expr_type);
+                return null;
+            }
 
-			if (targs != null)
-				target.targs = targs.Clone ();
+            if (targs != null) {
+                if (!targs.Resolve (rc, true))
+                    return null;
+            }
 
-			target.expr = expr.Clone (clonectx);
-		}
-	}
+            var results = new List<string> ();
+            var nexpr = expr as NamespaceExpression;
+            if (nexpr != null) {
+                string namespaced_partial;
 
-	public class CompletionElementInitializer : CompletingExpression {
-		string partial_name;
-		
-		public CompletionElementInitializer (string partial_name, Location l)
-		{
-			this.partial_name = partial_name;
-			this.loc = l;
-		}
-		
-		protected override Expression DoResolve (ResolveContext ec)
-		{
-			var members = MemberCache.GetCompletitionMembers (ec, ec.CurrentInitializerVariable.Type, partial_name);
+                if (partial_name == null)
+                    namespaced_partial = nexpr.Namespace.Name;
+                else
+                    namespaced_partial = nexpr.Namespace.Name + "." + partial_name;
+
+                rc.CurrentMemberDefinition.GetCompletionStartingWith (namespaced_partial, results);
+                if (partial_name != null)
+                    results = results.Select (l => l.Substring (partial_name.Length)).ToList ();
+            } else {
+                var r = MemberCache.GetCompletitionMembers (rc, expr_type, partial_name).Select (l => l.Name);
+                AppendResults (results, partial_name, r);
+            }
+
+            throw new CompletionResult (partial_name == null ? "" : partial_name, results.Distinct ().ToArray ());
+        }
+
+        protected override void CloneTo (CloneContext clonectx, Expression t)
+        {
+            CompletionMemberAccess target = (CompletionMemberAccess) t;
+
+            if (targs != null)
+                target.targs = targs.Clone ();
+
+            target.expr = expr.Clone (clonectx);
+        }
+    }
+
+    public class CompletionElementInitializer : CompletingExpression {
+        string partial_name;
+
+        public CompletionElementInitializer (string partial_name, Location l)
+        {
+            this.partial_name = partial_name;
+            this.loc = l;
+        }
+
+        protected override Expression DoResolve (ResolveContext ec)
+        {
+            var members = MemberCache.GetCompletitionMembers (ec, ec.CurrentInitializerVariable.Type, partial_name);
 
 // TODO: Does this mean exact match only ?
-//			if (partial_name != null && results.Count > 0 && result [0] == "")
-//				throw new CompletionResult ("", new string [] { "=" });
+//            if (partial_name != null && results.Count > 0 && result [0] == "")
+//                throw new CompletionResult ("", new string [] { "=" });
 
-			var results = members.Where (l => (l.Kind & (MemberKind.Field | MemberKind.Property)) != 0).Select (l => l.Name).ToList ();
-			if (partial_name != null) {
-				var temp = new List<string> ();
-				AppendResults (temp, partial_name, results);
-				results = temp;
-			}
+            var results = members.Where (l => (l.Kind & (MemberKind.Field | MemberKind.Property)) != 0).Select (l => l.Name).ToList ();
+            if (partial_name != null) {
+                var temp = new List<string> ();
+                AppendResults (temp, partial_name, results);
+                results = temp;
+            }
 
-			throw new CompletionResult (partial_name == null ? "" : partial_name, results.Distinct ().ToArray ());
-		}
+            throw new CompletionResult (partial_name == null ? "" : partial_name, results.Distinct ().ToArray ());
+        }
 
-		protected override void CloneTo (CloneContext clonectx, Expression t)
-		{
-			// Nothing
-		}
-	}
+        protected override void CloneTo (CloneContext clonectx, Expression t)
+        {
+            // Nothing
+        }
+    }
 
-	public class EmptyCompletion : CompletingExpression
-	{
-		protected override void CloneTo (CloneContext clonectx, Expression target)
-		{
-		}
+    public class EmptyCompletion : CompletingExpression
+    {
+        protected override void CloneTo (CloneContext clonectx, Expression target)
+        {
+        }
 
-		protected override Expression DoResolve (ResolveContext rc)
-		{
-			throw new CompletionResult ("", new string [0]);
-		}
-	}
-	
+        protected override Expression DoResolve (ResolveContext rc)
+        {
+            throw new CompletionResult ("", new string [0]);
+        }
+    }
+
 }

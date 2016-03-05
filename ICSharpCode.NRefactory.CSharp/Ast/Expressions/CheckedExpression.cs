@@ -1,6 +1,6 @@
 ﻿// 
 // CheckedExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,58 +26,58 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// checked(Expression)
-	/// </summary>
-	public class CheckedExpression : Expression
-	{
-		public readonly static TokenRole CheckedKeywordRole = new TokenRole ("checked");
-		
-		public CSharpTokenNode CheckedToken {
-			get { return GetChildByRole (CheckedKeywordRole); }
-		}
-		
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
-		
-		public Expression Expression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole(Roles.Expression, value); }
-		}
-		
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
-		
-		public CheckedExpression ()
-		{
-		}
-		
-		public CheckedExpression (Expression expression)
-		{
-			AddChild (expression, Roles.Expression);
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitCheckedExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitCheckedExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitCheckedExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			CheckedExpression o = other as CheckedExpression;
-			return o != null && this.Expression.DoMatch(o.Expression, match);
-		}
-	}
+    /// <summary>
+    /// checked(Expression)
+    /// </summary>
+    public class CheckedExpression : Expression
+    {
+        public readonly static TokenRole CheckedKeywordRole = new TokenRole ("checked");
+
+        public CSharpTokenNode CheckedToken {
+            get { return GetChildByRole (CheckedKeywordRole); }
+        }
+
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
+
+        public Expression Expression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole(Roles.Expression, value); }
+        }
+
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
+
+        public CheckedExpression ()
+        {
+        }
+
+        public CheckedExpression (Expression expression)
+        {
+            AddChild (expression, Roles.Expression);
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitCheckedExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitCheckedExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitCheckedExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            CheckedExpression o = other as CheckedExpression;
+            return o != null && this.Expression.DoMatch(o.Expression, match);
+        }
+    }
 }

@@ -28,39 +28,39 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.Utils
 {
-	/// <summary>
-	/// Composite format string parser.
-	/// </summary>
-	/// <remarks>
-	/// Implements a complete parser for valid strings as well as
-	/// error reporting and best-effort parsing for invalid strings.
-	/// </remarks>		
-	public abstract class FormatStringSegmentBase : IFormatStringSegment
-	{
-		public FormatStringSegmentBase ()
-		{
-			Errors = new List<IFormatStringError> ();
-		}
+    /// <summary>
+    /// Composite format string parser.
+    /// </summary>
+    /// <remarks>
+    /// Implements a complete parser for valid strings as well as
+    /// error reporting and best-effort parsing for invalid strings.
+    /// </remarks>
+    public abstract class FormatStringSegmentBase : IFormatStringSegment
+    {
+        public FormatStringSegmentBase ()
+        {
+            Errors = new List<IFormatStringError> ();
+        }
 
-		#region IFormatStringSegment implementation
-		public int StartLocation { get; set; }
+        #region IFormatStringSegment implementation
+        public int StartLocation { get; set; }
 
-		public int EndLocation { get; set; }
+        public int EndLocation { get; set; }
 
-		public bool HasErrors {
-			get {
-				return Errors.Any ();
-			}
-		}
+        public bool HasErrors {
+            get {
+                return Errors.Any ();
+            }
+        }
 
-		public IList<IFormatStringError> Errors { get; set; }
+        public IList<IFormatStringError> Errors { get; set; }
 
-		IEnumerable<IFormatStringError> IFormatStringSegment.Errors {
-			get {
-				return Errors;
-			}
-		}
-		#endregion
-	}
+        IEnumerable<IFormatStringError> IFormatStringSegment.Errors {
+            get {
+                return Errors;
+            }
+        }
+        #endregion
+    }
 
 }

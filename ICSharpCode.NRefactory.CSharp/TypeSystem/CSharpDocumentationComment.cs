@@ -25,39 +25,39 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.TypeSystem
 {
-	/// <summary>
-	/// DocumentationComment with C# cref lookup.
-	/// </summary>
-	sealed class CSharpDocumentationComment : DocumentationComment
-	{
-		public CSharpDocumentationComment(ITextSource xmlDoc, ITypeResolveContext context) : base(xmlDoc, context)
-		{
-		}
-		
-		public override IEntity ResolveCref(string cref)
-		{
-			if (cref.Length > 2 && cref[1] == ':') {
-				// resolve ID string
-				return base.ResolveCref(cref);
-			}
-			var documentationReference = new CSharpParser().ParseDocumentationReference(cref);
-			var csharpContext = context as CSharpTypeResolveContext;
-			CSharpResolver resolver;
-			if (csharpContext != null) {
-				resolver = new CSharpResolver(csharpContext);
-			} else {
-				resolver = new CSharpResolver(context.Compilation);
-			}
-			var astResolver = new CSharpAstResolver(resolver, documentationReference);
-			var rr = astResolver.Resolve(documentationReference);
-			
-			MemberResolveResult mrr = rr as MemberResolveResult;
-			if (mrr != null)
-				return mrr.Member;
-			TypeResolveResult trr = rr as TypeResolveResult;
-			if (trr != null)
-				return trr.Type.GetDefinition();
-			return null;
-		}
-	}
+    /// <summary>
+    /// DocumentationComment with C# cref lookup.
+    /// </summary>
+    sealed class CSharpDocumentationComment : DocumentationComment
+    {
+        public CSharpDocumentationComment(ITextSource xmlDoc, ITypeResolveContext context) : base(xmlDoc, context)
+        {
+        }
+
+        public override IEntity ResolveCref(string cref)
+        {
+            if (cref.Length > 2 && cref[1] == ':') {
+                // resolve ID string
+                return base.ResolveCref(cref);
+            }
+            var documentationReference = new CSharpParser().ParseDocumentationReference(cref);
+            var csharpContext = context as CSharpTypeResolveContext;
+            CSharpResolver resolver;
+            if (csharpContext != null) {
+                resolver = new CSharpResolver(csharpContext);
+            } else {
+                resolver = new CSharpResolver(context.Compilation);
+            }
+            var astResolver = new CSharpAstResolver(resolver, documentationReference);
+            var rr = astResolver.Resolve(documentationReference);
+
+            MemberResolveResult mrr = rr as MemberResolveResult;
+            if (mrr != null)
+                return mrr.Member;
+            TypeResolveResult trr = rr as TypeResolveResult;
+            if (trr != null)
+                return trr.Type.GetDefinition();
+            return null;
+        }
+    }
 }

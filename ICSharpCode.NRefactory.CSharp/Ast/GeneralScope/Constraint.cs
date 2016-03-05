@@ -28,58 +28,58 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// where TypeParameter : BaseTypes
-	/// </summary>
-	/// <remarks>
-	/// new(), struct and class constraints are represented using a PrimitiveType "new", "struct" or "class"
-	/// </remarks>
-	public class Constraint : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
+    /// <summary>
+    /// where TypeParameter : BaseTypes
+    /// </summary>
+    /// <remarks>
+    /// new(), struct and class constraints are represented using a PrimitiveType "new", "struct" or "class"
+    /// </remarks>
+    public class Constraint : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-		public CSharpTokenNode WhereKeyword {
-			get { return GetChildByRole (Roles.WhereKeyword); }
-		}
+        public CSharpTokenNode WhereKeyword {
+            get { return GetChildByRole (Roles.WhereKeyword); }
+        }
 
-		public SimpleType TypeParameter {
-			get {
-				return GetChildByRole (Roles.ConstraintTypeParameter);
-			}
-			set {
-				SetChildByRole(Roles.ConstraintTypeParameter, value);
-			}
-		}
-		
-		public AstNodeCollection<AstType> BaseTypes {
-			get {
-				return GetChildrenByRole(Roles.BaseType); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitConstraint (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitConstraint (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitConstraint (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			Constraint o = other as Constraint;
-			return o != null && this.TypeParameter.DoMatch (o.TypeParameter, match) && this.BaseTypes.DoMatch(o.BaseTypes, match);
-		}
-	}
+        public SimpleType TypeParameter {
+            get {
+                return GetChildByRole (Roles.ConstraintTypeParameter);
+            }
+            set {
+                SetChildByRole(Roles.ConstraintTypeParameter, value);
+            }
+        }
+
+        public AstNodeCollection<AstType> BaseTypes {
+            get {
+                return GetChildrenByRole(Roles.BaseType); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitConstraint (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitConstraint (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitConstraint (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            Constraint o = other as Constraint;
+            return o != null && this.TypeParameter.DoMatch (o.TypeParameter, match) && this.BaseTypes.DoMatch(o.BaseTypes, match);
+        }
+    }
 }
 

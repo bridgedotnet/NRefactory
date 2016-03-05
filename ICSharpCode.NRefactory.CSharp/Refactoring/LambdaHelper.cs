@@ -31,21 +31,21 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	public class LambdaHelper
-	{
-		public static IType GetLambdaReturnType(RefactoringContext context, LambdaExpression lambda)
-		{
-			LambdaResolveResult rr = context.Resolve(lambda) as LambdaResolveResult;
-			if (rr == null)
-				return SpecialType.UnknownType;
-			if (rr.IsAsync) {
-				// Unpack Task<T>
-				if (rr.ReturnType.IsKnownType(KnownTypeCode.Task))
-					return context.Compilation.FindType(KnownTypeCode.Void);
-				else if (rr.ReturnType.IsKnownType(KnownTypeCode.TaskOfT) && rr.ReturnType.IsParameterized)
-					return rr.ReturnType.TypeArguments[0];
-			}
-			return rr.ReturnType;
-		}
-	}
+    public class LambdaHelper
+    {
+        public static IType GetLambdaReturnType(RefactoringContext context, LambdaExpression lambda)
+        {
+            LambdaResolveResult rr = context.Resolve(lambda) as LambdaResolveResult;
+            if (rr == null)
+                return SpecialType.UnknownType;
+            if (rr.IsAsync) {
+                // Unpack Task<T>
+                if (rr.ReturnType.IsKnownType(KnownTypeCode.Task))
+                    return context.Compilation.FindType(KnownTypeCode.Void);
+                else if (rr.ReturnType.IsKnownType(KnownTypeCode.TaskOfT) && rr.ReturnType.IsParameterized)
+                    return rr.ReturnType.TypeArguments[0];
+            }
+            return rr.ReturnType;
+        }
+    }
 }

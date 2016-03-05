@@ -26,54 +26,54 @@
 
 namespace ICSharpCode.NRefactory.Utils
 {
-	public class TextSegment : FormatStringSegmentBase
-	{
-		public TextSegment (string text, int startLocation = 0, int? endLocation = null)
-		{
-			Text = text;
-			StartLocation = startLocation;
-			EndLocation = endLocation ?? startLocation + text.Length;
-		}
+    public class TextSegment : FormatStringSegmentBase
+    {
+        public TextSegment (string text, int startLocation = 0, int? endLocation = null)
+        {
+            Text = text;
+            StartLocation = startLocation;
+            EndLocation = endLocation ?? startLocation + text.Length;
+        }
 
-		public string Text { get; set; }
+        public string Text { get; set; }
 
-		#region Equality
-		public override bool Equals (object obj)
-		{
-			if (obj == null)
-				return false;
-			if (obj.GetType () != typeof(TextSegment))
-				return false;
-			var other = (TextSegment)obj;
-			
-			return Equals (Text, other.Text);
-		}
-		
-		public bool Equals (TextSegment other)
-		{
-			if (other == null)
-				return false;
-			
-			return Equals (Text, other.Text) &&
-				StartLocation == other.StartLocation &&
-				EndLocation == other.EndLocation;
-		}
-		
-		public override int GetHashCode ()
-		{
-			unchecked {
-				int hash = 23;
-				hash = hash * 37 + Text.GetHashCode ();
-				hash = hash * 37 + StartLocation.GetHashCode ();
-				hash = hash * 37 + EndLocation.GetHashCode ();
-				return hash;
-			}
-		}
-		#endregion
+        #region Equality
+        public override bool Equals (object obj)
+        {
+            if (obj == null)
+                return false;
+            if (obj.GetType () != typeof(TextSegment))
+                return false;
+            var other = (TextSegment)obj;
 
-		public override string ToString ()
-		{
-			return string.Format ("[TextSegment: Text={0}, StartLocation={1}, EndLocation={2}]", Text, StartLocation, EndLocation);
-		}
-	}
+            return Equals (Text, other.Text);
+        }
+
+        public bool Equals (TextSegment other)
+        {
+            if (other == null)
+                return false;
+
+            return Equals (Text, other.Text) &&
+                StartLocation == other.StartLocation &&
+                EndLocation == other.EndLocation;
+        }
+
+        public override int GetHashCode ()
+        {
+            unchecked {
+                int hash = 23;
+                hash = hash * 37 + Text.GetHashCode ();
+                hash = hash * 37 + StartLocation.GetHashCode ();
+                hash = hash * 37 + EndLocation.GetHashCode ();
+                return hash;
+            }
+        }
+        #endregion
+
+        public override string ToString ()
+        {
+            return string.Format ("[TextSegment: Text={0}, StartLocation={1}, EndLocation={2}]", Text, StartLocation, EndLocation);
+        }
+    }
 }

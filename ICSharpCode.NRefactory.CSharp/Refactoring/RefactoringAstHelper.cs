@@ -22,28 +22,28 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	/// <summary>
-	/// Helper methods for constructing ASTs for refactoring.
-	/// These helpers work with frozen ASTs, i.e. they clone input nodes.
-	/// </summary>
-	public class RefactoringAstHelper
-	{
-		/// <summary>
-		/// Removes the target from a member reference while preserving the identifier and type arguments.
-		/// </summary>
-		public static IdentifierExpression RemoveTarget(MemberReferenceExpression mre)
-		{
-			IdentifierExpression ident = new IdentifierExpression(mre.MemberName);
-			ident.TypeArguments.AddRange(mre.TypeArguments.Select(t => t.Clone()));
-			return ident;
-		}
-		
-		/// <summary>
-		/// Removes the target from a member reference while preserving the identifier and type arguments.
-		/// </summary>
-		public static SimpleType RemoveTarget(MemberType memberType)
-		{
-			return new SimpleType(memberType.MemberName, memberType.TypeArguments.Select(t => t.Clone()));
-		}
-	}
+    /// <summary>
+    /// Helper methods for constructing ASTs for refactoring.
+    /// These helpers work with frozen ASTs, i.e. they clone input nodes.
+    /// </summary>
+    public class RefactoringAstHelper
+    {
+        /// <summary>
+        /// Removes the target from a member reference while preserving the identifier and type arguments.
+        /// </summary>
+        public static IdentifierExpression RemoveTarget(MemberReferenceExpression mre)
+        {
+            IdentifierExpression ident = new IdentifierExpression(mre.MemberName);
+            ident.TypeArguments.AddRange(mre.TypeArguments.Select(t => t.Clone()));
+            return ident;
+        }
+
+        /// <summary>
+        /// Removes the target from a member reference while preserving the identifier and type arguments.
+        /// </summary>
+        public static SimpleType RemoveTarget(MemberType memberType)
+        {
+            return new SimpleType(memberType.MemberName, memberType.TypeArguments.Select(t => t.Clone()));
+        }
+    }
 }

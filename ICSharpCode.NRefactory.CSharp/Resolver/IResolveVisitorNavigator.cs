@@ -22,82 +22,82 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Resolver
 {
-	/// <summary>
-	/// Allows controlling which nodes are resolved by the resolve visitor.
-	/// </summary>
-	/// <seealso cref="ResolveVisitor"/>
-	public interface IResolveVisitorNavigator
-	{
-		/// <summary>
-		/// Asks the navigator whether to scan, skip, or resolve a node.
-		/// </summary>
-		ResolveVisitorNavigationMode Scan(AstNode node);
-		
-		/// <summary>
-		/// Notifies the navigator that a node was resolved.
-		/// </summary>
-		/// <param name="node">The node that was resolved</param>
-		/// <param name="result">Resolve result</param>
-		void Resolved(AstNode node, ResolveResult result);
-		
-		/// <summary>
-		/// Notifies the navigator that an implicit conversion was applied.
-		/// </summary>
-		/// <param name="expression">The expression that was resolved.</param>
-		/// <param name="result">The resolve result of the expression.</param>
-		/// <param name="conversion">The conversion applied to the expressed.</param>
-		/// <param name="targetType">The target type of the conversion.</param>
-		void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType);
-	}
-	
-	/// <summary>
-	/// Represents the operation mode of the resolve visitor.
-	/// </summary>
-	/// <seealso cref="ResolveVisitor"/>
-	public enum ResolveVisitorNavigationMode
-	{
-		/// <summary>
-		/// Scan into the children of the current node, without resolving the current node.
-		/// </summary>
-		Scan,
-		/// <summary>
-		/// Skip the current node - do not scan into it; do not resolve it.
-		/// </summary>
-		Skip,
-		/// <summary>
-		/// Resolve the current node.
-		/// Subnodes which are not required for resolving the current node
-		/// will ask the navigator again whether they should be resolved.
-		/// </summary>
-		Resolve
-	}
-	
-	sealed class ConstantModeResolveVisitorNavigator : IResolveVisitorNavigator
-	{
-		readonly ResolveVisitorNavigationMode mode;
-		readonly IResolveVisitorNavigator targetForResolveCalls;
-		
-		public ConstantModeResolveVisitorNavigator(ResolveVisitorNavigationMode mode, IResolveVisitorNavigator targetForResolveCalls)
-		{
-			this.mode = mode;
-			this.targetForResolveCalls = targetForResolveCalls;
-		}
-		
-		ResolveVisitorNavigationMode IResolveVisitorNavigator.Scan(AstNode node)
-		{
-			return mode;
-		}
-		
-		void IResolveVisitorNavigator.Resolved(AstNode node, ResolveResult result)
-		{
-			if (targetForResolveCalls != null)
-				targetForResolveCalls.Resolved(node, result);
-		}
-		
-		void IResolveVisitorNavigator.ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
-		{
-			if (targetForResolveCalls != null)
-				targetForResolveCalls.ProcessConversion(expression, result, conversion, targetType);
-		}
-	}
+    /// <summary>
+    /// Allows controlling which nodes are resolved by the resolve visitor.
+    /// </summary>
+    /// <seealso cref="ResolveVisitor"/>
+    public interface IResolveVisitorNavigator
+    {
+        /// <summary>
+        /// Asks the navigator whether to scan, skip, or resolve a node.
+        /// </summary>
+        ResolveVisitorNavigationMode Scan(AstNode node);
+
+        /// <summary>
+        /// Notifies the navigator that a node was resolved.
+        /// </summary>
+        /// <param name="node">The node that was resolved</param>
+        /// <param name="result">Resolve result</param>
+        void Resolved(AstNode node, ResolveResult result);
+
+        /// <summary>
+        /// Notifies the navigator that an implicit conversion was applied.
+        /// </summary>
+        /// <param name="expression">The expression that was resolved.</param>
+        /// <param name="result">The resolve result of the expression.</param>
+        /// <param name="conversion">The conversion applied to the expressed.</param>
+        /// <param name="targetType">The target type of the conversion.</param>
+        void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType);
+    }
+
+    /// <summary>
+    /// Represents the operation mode of the resolve visitor.
+    /// </summary>
+    /// <seealso cref="ResolveVisitor"/>
+    public enum ResolveVisitorNavigationMode
+    {
+        /// <summary>
+        /// Scan into the children of the current node, without resolving the current node.
+        /// </summary>
+        Scan,
+        /// <summary>
+        /// Skip the current node - do not scan into it; do not resolve it.
+        /// </summary>
+        Skip,
+        /// <summary>
+        /// Resolve the current node.
+        /// Subnodes which are not required for resolving the current node
+        /// will ask the navigator again whether they should be resolved.
+        /// </summary>
+        Resolve
+    }
+
+    sealed class ConstantModeResolveVisitorNavigator : IResolveVisitorNavigator
+    {
+        readonly ResolveVisitorNavigationMode mode;
+        readonly IResolveVisitorNavigator targetForResolveCalls;
+
+        public ConstantModeResolveVisitorNavigator(ResolveVisitorNavigationMode mode, IResolveVisitorNavigator targetForResolveCalls)
+        {
+            this.mode = mode;
+            this.targetForResolveCalls = targetForResolveCalls;
+        }
+
+        ResolveVisitorNavigationMode IResolveVisitorNavigator.Scan(AstNode node)
+        {
+            return mode;
+        }
+
+        void IResolveVisitorNavigator.Resolved(AstNode node, ResolveResult result)
+        {
+            if (targetForResolveCalls != null)
+                targetForResolveCalls.Resolved(node, result);
+        }
+
+        void IResolveVisitorNavigator.ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
+        {
+            if (targetForResolveCalls != null)
+                targetForResolveCalls.ProcessConversion(expression, result, conversion, targetType);
+        }
+    }
 }

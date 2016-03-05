@@ -28,81 +28,81 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	///     The base interface for all indent engines.
-	/// </summary>
-	public interface IDocumentIndentEngine : ICloneable
-	{
-		/// <summary>
-		///     A reference to the document that's parsed by the engine.
-		/// </summary>
-		IDocument Document { get; }
+    /// <summary>
+    ///     The base interface for all indent engines.
+    /// </summary>
+    public interface IDocumentIndentEngine : ICloneable
+    {
+        /// <summary>
+        ///     A reference to the document that's parsed by the engine.
+        /// </summary>
+        IDocument Document { get; }
 
-		/// <summary>
-		///     The indentation string of the current line.
-		/// </summary>
-		string ThisLineIndent { get; }
+        /// <summary>
+        ///     The indentation string of the current line.
+        /// </summary>
+        string ThisLineIndent { get; }
 
-		/// <summary>
-		///     The indentation string of the next line.
-		/// </summary>
-		string NextLineIndent { get; }
+        /// <summary>
+        ///     The indentation string of the next line.
+        /// </summary>
+        string NextLineIndent { get; }
 
-		/// <summary>
-		///     The indent string on the beginning of the current line.
-		/// </summary>
-		string CurrentIndent { get; }
+        /// <summary>
+        ///     The indent string on the beginning of the current line.
+        /// </summary>
+        string CurrentIndent { get; }
 
-		/// <summary>
-		///     True if the current line needs to be reindented.
-		/// </summary>
-		bool NeedsReindent { get; }
+        /// <summary>
+        ///     True if the current line needs to be reindented.
+        /// </summary>
+        bool NeedsReindent { get; }
 
-		/// <summary>
-		///     The current offset of the engine.
-		/// </summary>
-		int Offset { get; }
+        /// <summary>
+        ///     The current offset of the engine.
+        /// </summary>
+        int Offset { get; }
 
-		/// <summary>
-		///     The current location of the engine.
-		/// </summary>
-		TextLocation Location { get; }
+        /// <summary>
+        ///     The current location of the engine.
+        /// </summary>
+        TextLocation Location { get; }
 
-		/// <summary>
-		///     If this is true, the engine should try to adjust its indent 
-		///     levels to manual user's corrections, even if they are wrong.
-		/// </summary>
-		bool EnableCustomIndentLevels { get; set; }
+        /// <summary>
+        ///     If this is true, the engine should try to adjust its indent 
+        ///     levels to manual user's corrections, even if they are wrong.
+        /// </summary>
+        bool EnableCustomIndentLevels { get; set; }
 
-		/// <summary>
-		///     Pushes a new char into the engine which calculates the new
-		///     indentation levels.
-		/// </summary>
-		/// <param name="ch">
-		///     A new character.
-		/// </param>
-		void Push(char ch);
+        /// <summary>
+        ///     Pushes a new char into the engine which calculates the new
+        ///     indentation levels.
+        /// </summary>
+        /// <param name="ch">
+        ///     A new character.
+        /// </param>
+        void Push(char ch);
 
-		/// <summary>
-		///     Resets the engine.
-		/// </summary>
-		void Reset();
+        /// <summary>
+        ///     Resets the engine.
+        /// </summary>
+        void Reset();
 
-		/// <summary>
-		///     Updates the engine to the given offset.
-		/// </summary>
-		/// <param name="offset">
-		///     Valid offset in <see cref="Document"/>.
-		/// </param>
-		void Update(int offset);
+        /// <summary>
+        ///     Updates the engine to the given offset.
+        /// </summary>
+        /// <param name="offset">
+        ///     Valid offset in <see cref="Document"/>.
+        /// </param>
+        void Update(int offset);
 
-		/// <summary>
-		///     Clones the engine and preserves the current state.
-		/// </summary>
-		/// <returns>
-		///     An indentical clone which can operate without interference
-		///     with this engine.
-		/// </returns>
-		new IDocumentIndentEngine Clone();
-	}
+        /// <summary>
+        ///     Clones the engine and preserves the current state.
+        /// </summary>
+        /// <returns>
+        ///     An indentical clone which can operate without interference
+        ///     with this engine.
+        /// </returns>
+        new IDocumentIndentEngine Clone();
+    }
 }

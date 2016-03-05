@@ -26,43 +26,43 @@
 
 namespace ICSharpCode.NRefactory.Utils
 {
-	public interface IFormatStringError
-	{
-		int StartLocation { get; }
+    public interface IFormatStringError
+    {
+        int StartLocation { get; }
 
-		int EndLocation { get; }
+        int EndLocation { get; }
 
-		string Message { get; }
+        string Message { get; }
 
-		string OriginalText { get; }
+        string OriginalText { get; }
 
-		string SuggestedReplacementText { get; }
-	}
+        string SuggestedReplacementText { get; }
+    }
 
-	public class DefaultFormatStringError : IFormatStringError
-	{
-		public DefaultFormatStringError()
-		{
-			Message = "";
-			OriginalText = "";
-			SuggestedReplacementText = "";
-		}
+    public class DefaultFormatStringError : IFormatStringError
+    {
+        public DefaultFormatStringError()
+        {
+            Message = "";
+            OriginalText = "";
+            SuggestedReplacementText = "";
+        }
 
-		#region IFormatStringError implementation
-		public int StartLocation { get; set; }
-		
-		public int EndLocation { get; set; }
-		
-		public string Message { get; set; }
-		
-		public string OriginalText { get; set; }
-		
-		public string SuggestedReplacementText { get; set; }
-		#endregion
+        #region IFormatStringError implementation
+        public int StartLocation { get; set; }
 
-		public override string ToString ()
-		{
-			return string.Format ("[DefaultFormatStringError: StartLocation={0}, EndLocation={1}, Message={2}, OriginalText={3}, SuggestedReplacementText={4}]", StartLocation, EndLocation, Message, OriginalText, SuggestedReplacementText);
-		}
-	}
+        public int EndLocation { get; set; }
+
+        public string Message { get; set; }
+
+        public string OriginalText { get; set; }
+
+        public string SuggestedReplacementText { get; set; }
+        #endregion
+
+        public override string ToString ()
+        {
+            return string.Format ("[DefaultFormatStringError: StartLocation={0}, EndLocation={1}, Message={2}, OriginalText={3}, SuggestedReplacementText={4}]", StartLocation, EndLocation, Message, OriginalText, SuggestedReplacementText);
+        }
+    }
 }

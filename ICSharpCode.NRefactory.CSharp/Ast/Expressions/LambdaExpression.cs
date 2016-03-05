@@ -28,62 +28,62 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// [async] Parameters => Body
-	/// </summary>
-	public class LambdaExpression : Expression
-	{
-		public readonly static TokenRole AsyncModifierRole = new TokenRole ("async");
-		public readonly static TokenRole ArrowRole = new TokenRole ("=>");
-		public static readonly Role<AstNode> BodyRole = new Role<AstNode>("Body", AstNode.Null);
-		
-		bool isAsync;
-		
-		public bool IsAsync {
-			get { return isAsync; }
-			set { ThrowIfFrozen(); isAsync = value; }
-		}
-		
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
+    /// <summary>
+    /// [async] Parameters => Body
+    /// </summary>
+    public class LambdaExpression : Expression
+    {
+        public readonly static TokenRole AsyncModifierRole = new TokenRole ("async");
+        public readonly static TokenRole ArrowRole = new TokenRole ("=>");
+        public static readonly Role<AstNode> BodyRole = new Role<AstNode>("Body", AstNode.Null);
 
-		public AstNodeCollection<ParameterDeclaration> Parameters {
-			get { return GetChildrenByRole (Roles.Parameter); }
-		}
-		
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
+        bool isAsync;
 
-		public CSharpTokenNode ArrowToken {
-			get { return GetChildByRole (ArrowRole); }
-		}
-		
-		public AstNode Body {
-			get { return GetChildByRole (BodyRole); }
-			set { SetChildByRole (BodyRole, value); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitLambdaExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitLambdaExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitLambdaExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			LambdaExpression o = other as LambdaExpression;
-			return o != null && this.IsAsync == o.IsAsync && this.Parameters.DoMatch(o.Parameters, match) && this.Body.DoMatch(o.Body, match);
-		}
-	}
+        public bool IsAsync {
+            get { return isAsync; }
+            set { ThrowIfFrozen(); isAsync = value; }
+        }
+
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
+
+        public AstNodeCollection<ParameterDeclaration> Parameters {
+            get { return GetChildrenByRole (Roles.Parameter); }
+        }
+
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
+
+        public CSharpTokenNode ArrowToken {
+            get { return GetChildByRole (ArrowRole); }
+        }
+
+        public AstNode Body {
+            get { return GetChildByRole (BodyRole); }
+            set { SetChildByRole (BodyRole, value); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitLambdaExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitLambdaExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitLambdaExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            LambdaExpression o = other as LambdaExpression;
+            return o != null && this.IsAsync == o.IsAsync && this.Parameters.DoMatch(o.Parameters, match) && this.Body.DoMatch(o.Body, match);
+        }
+    }
 }

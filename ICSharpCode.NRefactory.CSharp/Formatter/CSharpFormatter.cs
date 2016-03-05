@@ -33,127 +33,127 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public enum FormattingMode {
-		OnTheFly,
-		Intrusive
-	}
+    public enum FormattingMode {
+        OnTheFly,
+        Intrusive
+    }
 
-	/// <summary>
-	/// The C# Formatter generates a set of text replace actions to format a region in a C# document.
-	/// </summary>
-	public class CSharpFormatter
-	{
-		readonly CSharpFormattingOptions policy;
-		readonly TextEditorOptions options;
+    /// <summary>
+    /// The C# Formatter generates a set of text replace actions to format a region in a C# document.
+    /// </summary>
+    public class CSharpFormatter
+    {
+        readonly CSharpFormattingOptions policy;
+        readonly TextEditorOptions options;
 
-		/// <summary>
-		/// Gets the formatting policy the formatter uses.
-		/// </summary>
-		public CSharpFormattingOptions Policy {
-			get {
-				return policy;
-			}
-		}
+        /// <summary>
+        /// Gets the formatting policy the formatter uses.
+        /// </summary>
+        public CSharpFormattingOptions Policy {
+            get {
+                return policy;
+            }
+        }
 
-		/// <summary>
-		/// Gets the text editor options the formatter uses.
-		/// Note: If none was specified TextEditorOptions.Default gets used.
-		/// </summary>
-		public TextEditorOptions TextEditorOptions {
-			get {
-				return options;
-			}
-		}
+        /// <summary>
+        /// Gets the text editor options the formatter uses.
+        /// Note: If none was specified TextEditorOptions.Default gets used.
+        /// </summary>
+        public TextEditorOptions TextEditorOptions {
+            get {
+                return options;
+            }
+        }
 
-		List<DomRegion> formattingRegions = new List<DomRegion> ();
-		internal TextLocation lastFormattingLocation = new TextLocation(int.MaxValue, int.MaxValue);
+        List<DomRegion> formattingRegions = new List<DomRegion> ();
+        internal TextLocation lastFormattingLocation = new TextLocation(int.MaxValue, int.MaxValue);
 
-		/// <summary>
-		/// Gets the formatting regions. NOTE: Will get changed to IReadOnlyList.
-		/// </summary>
-		public IList<DomRegion> FormattingRegions {
-			get {
-				return formattingRegions;
-			}
-		}
+        /// <summary>
+        /// Gets the formatting regions. NOTE: Will get changed to IReadOnlyList.
+        /// </summary>
+        public IList<DomRegion> FormattingRegions {
+            get {
+                return formattingRegions;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the formatting mode. For on the fly formatting a lightweight formatting mode
-		/// gives better results.
-		/// </summary>
-		public FormattingMode FormattingMode {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the formatting mode. For on the fly formatting a lightweight formatting mode
+        /// gives better results.
+        /// </summary>
+        public FormattingMode FormattingMode {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.CSharp.CSharpFormatter"/> class.
-		/// </summary>
-		/// <param name="policy">The formatting policy to use.</param>
-		/// <param name="options">The text editor options (optional). Default is: TextEditorOptions.Default</param>
-		public CSharpFormatter(CSharpFormattingOptions policy, TextEditorOptions options = null)
-		{
-			if (policy == null)
-				throw new ArgumentNullException("policy");
-			this.policy = policy;
-			this.options = options ?? TextEditorOptions.Default;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ICSharpCode.NRefactory.CSharp.CSharpFormatter"/> class.
+        /// </summary>
+        /// <param name="policy">The formatting policy to use.</param>
+        /// <param name="options">The text editor options (optional). Default is: TextEditorOptions.Default</param>
+        public CSharpFormatter(CSharpFormattingOptions policy, TextEditorOptions options = null)
+        {
+            if (policy == null)
+                throw new ArgumentNullException("policy");
+            this.policy = policy;
+            this.options = options ?? TextEditorOptions.Default;
+        }
 
-		/// <summary>
-		/// Format the specified document and gives back the formatted text as result.
-		/// </summary>
-		public string Format(IDocument document)
-		{
-			return InternalFormat (new StringBuilderDocument (document.Text));
-		}
+        /// <summary>
+        /// Format the specified document and gives back the formatted text as result.
+        /// </summary>
+        public string Format(IDocument document)
+        {
+            return InternalFormat (new StringBuilderDocument (document.Text));
+        }
 
-		/// <summary>
-		/// Format the specified text and gives back the formatted text as result.
-		/// </summary>
-		public string Format(string text)
-		{
-			return InternalFormat (new StringBuilderDocument (text));
-		}
+        /// <summary>
+        /// Format the specified text and gives back the formatted text as result.
+        /// </summary>
+        public string Format(string text)
+        {
+            return InternalFormat (new StringBuilderDocument (text));
+        }
 
-		string InternalFormat(IDocument document)
-		{
-			var syntaxTree = SyntaxTree.Parse (document, document.FileName);
-			var changes = AnalyzeFormatting(document, syntaxTree);
-			changes.ApplyChanges();
-			return document.Text;
-		}
+        string InternalFormat(IDocument document)
+        {
+            var syntaxTree = SyntaxTree.Parse (document, document.FileName);
+            var changes = AnalyzeFormatting(document, syntaxTree);
+            changes.ApplyChanges();
+            return document.Text;
+        }
 
-		/// <summary>
-		/// Analyzes the formatting of a given document and syntax tree.
-		/// </summary>
-		/// <param name="document">Document.</param>
-		/// <param name="syntaxTree">Syntax tree.</param>
-		/// <param name="token">The cancellation token.</param>
-		public FormattingChanges AnalyzeFormatting(IDocument document, SyntaxTree syntaxTree, CancellationToken token = default (CancellationToken))
-		{
-			if (document == null)
-				throw new ArgumentNullException("document");
-			if (syntaxTree == null)
-				throw new ArgumentNullException("syntaxTree");
-			var result = new FormattingChanges(document);
-			var visitor = new FormattingVisitor(this, document, result, token);
-			syntaxTree.AcceptVisitor(visitor);
-			return result;
-		}
+        /// <summary>
+        /// Analyzes the formatting of a given document and syntax tree.
+        /// </summary>
+        /// <param name="document">Document.</param>
+        /// <param name="syntaxTree">Syntax tree.</param>
+        /// <param name="token">The cancellation token.</param>
+        public FormattingChanges AnalyzeFormatting(IDocument document, SyntaxTree syntaxTree, CancellationToken token = default (CancellationToken))
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+            if (syntaxTree == null)
+                throw new ArgumentNullException("syntaxTree");
+            var result = new FormattingChanges(document);
+            var visitor = new FormattingVisitor(this, document, result, token);
+            syntaxTree.AcceptVisitor(visitor);
+            return result;
+        }
 
-		/// <summary>
-		/// Adds a region in the document that should be formatted.
-		/// </summary>
-		public void AddFormattingRegion (DomRegion region)
-		{
-			formattingRegions.Add(region);
-			if (formattingRegions.Count == 1) {
-				lastFormattingLocation = region.End;
-			} else {
-				lastFormattingLocation = lastFormattingLocation < region.End ? region.End : lastFormattingLocation;
-			}
-		}
+        /// <summary>
+        /// Adds a region in the document that should be formatted.
+        /// </summary>
+        public void AddFormattingRegion (DomRegion region)
+        {
+            formattingRegions.Add(region);
+            if (formattingRegions.Count == 1) {
+                lastFormattingLocation = region.End;
+            } else {
+                lastFormattingLocation = lastFormattingLocation < region.End ? region.End : lastFormattingLocation;
+            }
+        }
 
-	}
+    }
 }
 

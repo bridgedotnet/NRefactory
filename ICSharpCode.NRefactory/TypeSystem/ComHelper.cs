@@ -22,42 +22,42 @@ using ICSharpCode.NRefactory.Semantics;
 
 namespace ICSharpCode.NRefactory.TypeSystem
 {
-	/// <summary>
-	/// Helper methods for COM.
-	/// </summary>
-	public static class ComHelper
-	{
-		static bool IsComAttribute(IAttribute attribute, string name)
-		{
-			return attribute.AttributeType.Name == name && attribute.AttributeType.Namespace == "System.Runtime.InteropServices";
-		}
-		
-		/// <summary>
-		/// Gets whether the specified type is imported from COM.
-		/// </summary>
-		public static bool IsComImport(ITypeDefinition typeDefinition)
-		{
-			return typeDefinition != null
-				&& typeDefinition.Kind == TypeKind.Interface
-				&& typeDefinition.Attributes.Any(a => IsComAttribute(a, "ComImportAttribute"));
-		}
-		
-		/// <summary>
-		/// Gets the CoClass of the specified COM interface.
-		/// </summary>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Co",
-		                                                 Justification = "Consistent with CoClassAttribute")]
-		public static IType GetCoClass(ITypeDefinition typeDefinition)
-		{
-			if (typeDefinition == null)
-				return SpecialType.UnknownType;
-			var coClassAttribute = typeDefinition.Attributes.FirstOrDefault(a => IsComAttribute(a, "CoClassAttribute"));
-			if (coClassAttribute != null && coClassAttribute.PositionalArguments.Count == 1) {
-				var rr = coClassAttribute.PositionalArguments[0] as TypeOfResolveResult;
-				if (rr != null)
-					return rr.ReferencedType;
-			}
-			return SpecialType.UnknownType;
-		}
-	}
+    /// <summary>
+    /// Helper methods for COM.
+    /// </summary>
+    public static class ComHelper
+    {
+        static bool IsComAttribute(IAttribute attribute, string name)
+        {
+            return attribute.AttributeType.Name == name && attribute.AttributeType.Namespace == "System.Runtime.InteropServices";
+        }
+
+        /// <summary>
+        /// Gets whether the specified type is imported from COM.
+        /// </summary>
+        public static bool IsComImport(ITypeDefinition typeDefinition)
+        {
+            return typeDefinition != null
+                && typeDefinition.Kind == TypeKind.Interface
+                && typeDefinition.Attributes.Any(a => IsComAttribute(a, "ComImportAttribute"));
+        }
+
+        /// <summary>
+        /// Gets the CoClass of the specified COM interface.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Co",
+                                                         Justification = "Consistent with CoClassAttribute")]
+        public static IType GetCoClass(ITypeDefinition typeDefinition)
+        {
+            if (typeDefinition == null)
+                return SpecialType.UnknownType;
+            var coClassAttribute = typeDefinition.Attributes.FirstOrDefault(a => IsComAttribute(a, "CoClassAttribute"));
+            if (coClassAttribute != null && coClassAttribute.PositionalArguments.Count == 1) {
+                var rr = coClassAttribute.PositionalArguments[0] as TypeOfResolveResult;
+                if (rr != null)
+                    return rr.ReferencedType;
+            }
+            return SpecialType.UnknownType;
+        }
+    }
 }

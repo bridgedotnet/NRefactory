@@ -1,6 +1,6 @@
 ﻿// 
 // IndexerExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -28,65 +28,65 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Target[Arguments]
-	/// </summary>
-	public class IndexerExpression : Expression
-	{
-		public Expression Target {
-			get { return GetChildByRole (Roles.TargetExpression); }
-			set { SetChildByRole(Roles.TargetExpression, value); }
-		}
-		
-		public CSharpTokenNode LBracketToken {
-			get { return GetChildByRole (Roles.LBracket); }
-		}
-		
-		public AstNodeCollection<Expression> Arguments {
-			get { return GetChildrenByRole<Expression>(Roles.Argument); }
-		}
-		
-		public CSharpTokenNode RBracketToken {
-			get { return GetChildByRole (Roles.RBracket); }
-		}
-		
-		public IndexerExpression ()
-		{
-		}
-		
-		public IndexerExpression (Expression target, IEnumerable<Expression> arguments)
-		{
-			AddChild (target, Roles.TargetExpression);
-			if (arguments != null) {
-				foreach (var arg in arguments) {
-					AddChild (arg, Roles.Argument);
-				}
-			}
-		}
-		
-		public IndexerExpression (Expression target, params Expression[] arguments) : this (target, (IEnumerable<Expression>)arguments)
-		{
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitIndexerExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitIndexerExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitIndexerExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			IndexerExpression o = other as IndexerExpression;
-			return o != null && this.Target.DoMatch(o.Target, match) && this.Arguments.DoMatch(o.Arguments, match);
-		}
-	}
+    /// <summary>
+    /// Target[Arguments]
+    /// </summary>
+    public class IndexerExpression : Expression
+    {
+        public Expression Target {
+            get { return GetChildByRole (Roles.TargetExpression); }
+            set { SetChildByRole(Roles.TargetExpression, value); }
+        }
+
+        public CSharpTokenNode LBracketToken {
+            get { return GetChildByRole (Roles.LBracket); }
+        }
+
+        public AstNodeCollection<Expression> Arguments {
+            get { return GetChildrenByRole<Expression>(Roles.Argument); }
+        }
+
+        public CSharpTokenNode RBracketToken {
+            get { return GetChildByRole (Roles.RBracket); }
+        }
+
+        public IndexerExpression ()
+        {
+        }
+
+        public IndexerExpression (Expression target, IEnumerable<Expression> arguments)
+        {
+            AddChild (target, Roles.TargetExpression);
+            if (arguments != null) {
+                foreach (var arg in arguments) {
+                    AddChild (arg, Roles.Argument);
+                }
+            }
+        }
+
+        public IndexerExpression (Expression target, params Expression[] arguments) : this (target, (IEnumerable<Expression>)arguments)
+        {
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitIndexerExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitIndexerExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitIndexerExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            IndexerExpression o = other as IndexerExpression;
+            return o != null && this.Target.DoMatch(o.Target, match) && this.Arguments.DoMatch(o.Arguments, match);
+        }
+    }
 }

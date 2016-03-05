@@ -1,6 +1,6 @@
 ﻿// 
 // EmptyStatement.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,47 +26,47 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// ;
-	/// </summary>
-	public class EmptyStatement : Statement
-	{
-		public TextLocation Location {
-			get;
-			set;
-		}
-		
-		public override TextLocation StartLocation {
-			get {
-				return Location;
-			}
-		}
-		
-		public override TextLocation EndLocation {
-			get {
-				return new TextLocation (Location.Line, Location.Column + 1);
-			}
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitEmptyStatement (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitEmptyStatement (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitEmptyStatement (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			EmptyStatement o = other as EmptyStatement;
-			return o != null;
-		}
-	}
+    /// <summary>
+    /// ;
+    /// </summary>
+    public class EmptyStatement : Statement
+    {
+        public TextLocation Location {
+            get;
+            set;
+        }
+
+        public override TextLocation StartLocation {
+            get {
+                return Location;
+            }
+        }
+
+        public override TextLocation EndLocation {
+            get {
+                return new TextLocation (Location.Line, Location.Column + 1);
+            }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitEmptyStatement (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitEmptyStatement (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitEmptyStatement (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            EmptyStatement o = other as EmptyStatement;
+            return o != null;
+        }
+    }
 }

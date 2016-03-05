@@ -1,6 +1,6 @@
 // 
 // IVariableCompletionData.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -28,11 +28,11 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.Completion
 {
-	public interface IVariableCompletionData : ICompletionData
-	{
-		IVariable Variable {
-			get;
-		}
-	}
+    public interface IVariableCompletionData : ICompletionData
+    {
+        IVariable Variable {
+            get;
+        }
+    }
 }
 

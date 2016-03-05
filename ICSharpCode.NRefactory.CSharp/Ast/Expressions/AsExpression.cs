@@ -1,6 +1,6 @@
 ﻿// 
 // AsExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -28,123 +28,123 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Expression as TypeReference
-	/// </summary>
-	public class AsExpression : Expression
-	{
-		public readonly static TokenRole AsKeywordRole = new TokenRole ("as");
-		
-		public Expression Expression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole(Roles.Expression, value); }
-		}
-		
-		public CSharpTokenNode AsToken {
-			get { return GetChildByRole (AsKeywordRole); }
-		}
-		
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole(Roles.Type, value); }
-		}
-		
-		public AsExpression ()
-		{
-		}
-		
-		public AsExpression (Expression expression, AstType type)
-		{
-			AddChild (expression, Roles.Expression);
-			AddChild (type, Roles.Type);
-		}
+    /// <summary>
+    /// Expression as TypeReference
+    /// </summary>
+    public class AsExpression : Expression
+    {
+        public readonly static TokenRole AsKeywordRole = new TokenRole ("as");
 
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitAsExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitAsExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitAsExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			AsExpression o = other as AsExpression;
-			return o != null && this.Expression.DoMatch(o.Expression, match) && this.Type.DoMatch(o.Type, match);
-		}
+        public Expression Expression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole(Roles.Expression, value); }
+        }
 
-		#region Builder methods
-		public override MemberReferenceExpression Member(string memberName)
-		{
-			return new MemberReferenceExpression { Target = this, MemberName = memberName };
-		}
+        public CSharpTokenNode AsToken {
+            get { return GetChildByRole (AsKeywordRole); }
+        }
 
-		public override IndexerExpression Indexer(IEnumerable<Expression> arguments)
-		{
-			IndexerExpression expr = new IndexerExpression();
-			expr.Target = new ParenthesizedExpression(this);
-			expr.Arguments.AddRange(arguments);
-			return expr;
-		}
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole(Roles.Type, value); }
+        }
 
-		public override IndexerExpression Indexer(params Expression[] arguments)
-		{
-			IndexerExpression expr = new IndexerExpression();
-			expr.Target = new ParenthesizedExpression(this);
-			expr.Arguments.AddRange(arguments);
-			return expr;
-		}
+        public AsExpression ()
+        {
+        }
 
-		public override InvocationExpression Invoke(string methodName, IEnumerable<AstType> typeArguments, IEnumerable<Expression> arguments)
-		{
-			InvocationExpression ie = new InvocationExpression();
-			MemberReferenceExpression mre = new MemberReferenceExpression();
-			mre.Target = new ParenthesizedExpression(this);
-			mre.MemberName = methodName;
-			mre.TypeArguments.AddRange(typeArguments);
-			ie.Target = mre;
-			ie.Arguments.AddRange(arguments);
-			return ie;
-		}
+        public AsExpression (Expression expression, AstType type)
+        {
+            AddChild (expression, Roles.Expression);
+            AddChild (type, Roles.Type);
+        }
 
-		public override InvocationExpression Invoke(IEnumerable<Expression> arguments)
-		{
-			InvocationExpression ie = new InvocationExpression();
-			ie.Target = new ParenthesizedExpression(this);
-			ie.Arguments.AddRange(arguments);
-			return ie;
-		}
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitAsExpression (this);
+        }
 
-		public override InvocationExpression Invoke(params Expression[] arguments)
-		{
-			InvocationExpression ie = new InvocationExpression();
-			ie.Target = new ParenthesizedExpression(this);
-			ie.Arguments.AddRange(arguments);
-			return ie;
-		}
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitAsExpression (this);
+        }
 
-		public override CastExpression CastTo(AstType type)
-		{
-			return new CastExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
-		}
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitAsExpression (this, data);
+        }
 
-		public override AsExpression CastAs(AstType type)
-		{
-			return new AsExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
-		}
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            AsExpression o = other as AsExpression;
+            return o != null && this.Expression.DoMatch(o.Expression, match) && this.Type.DoMatch(o.Type, match);
+        }
 
-		public override IsExpression IsType(AstType type)
-		{
-			return new IsExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
-		}
-		#endregion
-	}
+        #region Builder methods
+        public override MemberReferenceExpression Member(string memberName)
+        {
+            return new MemberReferenceExpression { Target = this, MemberName = memberName };
+        }
+
+        public override IndexerExpression Indexer(IEnumerable<Expression> arguments)
+        {
+            IndexerExpression expr = new IndexerExpression();
+            expr.Target = new ParenthesizedExpression(this);
+            expr.Arguments.AddRange(arguments);
+            return expr;
+        }
+
+        public override IndexerExpression Indexer(params Expression[] arguments)
+        {
+            IndexerExpression expr = new IndexerExpression();
+            expr.Target = new ParenthesizedExpression(this);
+            expr.Arguments.AddRange(arguments);
+            return expr;
+        }
+
+        public override InvocationExpression Invoke(string methodName, IEnumerable<AstType> typeArguments, IEnumerable<Expression> arguments)
+        {
+            InvocationExpression ie = new InvocationExpression();
+            MemberReferenceExpression mre = new MemberReferenceExpression();
+            mre.Target = new ParenthesizedExpression(this);
+            mre.MemberName = methodName;
+            mre.TypeArguments.AddRange(typeArguments);
+            ie.Target = mre;
+            ie.Arguments.AddRange(arguments);
+            return ie;
+        }
+
+        public override InvocationExpression Invoke(IEnumerable<Expression> arguments)
+        {
+            InvocationExpression ie = new InvocationExpression();
+            ie.Target = new ParenthesizedExpression(this);
+            ie.Arguments.AddRange(arguments);
+            return ie;
+        }
+
+        public override InvocationExpression Invoke(params Expression[] arguments)
+        {
+            InvocationExpression ie = new InvocationExpression();
+            ie.Target = new ParenthesizedExpression(this);
+            ie.Arguments.AddRange(arguments);
+            return ie;
+        }
+
+        public override CastExpression CastTo(AstType type)
+        {
+            return new CastExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
+        }
+
+        public override AsExpression CastAs(AstType type)
+        {
+            return new AsExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
+        }
+
+        public override IsExpression IsType(AstType type)
+        {
+            return new IsExpression { Type = type,  Expression = new ParenthesizedExpression(this) };
+        }
+        #endregion
+    }
 }
 

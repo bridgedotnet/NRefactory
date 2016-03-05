@@ -17,213 +17,213 @@ using System.Reflection.Emit;
 #endif
 
 namespace ICSharpCode.NRefactory.MonoCSharp {
-	public class LambdaExpression : AnonymousMethodExpression
-	{
-		//
-		// The parameters can either be:
-		//    A list of Parameters (explicitly typed parameters)
-		//    An ImplicitLambdaParameter
-		//
-		public LambdaExpression (Location loc)
-			: base (loc)
-		{
-		}
+    public class LambdaExpression : AnonymousMethodExpression
+    {
+        //
+        // The parameters can either be:
+        //    A list of Parameters (explicitly typed parameters)
+        //    An ImplicitLambdaParameter
+        //
+        public LambdaExpression (Location loc)
+            : base (loc)
+        {
+        }
 
-		protected override Expression CreateExpressionTree (ResolveContext ec, TypeSpec delegate_type)
-		{
-			if (ec.IsInProbingMode)
-				return this;
+        protected override Expression CreateExpressionTree (ResolveContext ec, TypeSpec delegate_type)
+        {
+            if (ec.IsInProbingMode)
+                return this;
 
-			BlockContext bc = new BlockContext (ec.MemberContext, ec.ConstructorBlock, ec.BuiltinTypes.Void) {
-				CurrentAnonymousMethod = ec.CurrentAnonymousMethod
-			};
+            BlockContext bc = new BlockContext (ec.MemberContext, ec.ConstructorBlock, ec.BuiltinTypes.Void) {
+                CurrentAnonymousMethod = ec.CurrentAnonymousMethod
+            };
 
-			Expression args = Parameters.CreateExpressionTree (bc, loc);
-			Expression expr = Block.CreateExpressionTree (ec);
-			if (expr == null)
-				return null;
+            Expression args = Parameters.CreateExpressionTree (bc, loc);
+            Expression expr = Block.CreateExpressionTree (ec);
+            if (expr == null)
+                return null;
 
-			Arguments arguments = new Arguments (2);
-			arguments.Add (new Argument (expr));
-			arguments.Add (new Argument (args));
-			return CreateExpressionFactoryCall (ec, "Lambda",
-				new TypeArguments (new TypeExpression (delegate_type, loc)),
-				arguments);
-		}
+            Arguments arguments = new Arguments (2);
+            arguments.Add (new Argument (expr));
+            arguments.Add (new Argument (args));
+            return CreateExpressionFactoryCall (ec, "Lambda",
+                new TypeArguments (new TypeExpression (delegate_type, loc)),
+                arguments);
+        }
 
-		public override bool HasExplicitParameters {
-			get {
-				return Parameters.Count > 0 && !(Parameters.FixedParameters [0] is ImplicitLambdaParameter);
-			}
-		}
+        public override bool HasExplicitParameters {
+            get {
+                return Parameters.Count > 0 && !(Parameters.FixedParameters [0] is ImplicitLambdaParameter);
+            }
+        }
 
-		protected override ParametersCompiled ResolveParameters (ResolveContext ec, TypeInferenceContext tic, TypeSpec delegateType)
-		{
-			if (!delegateType.IsDelegate)
-				return null;
+        protected override ParametersCompiled ResolveParameters (ResolveContext ec, TypeInferenceContext tic, TypeSpec delegateType)
+        {
+            if (!delegateType.IsDelegate)
+                return null;
 
-			AParametersCollection d_params = Delegate.GetParameters (delegateType);
+            AParametersCollection d_params = Delegate.GetParameters (delegateType);
 
-			if (HasExplicitParameters) {
-				if (!VerifyExplicitParameters (ec, tic, delegateType, d_params))
-					return null;
+            if (HasExplicitParameters) {
+                if (!VerifyExplicitParameters (ec, tic, delegateType, d_params))
+                    return null;
 
-				return Parameters;
-			}
+                return Parameters;
+            }
 
-			//
-			// If L has an implicitly typed parameter list we make implicit parameters explicit
-			// Set each parameter of L is given the type of the corresponding parameter in D
-			//
-			if (!VerifyParameterCompatibility (ec, tic, delegateType, d_params, ec.IsInProbingMode))
-				return null;
+            //
+            // If L has an implicitly typed parameter list we make implicit parameters explicit
+            // Set each parameter of L is given the type of the corresponding parameter in D
+            //
+            if (!VerifyParameterCompatibility (ec, tic, delegateType, d_params, ec.IsInProbingMode))
+                return null;
 
-			TypeSpec [] ptypes = new TypeSpec [Parameters.Count];
-			for (int i = 0; i < d_params.Count; i++) {
-				// D has no ref or out parameters
-				if ((d_params.FixedParameters[i].ModFlags & Parameter.Modifier.RefOutMask) != 0)
-					return null;
+            TypeSpec [] ptypes = new TypeSpec [Parameters.Count];
+            for (int i = 0; i < d_params.Count; i++) {
+                // D has no ref or out parameters
+                if ((d_params.FixedParameters[i].ModFlags & Parameter.Modifier.RefOutMask) != 0)
+                    return null;
 
-				TypeSpec d_param = d_params.Types [i];
+                TypeSpec d_param = d_params.Types [i];
 
-				//
-				// When type inference context exists try to apply inferred type arguments
-				//
-				if (tic != null) {
-					d_param = tic.InflateGenericArgument (ec, d_param);
-				}
+                //
+                // When type inference context exists try to apply inferred type arguments
+                //
+                if (tic != null) {
+                    d_param = tic.InflateGenericArgument (ec, d_param);
+                }
 
-				ptypes [i] = d_param;
-				ImplicitLambdaParameter ilp = (ImplicitLambdaParameter) Parameters.FixedParameters [i];
-				ilp.SetParameterType (d_param);
-				ilp.Resolve (null, i);
-			}
+                ptypes [i] = d_param;
+                ImplicitLambdaParameter ilp = (ImplicitLambdaParameter) Parameters.FixedParameters [i];
+                ilp.SetParameterType (d_param);
+                ilp.Resolve (null, i);
+            }
 
-			Parameters.Types = ptypes;
-			return Parameters;
-		}
+            Parameters.Types = ptypes;
+            return Parameters;
+        }
 
-		protected override AnonymousMethodBody CompatibleMethodFactory (TypeSpec returnType, TypeSpec delegateType, ParametersCompiled p, ParametersBlock b)
-		{
-			return new LambdaMethod (p, b, returnType, delegateType, loc);
-		}
+        protected override AnonymousMethodBody CompatibleMethodFactory (TypeSpec returnType, TypeSpec delegateType, ParametersCompiled p, ParametersBlock b)
+        {
+            return new LambdaMethod (p, b, returnType, delegateType, loc);
+        }
 
-		protected override bool DoResolveParameters (ResolveContext rc)
-		{
-			//
-			// Only explicit parameters can be resolved at this point
-			//
-			if (HasExplicitParameters) {
-				return Parameters.Resolve (rc);
-			}
+        protected override bool DoResolveParameters (ResolveContext rc)
+        {
+            //
+            // Only explicit parameters can be resolved at this point
+            //
+            if (HasExplicitParameters) {
+                return Parameters.Resolve (rc);
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public override string GetSignatureForError ()
-		{
-			return "lambda expression";
-		}
-		
-		public override object Accept (StructuralVisitor visitor)
-		{
-			return visitor.Visit (this);
-		}
-	}
+        public override string GetSignatureForError ()
+        {
+            return "lambda expression";
+        }
 
-	class LambdaMethod : AnonymousMethodBody
-	{
-		public LambdaMethod (ParametersCompiled parameters,
-					ParametersBlock block, TypeSpec return_type, TypeSpec delegate_type,
-					Location loc)
-			: base (parameters, block, return_type, delegate_type, loc)
-		{
-		}
+        public override object Accept (StructuralVisitor visitor)
+        {
+            return visitor.Visit (this);
+        }
+    }
 
-		#region Properties
+    class LambdaMethod : AnonymousMethodBody
+    {
+        public LambdaMethod (ParametersCompiled parameters,
+                    ParametersBlock block, TypeSpec return_type, TypeSpec delegate_type,
+                    Location loc)
+            : base (parameters, block, return_type, delegate_type, loc)
+        {
+        }
 
-		public override string ContainerType {
-			get {
-				return "lambda expression";
-			}
-		}
+        #region Properties
 
-		#endregion
+        public override string ContainerType {
+            get {
+                return "lambda expression";
+            }
+        }
 
-		protected override void CloneTo (CloneContext clonectx, Expression target)
-		{
-			// TODO: nothing ??
-		}
+        #endregion
 
-		public override Expression CreateExpressionTree (ResolveContext ec)
-		{
-			BlockContext bc = new BlockContext (ec.MemberContext, Block, ReturnType);
-			Expression args = parameters.CreateExpressionTree (bc, loc);
-			Expression expr = Block.CreateExpressionTree (ec);
-			if (expr == null)
-				return null;
+        protected override void CloneTo (CloneContext clonectx, Expression target)
+        {
+            // TODO: nothing ??
+        }
 
-			Arguments arguments = new Arguments (2);
-			arguments.Add (new Argument (expr));
-			arguments.Add (new Argument (args));
-			return CreateExpressionFactoryCall (ec, "Lambda",
-				new TypeArguments (new TypeExpression (type, loc)),
-				arguments);
-		}
-	}
+        public override Expression CreateExpressionTree (ResolveContext ec)
+        {
+            BlockContext bc = new BlockContext (ec.MemberContext, Block, ReturnType);
+            Expression args = parameters.CreateExpressionTree (bc, loc);
+            Expression expr = Block.CreateExpressionTree (ec);
+            if (expr == null)
+                return null;
 
-	//
-	// This is a return statement that is prepended lambda expression bodies that happen
-	// to be expressions.  Depending on the return type of the delegate this will behave
-	// as either { expr (); return (); } or { return expr (); }
-	//
-	public class ContextualReturn : Return
-	{
-		ExpressionStatement statement;
+            Arguments arguments = new Arguments (2);
+            arguments.Add (new Argument (expr));
+            arguments.Add (new Argument (args));
+            return CreateExpressionFactoryCall (ec, "Lambda",
+                new TypeArguments (new TypeExpression (type, loc)),
+                arguments);
+        }
+    }
 
-		public ContextualReturn (Expression expr)
-			: base (expr, expr.StartLocation)
-		{
-		}
+    //
+    // This is a return statement that is prepended lambda expression bodies that happen
+    // to be expressions.  Depending on the return type of the delegate this will behave
+    // as either { expr (); return (); } or { return expr (); }
+    //
+    public class ContextualReturn : Return
+    {
+        ExpressionStatement statement;
 
-		public override Expression CreateExpressionTree (ResolveContext ec)
-		{
-			return Expr.CreateExpressionTree (ec);
-		}
+        public ContextualReturn (Expression expr)
+            : base (expr, expr.StartLocation)
+        {
+        }
 
-		protected override void DoEmit (EmitContext ec)
-		{
-			if (statement != null) {
-				statement.EmitStatement (ec);
-				if (unwind_protect)
-					ec.Emit (OpCodes.Leave, ec.CreateReturnLabel ());
-				else {
-					ec.Emit (OpCodes.Ret);
-				}
-				return;
-			}
+        public override Expression CreateExpressionTree (ResolveContext ec)
+        {
+            return Expr.CreateExpressionTree (ec);
+        }
 
-			base.DoEmit (ec);
-		}
+        protected override void DoEmit (EmitContext ec)
+        {
+            if (statement != null) {
+                statement.EmitStatement (ec);
+                if (unwind_protect)
+                    ec.Emit (OpCodes.Leave, ec.CreateReturnLabel ());
+                else {
+                    ec.Emit (OpCodes.Ret);
+                }
+                return;
+            }
 
-		protected override bool DoResolve (BlockContext ec)
-		{
-			//
-			// When delegate returns void, only expression statements can be used
-			//
-			if (ec.ReturnType.Kind == MemberKind.Void) {
-				Expr = Expr.Resolve (ec);
-				if (Expr == null)
-					return false;
+            base.DoEmit (ec);
+        }
 
-				statement = Expr as ExpressionStatement;
-				if (statement == null)
-					Expr.Error_InvalidExpressionStatement (ec);
+        protected override bool DoResolve (BlockContext ec)
+        {
+            //
+            // When delegate returns void, only expression statements can be used
+            //
+            if (ec.ReturnType.Kind == MemberKind.Void) {
+                Expr = Expr.Resolve (ec);
+                if (Expr == null)
+                    return false;
 
-				return true;
-			}
+                statement = Expr as ExpressionStatement;
+                if (statement == null)
+                    Expr.Error_InvalidExpressionStatement (ec);
 
-			return base.DoResolve (ec);
-		}
-	}
+                return true;
+            }
+
+            return base.DoResolve (ec);
+        }
+    }
 }

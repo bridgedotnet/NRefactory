@@ -1,6 +1,6 @@
 ﻿// 
 // DirectionExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,64 +26,64 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public enum FieldDirection
-	{
-		None,
-		Out,
-		Ref
-	}
-	
-	/// <summary>
-	/// ref Expression
-	/// </summary>
-	public class DirectionExpression : Expression
-	{
-		public readonly static TokenRole RefKeywordRole = new TokenRole ("ref");
-		public readonly static TokenRole OutKeywordRole = new TokenRole ("out");
-		
-		public FieldDirection FieldDirection {
-			get;
-			set;
-		}
-		
-		public CSharpTokenNode FieldDirectionToken {
-			get { return FieldDirection == ICSharpCode.NRefactory.CSharp.FieldDirection.Ref ? GetChildByRole (RefKeywordRole) : GetChildByRole (OutKeywordRole); }
-		}
-		
-		public Expression Expression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole (Roles.Expression, value); }
-		}
-		
-		public DirectionExpression ()
-		{
-		}
-		
-		public DirectionExpression (FieldDirection direction, Expression expression)
-		{
-			this.FieldDirection = direction;
-			AddChild (expression, Roles.Expression);
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitDirectionExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitDirectionExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitDirectionExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			DirectionExpression o = other as DirectionExpression;
-			return o != null && this.FieldDirection == o.FieldDirection && this.Expression.DoMatch(o.Expression, match);
-		}
-	}
+    public enum FieldDirection
+    {
+        None,
+        Out,
+        Ref
+    }
+
+    /// <summary>
+    /// ref Expression
+    /// </summary>
+    public class DirectionExpression : Expression
+    {
+        public readonly static TokenRole RefKeywordRole = new TokenRole ("ref");
+        public readonly static TokenRole OutKeywordRole = new TokenRole ("out");
+
+        public FieldDirection FieldDirection {
+            get;
+            set;
+        }
+
+        public CSharpTokenNode FieldDirectionToken {
+            get { return FieldDirection == ICSharpCode.NRefactory.CSharp.FieldDirection.Ref ? GetChildByRole (RefKeywordRole) : GetChildByRole (OutKeywordRole); }
+        }
+
+        public Expression Expression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole (Roles.Expression, value); }
+        }
+
+        public DirectionExpression ()
+        {
+        }
+
+        public DirectionExpression (FieldDirection direction, Expression expression)
+        {
+            this.FieldDirection = direction;
+            AddChild (expression, Roles.Expression);
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitDirectionExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitDirectionExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitDirectionExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            DirectionExpression o = other as DirectionExpression;
+            return o != null && this.FieldDirection == o.FieldDirection && this.Expression.DoMatch(o.Expression, match);
+        }
+    }
 }

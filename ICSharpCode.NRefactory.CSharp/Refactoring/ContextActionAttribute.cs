@@ -1,6 +1,6 @@
 ﻿// 
 // ProviderDescriptionAttribute.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -27,17 +27,17 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	[AttributeUsage(AttributeTargets.Class)]
-	public class ContextActionAttribute : System.Attribute
-	{
-		public string Title { get; private set;}
-		public string Description { get; set; }
-		public string Category { get; set; }
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ContextActionAttribute : System.Attribute
+    {
+        public string Title { get; private set;}
+        public string Description { get; set; }
+        public string Category { get; set; }
 
-		public ContextActionAttribute (string title)
-		{
-			Title = title;
-		}
-	}
+        public ContextActionAttribute (string title)
+        {
+            Title = title;
+        }
+    }
 }
 

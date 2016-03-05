@@ -24,132 +24,132 @@ using ICSharpCode.NRefactory.CSharp;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	class InsertSpecialsDecorator : DecoratingTokenWriter
-	{
-		readonly Stack<AstNode> positionStack = new Stack<AstNode>();
-		int visitorWroteNewLine = 0;
-		
-		public InsertSpecialsDecorator(TokenWriter writer) : base(writer)
-		{
-		}
-		
-		public override void StartNode(AstNode node)
-		{
-			if (positionStack.Count > 0) {
-				WriteSpecialsUpToNode(node);
-			}
-			positionStack.Push(node.FirstChild);
-			base.StartNode(node);
-		}
-		
-		public override void EndNode(AstNode node)
-		{
-			base.EndNode(node);
-			AstNode pos = positionStack.Pop();
-			Debug.Assert(pos == null || pos.Parent == node);
-			WriteSpecials(pos, null);
-		}
-		
-		public override void WriteKeyword(Role role, string keyword)
-		{
-			if (role != null) {
-				WriteSpecialsUpToRole(role);
-			}
-			base.WriteKeyword(role, keyword);
-		}
-		
-		public override void WriteIdentifier(Identifier identifier)
-		{
-			WriteSpecialsUpToRole(identifier.Role ?? Roles.Identifier);
-			base.WriteIdentifier(identifier);
-		}
-		
-		public override void WriteToken(Role role, string token)
-		{
-			WriteSpecialsUpToRole(role);
-			base.WriteToken(role, token);
-		}
-		
-		public override void NewLine()
-		{
-			if (visitorWroteNewLine >= 0)
-				base.NewLine();
-			visitorWroteNewLine++;
-		}
-		
-		#region WriteSpecials
-		/// <summary>
-		/// Writes all specials from start to end (exclusive). Does not touch the positionStack.
-		/// </summary>
-		void WriteSpecials(AstNode start, AstNode end)
-		{
-			for (AstNode pos = start; pos != end; pos = pos.NextSibling) {
-				if (pos.Role == Roles.Comment) {
-					var node = (Comment)pos;
-					base.WriteComment(node.CommentType, node.Content);
-				}
-				// see CSharpOutputVisitor.VisitNewLine()
-				//				if (pos.Role == Roles.NewLine) {
-				//					if (visitorWroteNewLine <= 0)
-				//						base.NewLine();
-				//					visitorWroteNewLine--;
-				//				}
-				if (pos.Role == Roles.PreProcessorDirective) {
-					var node = (PreProcessorDirective)pos;
-					base.WritePreProcessorDirective(node.Type, node.Argument);
-				}
-			}
-		}
-		
-		/// <summary>
-		/// Writes all specials between the current position (in the positionStack) and the next
-		/// node with the specified role. Advances the current position.
-		/// </summary>
-		void WriteSpecialsUpToRole(Role role)
-		{
-			WriteSpecialsUpToRole(role, null);
-		}
-		
-		void WriteSpecialsUpToRole(Role role, AstNode nextNode)
-		{
-			if (positionStack.Count == 0) {
-				return;
-			}
-			// Look for the role between the current position and the nextNode.
-			for (AstNode pos = positionStack.Peek(); pos != null && pos != nextNode; pos = pos.NextSibling) {
-				if (pos.Role == role) {
-					WriteSpecials(positionStack.Pop(), pos);
-					// Push the next sibling because the node matching the role is not a special,
-					// and should be considered to be already handled.
-					positionStack.Push(pos.NextSibling);
-					// This is necessary for OptionalComma() to work correctly.
-					break;
-				}
-			}
-		}
-		
-		/// <summary>
-		/// Writes all specials between the current position (in the positionStack) and the specified node.
-		/// Advances the current position.
-		/// </summary>
-		void WriteSpecialsUpToNode(AstNode node)
-		{
-			if (positionStack.Count == 0) {
-				return;
-			}
-			for (AstNode pos = positionStack.Peek(); pos != null; pos = pos.NextSibling) {
-				if (pos == node) {
-					WriteSpecials(positionStack.Pop(), pos);
-					// Push the next sibling because the node itself is not a special,
-					// and should be considered to be already handled.
-					positionStack.Push(pos.NextSibling);
-					// This is necessary for OptionalComma() to work correctly.
-					break;
-				}
-			}
-		}
-		#endregion
-	}
+    class InsertSpecialsDecorator : DecoratingTokenWriter
+    {
+        readonly Stack<AstNode> positionStack = new Stack<AstNode>();
+        int visitorWroteNewLine = 0;
+
+        public InsertSpecialsDecorator(TokenWriter writer) : base(writer)
+        {
+        }
+
+        public override void StartNode(AstNode node)
+        {
+            if (positionStack.Count > 0) {
+                WriteSpecialsUpToNode(node);
+            }
+            positionStack.Push(node.FirstChild);
+            base.StartNode(node);
+        }
+
+        public override void EndNode(AstNode node)
+        {
+            base.EndNode(node);
+            AstNode pos = positionStack.Pop();
+            Debug.Assert(pos == null || pos.Parent == node);
+            WriteSpecials(pos, null);
+        }
+
+        public override void WriteKeyword(Role role, string keyword)
+        {
+            if (role != null) {
+                WriteSpecialsUpToRole(role);
+            }
+            base.WriteKeyword(role, keyword);
+        }
+
+        public override void WriteIdentifier(Identifier identifier)
+        {
+            WriteSpecialsUpToRole(identifier.Role ?? Roles.Identifier);
+            base.WriteIdentifier(identifier);
+        }
+
+        public override void WriteToken(Role role, string token)
+        {
+            WriteSpecialsUpToRole(role);
+            base.WriteToken(role, token);
+        }
+
+        public override void NewLine()
+        {
+            if (visitorWroteNewLine >= 0)
+                base.NewLine();
+            visitorWroteNewLine++;
+        }
+
+        #region WriteSpecials
+        /// <summary>
+        /// Writes all specials from start to end (exclusive). Does not touch the positionStack.
+        /// </summary>
+        void WriteSpecials(AstNode start, AstNode end)
+        {
+            for (AstNode pos = start; pos != end; pos = pos.NextSibling) {
+                if (pos.Role == Roles.Comment) {
+                    var node = (Comment)pos;
+                    base.WriteComment(node.CommentType, node.Content);
+                }
+                // see CSharpOutputVisitor.VisitNewLine()
+                //                if (pos.Role == Roles.NewLine) {
+                //                    if (visitorWroteNewLine <= 0)
+                //                        base.NewLine();
+                //                    visitorWroteNewLine--;
+                //                }
+                if (pos.Role == Roles.PreProcessorDirective) {
+                    var node = (PreProcessorDirective)pos;
+                    base.WritePreProcessorDirective(node.Type, node.Argument);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes all specials between the current position (in the positionStack) and the next
+        /// node with the specified role. Advances the current position.
+        /// </summary>
+        void WriteSpecialsUpToRole(Role role)
+        {
+            WriteSpecialsUpToRole(role, null);
+        }
+
+        void WriteSpecialsUpToRole(Role role, AstNode nextNode)
+        {
+            if (positionStack.Count == 0) {
+                return;
+            }
+            // Look for the role between the current position and the nextNode.
+            for (AstNode pos = positionStack.Peek(); pos != null && pos != nextNode; pos = pos.NextSibling) {
+                if (pos.Role == role) {
+                    WriteSpecials(positionStack.Pop(), pos);
+                    // Push the next sibling because the node matching the role is not a special,
+                    // and should be considered to be already handled.
+                    positionStack.Push(pos.NextSibling);
+                    // This is necessary for OptionalComma() to work correctly.
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes all specials between the current position (in the positionStack) and the specified node.
+        /// Advances the current position.
+        /// </summary>
+        void WriteSpecialsUpToNode(AstNode node)
+        {
+            if (positionStack.Count == 0) {
+                return;
+            }
+            for (AstNode pos = positionStack.Peek(); pos != null; pos = pos.NextSibling) {
+                if (pos == node) {
+                    WriteSpecials(positionStack.Pop(), pos);
+                    // Push the next sibling because the node itself is not a special,
+                    // and should be considered to be already handled.
+                    positionStack.Push(pos.NextSibling);
+                    // This is necessary for OptionalComma() to work correctly.
+                    break;
+                }
+            }
+        }
+        #endregion
+    }
 }
 
 

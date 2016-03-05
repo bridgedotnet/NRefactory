@@ -1,6 +1,6 @@
 ﻿// 
 // ErrorExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -27,103 +27,103 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	[Obsolete("This class is obsolete. Remove all referencing code.")]
-	public class EmptyExpression : AstNode
-	{
-		#region implemented abstract members of AstNode
+    [Obsolete("This class is obsolete. Remove all referencing code.")]
+    public class EmptyExpression : AstNode
+    {
+        #region implemented abstract members of AstNode
 
-		public override void AcceptVisitor(IAstVisitor visitor)
-		{
-			throw new NotImplementedException();
-		}
+        public override void AcceptVisitor(IAstVisitor visitor)
+        {
+            throw new NotImplementedException();
+        }
 
-		public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-		{
-			throw new NotImplementedException();
-		}
+        public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
+        {
+            throw new NotImplementedException();
+        }
 
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			throw new NotImplementedException();
-		}
+        public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
+        {
+            throw new NotImplementedException();
+        }
 
-		protected internal override bool DoMatch(AstNode other, ICSharpCode.NRefactory.PatternMatching.Match match)
-		{
-			throw new NotImplementedException();
-		}
+        protected internal override bool DoMatch(AstNode other, ICSharpCode.NRefactory.PatternMatching.Match match)
+        {
+            throw new NotImplementedException();
+        }
 
-		public override NodeType NodeType {
-			get {
-				throw new NotImplementedException();
-			}
-		}
+        public override NodeType NodeType {
+            get {
+                throw new NotImplementedException();
+            }
+        }
 
-		#endregion
+        #endregion
 
 
-	}
+    }
 
-	public class ErrorExpression : Expression
-	{
-		TextLocation location;
+    public class ErrorExpression : Expression
+    {
+        TextLocation location;
 
-		public override TextLocation StartLocation {
-			get {
-				return location;
-			}
-		}
-		
-		public override TextLocation EndLocation {
-			get {
-				return location;
-			}
-		}
+        public override TextLocation StartLocation {
+            get {
+                return location;
+            }
+        }
 
-		public string Error {
-			get;
-			private set;
-		}
+        public override TextLocation EndLocation {
+            get {
+                return location;
+            }
+        }
 
-		public ErrorExpression ()
-		{
-		}
+        public string Error {
+            get;
+            private set;
+        }
 
-		public ErrorExpression (TextLocation location)
-		{
-			this.location = location;
-		}
+        public ErrorExpression ()
+        {
+        }
 
-		public ErrorExpression (string error)
-		{
-			this.Error = error;
-		}
+        public ErrorExpression (TextLocation location)
+        {
+            this.location = location;
+        }
 
-		public ErrorExpression (string error, TextLocation location)
-		{
-			this.location = location;
-			this.Error = error;
-		}
+        public ErrorExpression (string error)
+        {
+            this.Error = error;
+        }
 
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitErrorNode(this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitErrorNode(this);
-		}
+        public ErrorExpression (string error, TextLocation location)
+        {
+            this.location = location;
+            this.Error = error;
+        }
 
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitErrorNode(this, data);
-		}
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitErrorNode(this);
+        }
 
-		protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
-		{
-			var o = other as ErrorExpression;
-			return o != null;
-		}
-	}
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitErrorNode(this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitErrorNode(this, data);
+        }
+
+        protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
+        {
+            var o = other as ErrorExpression;
+            return o != null;
+        }
+    }
 }
 

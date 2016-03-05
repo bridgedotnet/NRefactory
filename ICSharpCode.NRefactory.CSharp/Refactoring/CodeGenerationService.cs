@@ -29,36 +29,36 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public abstract class CodeGenerationService
-	{
-		public abstract EntityDeclaration GenerateMemberImplementation(RefactoringContext context, IMember member, bool explicitImplementation);
-	}
+    public abstract class CodeGenerationService
+    {
+        public abstract EntityDeclaration GenerateMemberImplementation(RefactoringContext context, IMember member, bool explicitImplementation);
+    }
 
-	public class DefaultCodeGenerationService : CodeGenerationService
-	{
-		public override EntityDeclaration GenerateMemberImplementation(RefactoringContext context, IMember member, bool explicitImplementation)
-		{
-			var builder = context.CreateTypeSystemAstBuilder();
-			builder.GenerateBody = true;
-			builder.ShowModifiers = false;
-			builder.ShowAccessibility = true;
-			builder.ShowConstantValues = !explicitImplementation;
-			builder.ShowTypeParameterConstraints = !explicitImplementation;
-			builder.UseCustomEvents = explicitImplementation;
-			var decl = builder.ConvertEntity(member);
-			if (explicitImplementation) {
-				decl.Modifiers = Modifiers.None;
-				decl.AddChild(builder.ConvertType(member.DeclaringType ?? SpecialType.UnknownType), EntityDeclaration.PrivateImplementationTypeRole);
-			} else if (member.DeclaringType != null && member.DeclaringType.Kind == TypeKind.Interface) {
-				decl.Modifiers |= Modifiers.Public;
-			} else {
-				// Remove 'internal' modifier from 'protected internal' members if the override is in a different assembly than the member
-				if (!member.ParentAssembly.InternalsVisibleTo(context.Compilation.MainAssembly)) {
-					decl.Modifiers &= ~Modifiers.Internal;
-				}
-			}
-			return decl;
-		}
-	}
+    public class DefaultCodeGenerationService : CodeGenerationService
+    {
+        public override EntityDeclaration GenerateMemberImplementation(RefactoringContext context, IMember member, bool explicitImplementation)
+        {
+            var builder = context.CreateTypeSystemAstBuilder();
+            builder.GenerateBody = true;
+            builder.ShowModifiers = false;
+            builder.ShowAccessibility = true;
+            builder.ShowConstantValues = !explicitImplementation;
+            builder.ShowTypeParameterConstraints = !explicitImplementation;
+            builder.UseCustomEvents = explicitImplementation;
+            var decl = builder.ConvertEntity(member);
+            if (explicitImplementation) {
+                decl.Modifiers = Modifiers.None;
+                decl.AddChild(builder.ConvertType(member.DeclaringType ?? SpecialType.UnknownType), EntityDeclaration.PrivateImplementationTypeRole);
+            } else if (member.DeclaringType != null && member.DeclaringType.Kind == TypeKind.Interface) {
+                decl.Modifiers |= Modifiers.Public;
+            } else {
+                // Remove 'internal' modifier from 'protected internal' members if the override is in a different assembly than the member
+                if (!member.ParentAssembly.InternalsVisibleTo(context.Compilation.MainAssembly)) {
+                    decl.Modifiers &= ~Modifiers.Internal;
+                }
+            }
+            return decl;
+        }
+    }
 }
 

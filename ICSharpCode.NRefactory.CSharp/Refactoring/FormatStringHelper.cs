@@ -31,56 +31,56 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	static class FormatStringHelper
-	{
-		static readonly string[] parameterNames = { "format", "frmt", "fmt" };
-		
-		public static bool TryGetFormattingParameters(CSharpInvocationResolveResult invocationResolveResult, InvocationExpression invocationExpression,
-		                                     		  out Expression formatArgument, out IList<Expression> arguments,
-		                                              Func<IParameter, Expression, bool> argumentFilter)
-		{
-			if (argumentFilter == null)
-				argumentFilter = (p, e) => true;
+    static class FormatStringHelper
+    {
+        static readonly string[] parameterNames = { "format", "frmt", "fmt" };
 
-			formatArgument = null;
-			arguments = new List<Expression>();
+        public static bool TryGetFormattingParameters(CSharpInvocationResolveResult invocationResolveResult, InvocationExpression invocationExpression,
+                                                       out Expression formatArgument, out IList<Expression> arguments,
+                                                      Func<IParameter, Expression, bool> argumentFilter)
+        {
+            if (argumentFilter == null)
+                argumentFilter = (p, e) => true;
 
-			// Serach for method of type: void Name(string format, params object[] args);
-			if (invocationResolveResult.Member.SymbolKind == SymbolKind.Method && invocationResolveResult.Member.DeclaringType != null) {
-				var methods = invocationResolveResult.Member.DeclaringType.GetMethods(m => m.Name == invocationResolveResult.Member.Name).ToList();
-				if (!methods.Any(m => m.Parameters.Count == 2 && 
-					m.Parameters[0].Type.IsKnownType(KnownTypeCode.String) && parameterNames.Contains(m.Parameters[0].Name) && 
-					m.Parameters[1].IsParams))
-					return false;
-			}
+            formatArgument = null;
+            arguments = new List<Expression>();
 
-			var argumentToParameterMap = invocationResolveResult.GetArgumentToParameterMap();
-			var resolvedParameters = invocationResolveResult.Member.Parameters;
-			var allArguments = invocationExpression.Arguments.ToArray();
-			for (int i = 0; i < allArguments.Length; i++) {
-				var parameterIndex = argumentToParameterMap[i];
-				if (parameterIndex < 0 || parameterIndex >= resolvedParameters.Count) {
-					// No valid mapping for this argument, skip it
-					continue;
-				}
-				var parameter = resolvedParameters[parameterIndex];
-				var argument = allArguments[i];
-				if (i == 0 && parameter.Type.IsKnownType(KnownTypeCode.String) && parameterNames.Contains(parameter.Name)) {
-					formatArgument = argument;
-				} else if (formatArgument != null && parameter.IsParams && !invocationResolveResult.IsExpandedForm) {
-					var ace = argument as ArrayCreateExpression;
-					if (ace == null || ace.Initializer.IsNull)
-						return false;
-					foreach (var element in ace.Initializer.Elements) {
-						if (argumentFilter(parameter, element))
-							arguments.Add(argument);
-					}
-				} else if (formatArgument != null && argumentFilter(parameter, argument)) {
-					arguments.Add(argument);
-				}
-			}
-			return formatArgument != null;
-		}
-	}
+            // Serach for method of type: void Name(string format, params object[] args);
+            if (invocationResolveResult.Member.SymbolKind == SymbolKind.Method && invocationResolveResult.Member.DeclaringType != null) {
+                var methods = invocationResolveResult.Member.DeclaringType.GetMethods(m => m.Name == invocationResolveResult.Member.Name).ToList();
+                if (!methods.Any(m => m.Parameters.Count == 2 && 
+                    m.Parameters[0].Type.IsKnownType(KnownTypeCode.String) && parameterNames.Contains(m.Parameters[0].Name) && 
+                    m.Parameters[1].IsParams))
+                    return false;
+            }
+
+            var argumentToParameterMap = invocationResolveResult.GetArgumentToParameterMap();
+            var resolvedParameters = invocationResolveResult.Member.Parameters;
+            var allArguments = invocationExpression.Arguments.ToArray();
+            for (int i = 0; i < allArguments.Length; i++) {
+                var parameterIndex = argumentToParameterMap[i];
+                if (parameterIndex < 0 || parameterIndex >= resolvedParameters.Count) {
+                    // No valid mapping for this argument, skip it
+                    continue;
+                }
+                var parameter = resolvedParameters[parameterIndex];
+                var argument = allArguments[i];
+                if (i == 0 && parameter.Type.IsKnownType(KnownTypeCode.String) && parameterNames.Contains(parameter.Name)) {
+                    formatArgument = argument;
+                } else if (formatArgument != null && parameter.IsParams && !invocationResolveResult.IsExpandedForm) {
+                    var ace = argument as ArrayCreateExpression;
+                    if (ace == null || ace.Initializer.IsNull)
+                        return false;
+                    foreach (var element in ace.Initializer.Elements) {
+                        if (argumentFilter(parameter, element))
+                            arguments.Add(argument);
+                    }
+                } else if (formatArgument != null && argumentFilter(parameter, argument)) {
+                    arguments.Add(argument);
+                }
+            }
+            return formatArgument != null;
+        }
+    }
 }
 

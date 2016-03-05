@@ -23,14 +23,14 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	public partial class DefaultUnresolvedTypeDefinition
-	{		
-		public IType Resolve(ITypeResolveContext context)
-		{
-			if (context == null)
-				throw new ArgumentNullException("context");
-			if (context.CurrentAssembly == null)
-				throw new ArgumentException("An ITypeDefinition cannot be resolved in a context without a current assembly.");
+    public partial class DefaultUnresolvedTypeDefinition
+    {
+        public IType Resolve(ITypeResolveContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            if (context.CurrentAssembly == null)
+                throw new ArgumentException("An ITypeDefinition cannot be resolved in a context without a current assembly.");
             IType resolvedType = context.CurrentAssembly.GetTypeDefinition(this.FullTypeName);
 
             if (resolvedType == null)
@@ -46,7 +46,7 @@ namespace ICSharpCode.NRefactory.TypeSystem.Implementation
                 }
             }
 
-		    return resolvedType ?? (IType)new UnknownType(this.Namespace, this.Name, this.TypeParameters.Count);
-		}
-	}
+            return resolvedType ?? (IType)new UnknownType(this.Namespace, this.Name, this.TypeParameters.Count);
+        }
+    }
 }

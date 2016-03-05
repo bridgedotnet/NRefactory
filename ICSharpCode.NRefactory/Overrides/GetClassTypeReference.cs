@@ -21,24 +21,24 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	public partial class GetClassTypeReference
-	{
-		public IType Resolve(ITypeResolveContext context)
-		{
-			if (context == null)
-				throw new ArgumentNullException("context");
-			
-			IType type = null;
+    public partial class GetClassTypeReference
+    {
+        public IType Resolve(ITypeResolveContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            IType type = null;
 
             if (assembly != null) 
             {
-				IAssembly asm = assembly.Resolve(context);
-				if (asm == null && assembly.ToString () == "System.Runtime")
-					asm = DefaultAssemblyReference.Corlib.Resolve (context);
-				if (asm != null) {
-					type = asm.GetTypeDefinition(fullTypeName);
-				}
-			}
+                IAssembly asm = assembly.Resolve(context);
+                if (asm == null && assembly.ToString () == "System.Runtime")
+                    asm = DefaultAssemblyReference.Corlib.Resolve (context);
+                if (asm != null) {
+                    type = asm.GetTypeDefinition(fullTypeName);
+                }
+            }
 
             if (type == null)
             {
@@ -58,7 +58,7 @@ namespace ICSharpCode.NRefactory.TypeSystem.Implementation
                 }
             }
 
-			return type ?? new UnknownType(fullTypeName);
-		}
-	}
+            return type ?? new UnknownType(fullTypeName);
+        }
+    }
 }

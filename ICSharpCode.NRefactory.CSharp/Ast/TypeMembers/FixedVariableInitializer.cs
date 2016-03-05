@@ -28,78 +28,78 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Name [ CountExpression ]
-	/// </summary>
-	public class FixedVariableInitializer : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
-		
-		public FixedVariableInitializer()
-		{
-		}
-		
-		public FixedVariableInitializer (string name, Expression initializer = null)
-		{
-			this.Name = name;
-			this.CountExpression = initializer;
-		}
+    /// <summary>
+    /// Name [ CountExpression ]
+    /// </summary>
+    public class FixedVariableInitializer : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-		public string Name {
-			get {
-				return GetChildByRole (Roles.Identifier).Name;
-			}
-			set {
-				SetChildByRole (Roles.Identifier, Identifier.Create (value));
-			}
-		}
-		
-		public Identifier NameToken {
-			get {
-				return GetChildByRole (Roles.Identifier);
-			}
-			set {
-				SetChildByRole (Roles.Identifier, value);
-			}
-		}
-		
-		public CSharpTokenNode LBracketToken {
-			get { return GetChildByRole (Roles.LBracket); }
-		}
+        public FixedVariableInitializer()
+        {
+        }
 
-		public Expression CountExpression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole (Roles.Expression, value); }
-		}
+        public FixedVariableInitializer (string name, Expression initializer = null)
+        {
+            this.Name = name;
+            this.CountExpression = initializer;
+        }
 
-		public CSharpTokenNode RBracketToken {
-			get { return GetChildByRole (Roles.RBracket); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitFixedVariableInitializer (this);
-		}
-				
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitFixedVariableInitializer (this);
-		}
+        public string Name {
+            get {
+                return GetChildByRole (Roles.Identifier).Name;
+            }
+            set {
+                SetChildByRole (Roles.Identifier, Identifier.Create (value));
+            }
+        }
 
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitFixedVariableInitializer (this, data);
-		}
-		
-		protected internal override bool DoMatch (AstNode other, ICSharpCode.NRefactory.PatternMatching.Match match)
-		{
-			var o = other as FixedVariableInitializer;
-			return o != null && MatchString (this.Name, o.Name) && this.CountExpression.DoMatch (o.CountExpression, match);
-		}
-	}
+        public Identifier NameToken {
+            get {
+                return GetChildByRole (Roles.Identifier);
+            }
+            set {
+                SetChildByRole (Roles.Identifier, value);
+            }
+        }
+
+        public CSharpTokenNode LBracketToken {
+            get { return GetChildByRole (Roles.LBracket); }
+        }
+
+        public Expression CountExpression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole (Roles.Expression, value); }
+        }
+
+        public CSharpTokenNode RBracketToken {
+            get { return GetChildByRole (Roles.RBracket); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitFixedVariableInitializer (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitFixedVariableInitializer (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitFixedVariableInitializer (this, data);
+        }
+
+        protected internal override bool DoMatch (AstNode other, ICSharpCode.NRefactory.PatternMatching.Match match)
+        {
+            var o = other as FixedVariableInitializer;
+            return o != null && MatchString (this.Name, o.Name) && this.CountExpression.DoMatch (o.CountExpression, match);
+        }
+    }
 }
 

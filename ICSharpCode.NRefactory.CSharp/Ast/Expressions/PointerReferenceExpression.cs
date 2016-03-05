@@ -1,6 +1,6 @@
 ﻿// 
 // PointerReferenceExpression.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -28,63 +28,63 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Target->MemberName
-	/// </summary>
-	public class PointerReferenceExpression : Expression
-	{
-		public readonly static TokenRole ArrowRole = new TokenRole ("->");
-		
-		public Expression Target {
-			get { return GetChildByRole (Roles.TargetExpression); }
-			set { SetChildByRole(Roles.TargetExpression, value); }
-		}
-		
-		public CSharpTokenNode ArrowToken {
-			get { return GetChildByRole (ArrowRole); }
-		}
-		
-		public string MemberName {
-			get {
-				return GetChildByRole (Roles.Identifier).Name;
-			}
-			set {
-				SetChildByRole(Roles.Identifier, Identifier.Create (value));
-			}
-		}
-		
-		public Identifier MemberNameToken {
-			get {
-				return GetChildByRole (Roles.Identifier);
-			}
-			set {
-				SetChildByRole (Roles.Identifier, value);
-			}
-		}
-		
-		public AstNodeCollection<AstType> TypeArguments {
-			get { return GetChildrenByRole (Roles.TypeArgument); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitPointerReferenceExpression (this);
-		}
-		
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitPointerReferenceExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitPointerReferenceExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			PointerReferenceExpression o = other as PointerReferenceExpression;
-			return o != null && MatchString(this.MemberName, o.MemberName) && this.TypeArguments.DoMatch(o.TypeArguments, match);
-		}
-	}
+    /// <summary>
+    /// Target->MemberName
+    /// </summary>
+    public class PointerReferenceExpression : Expression
+    {
+        public readonly static TokenRole ArrowRole = new TokenRole ("->");
+
+        public Expression Target {
+            get { return GetChildByRole (Roles.TargetExpression); }
+            set { SetChildByRole(Roles.TargetExpression, value); }
+        }
+
+        public CSharpTokenNode ArrowToken {
+            get { return GetChildByRole (ArrowRole); }
+        }
+
+        public string MemberName {
+            get {
+                return GetChildByRole (Roles.Identifier).Name;
+            }
+            set {
+                SetChildByRole(Roles.Identifier, Identifier.Create (value));
+            }
+        }
+
+        public Identifier MemberNameToken {
+            get {
+                return GetChildByRole (Roles.Identifier);
+            }
+            set {
+                SetChildByRole (Roles.Identifier, value);
+            }
+        }
+
+        public AstNodeCollection<AstType> TypeArguments {
+            get { return GetChildrenByRole (Roles.TypeArgument); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitPointerReferenceExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitPointerReferenceExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitPointerReferenceExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            PointerReferenceExpression o = other as PointerReferenceExpression;
+            return o != null && MatchString(this.MemberName, o.MemberName) && this.TypeArguments.DoMatch(o.TypeArguments, match);
+        }
+    }
 }

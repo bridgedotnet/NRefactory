@@ -21,8 +21,8 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	[Obsolete("This struct was renamed to 'TopLevelTypeName'.", true)]
-	public struct FullNameAndTypeParameterCount
-	{
-	}
+    [Obsolete("This struct was renamed to 'TopLevelTypeName'.", true)]
+    public struct FullNameAndTypeParameterCount
+    {
+    }
 }

@@ -31,92 +31,92 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// using Import;
-	/// </summary>
-	public class UsingDeclaration : AstNode
-	{
-		public static readonly TokenRole UsingKeywordRole = new TokenRole ("using");
-		public static readonly Role<AstType> ImportRole = new Role<AstType>("Import", AstType.Null);
-		
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
-		
-		public CSharpTokenNode UsingToken {
-			get { return GetChildByRole (UsingKeywordRole); }
-		}
-		
-		public AstType Import {
-			get { return GetChildByRole (ImportRole); }
-			set { SetChildByRole (ImportRole, value); }
-		}
-		
-		public string Namespace {
-			get { return ConstructNamespace (Import); }
-		}
+    /// <summary>
+    /// using Import;
+    /// </summary>
+    public class UsingDeclaration : AstNode
+    {
+        public static readonly TokenRole UsingKeywordRole = new TokenRole ("using");
+        public static readonly Role<AstType> ImportRole = new Role<AstType>("Import", AstType.Null);
 
-		internal static string ConstructNamespace (AstType type)
-		{
-			var stack = new Stack<string>();
-			while (type is MemberType) {
-				var mt = (MemberType)type;
-				stack.Push(mt.MemberName);
-				type = mt.Target;
-				if (mt.IsDoubleColon) {
-					stack.Push("::");
-				} else {
-					stack.Push("."); 
-				}
-			}
-			if (type is SimpleType)
-				stack.Push(((SimpleType)type).Identifier);
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-			var result = new StringBuilder();
-			while (stack.Count > 0)
-				result.Append(stack.Pop());
-			return result.ToString();
-		}
-		
-		public CSharpTokenNode SemicolonToken {
-			get { return GetChildByRole (Roles.Semicolon); }
-		}
-		
-		public UsingDeclaration ()
-		{
-		}
-		
-		public UsingDeclaration (string nameSpace)
-		{
-			AddChild (AstType.Create (nameSpace), ImportRole);
-		}
-		
-		public UsingDeclaration (AstType import)
-		{
-			AddChild (import, ImportRole);
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitUsingDeclaration (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitUsingDeclaration (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitUsingDeclaration (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			UsingDeclaration o = other as UsingDeclaration;
-			return o != null && this.Import.DoMatch(o.Import, match);
-		}
-	}
+        public CSharpTokenNode UsingToken {
+            get { return GetChildByRole (UsingKeywordRole); }
+        }
+
+        public AstType Import {
+            get { return GetChildByRole (ImportRole); }
+            set { SetChildByRole (ImportRole, value); }
+        }
+
+        public string Namespace {
+            get { return ConstructNamespace (Import); }
+        }
+
+        internal static string ConstructNamespace (AstType type)
+        {
+            var stack = new Stack<string>();
+            while (type is MemberType) {
+                var mt = (MemberType)type;
+                stack.Push(mt.MemberName);
+                type = mt.Target;
+                if (mt.IsDoubleColon) {
+                    stack.Push("::");
+                } else {
+                    stack.Push("."); 
+                }
+            }
+            if (type is SimpleType)
+                stack.Push(((SimpleType)type).Identifier);
+
+            var result = new StringBuilder();
+            while (stack.Count > 0)
+                result.Append(stack.Pop());
+            return result.ToString();
+        }
+
+        public CSharpTokenNode SemicolonToken {
+            get { return GetChildByRole (Roles.Semicolon); }
+        }
+
+        public UsingDeclaration ()
+        {
+        }
+
+        public UsingDeclaration (string nameSpace)
+        {
+            AddChild (AstType.Create (nameSpace), ImportRole);
+        }
+
+        public UsingDeclaration (AstType import)
+        {
+            AddChild (import, ImportRole);
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitUsingDeclaration (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitUsingDeclaration (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitUsingDeclaration (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            UsingDeclaration o = other as UsingDeclaration;
+            return o != null && this.Import.DoMatch(o.Import, match);
+        }
+    }
 }

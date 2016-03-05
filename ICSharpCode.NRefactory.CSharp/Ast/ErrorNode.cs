@@ -27,62 +27,62 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Represents a parsing error in the ast. At the moment it only represents missing closing bracket.
-	/// This closing bracket is replaced by a node at the highest possible position.
-	/// (To make GetAstNodeAt (line, col) working).
-	/// </summary>
-	public class ErrorNode : AstNode
-	{
-		static TextLocation maxLoc = new TextLocation (int.MaxValue, int.MaxValue);
-		
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
-				
-		public override TextLocation StartLocation {
-			get {
-				return maxLoc;
-			}
-		}
-		
-		public override TextLocation EndLocation {
-			get {
-				return maxLoc;
-			}
-		}
-		
-		public ErrorNode ()
-		{
-		}
+    /// <summary>
+    /// Represents a parsing error in the ast. At the moment it only represents missing closing bracket.
+    /// This closing bracket is replaced by a node at the highest possible position.
+    /// (To make GetAstNodeAt (line, col) working).
+    /// </summary>
+    public class ErrorNode : AstNode
+    {
+        static TextLocation maxLoc = new TextLocation (int.MaxValue, int.MaxValue);
 
-		public override void AcceptVisitor(IAstVisitor visitor)
-		{
-			visitor.VisitErrorNode(this);
-		}
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-		public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-		{
-			return visitor.VisitErrorNode(this);
-		}
+        public override TextLocation StartLocation {
+            get {
+                return maxLoc;
+            }
+        }
 
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitErrorNode(this, data);
-		}
+        public override TextLocation EndLocation {
+            get {
+                return maxLoc;
+            }
+        }
 
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			var o = other as ErrorNode;
-			return o != null;
-		}
+        public ErrorNode ()
+        {
+        }
 
-		public override string ToString(CSharpFormattingOptions formattingOptions)
-		{
-			return "[ErrorNode]";
-		}
-	}
+        public override void AcceptVisitor(IAstVisitor visitor)
+        {
+            visitor.VisitErrorNode(this);
+        }
+
+        public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
+        {
+            return visitor.VisitErrorNode(this);
+        }
+
+        public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitErrorNode(this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            var o = other as ErrorNode;
+            return o != null;
+        }
+
+        public override string ToString(CSharpFormattingOptions formattingOptions)
+        {
+            return "[ErrorNode]";
+        }
+    }
 }
 

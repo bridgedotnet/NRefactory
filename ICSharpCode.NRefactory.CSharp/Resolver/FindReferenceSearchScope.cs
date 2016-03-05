@@ -21,43 +21,43 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Resolver
 {
-	/// <summary>
-	/// Represents a scope in which references are searched.
-	/// </summary>
-	public interface IFindReferenceSearchScope
-	{
-		/// <summary>
-		/// Gets the compilation in which the entity being search for was defined.
-		/// This is not necessarily the same compilation as is being searched in.
-		/// </summary>
-		ICompilation Compilation { get; }
-		
-		/// <summary>
-		/// Gets the search term. Only files that contain this identifier need to be parsed.
-		/// Can return null if all files need to be parsed.
-		/// </summary>
-		string SearchTerm { get; }
-		
-		/// <summary>
-		/// Gets the accessibility that defines the search scope.
-		/// </summary>
-		Accessibility Accessibility { get; }
-		
-		/// <summary>
-		/// Gets the top-level entity that defines the search scope.
-		/// </summary>
-		ITypeDefinition TopLevelTypeDefinition { get; }
-		
-		/// <summary>
-		/// Gets the file name that defines the search scope.
-		/// If null, all files are searched.
-		/// </summary>
-		string FileName { get; }
-		
-		/// <summary>
-		/// Creates a navigator that can find references to this entity and reports
-		/// them to the specified callback.
-		/// </summary>
-		IResolveVisitorNavigator GetNavigator(ICompilation compilation, FoundReferenceCallback callback);
-	}
+    /// <summary>
+    /// Represents a scope in which references are searched.
+    /// </summary>
+    public interface IFindReferenceSearchScope
+    {
+        /// <summary>
+        /// Gets the compilation in which the entity being search for was defined.
+        /// This is not necessarily the same compilation as is being searched in.
+        /// </summary>
+        ICompilation Compilation { get; }
+
+        /// <summary>
+        /// Gets the search term. Only files that contain this identifier need to be parsed.
+        /// Can return null if all files need to be parsed.
+        /// </summary>
+        string SearchTerm { get; }
+
+        /// <summary>
+        /// Gets the accessibility that defines the search scope.
+        /// </summary>
+        Accessibility Accessibility { get; }
+
+        /// <summary>
+        /// Gets the top-level entity that defines the search scope.
+        /// </summary>
+        ITypeDefinition TopLevelTypeDefinition { get; }
+
+        /// <summary>
+        /// Gets the file name that defines the search scope.
+        /// If null, all files are searched.
+        /// </summary>
+        string FileName { get; }
+
+        /// <summary>
+        /// Creates a navigator that can find references to this entity and reports
+        /// them to the specified callback.
+        /// </summary>
+        IResolveVisitorNavigator GetNavigator(ICompilation compilation, FoundReferenceCallback callback);
+    }
 }

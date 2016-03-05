@@ -22,30 +22,30 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.Analysis
 {
-	public sealed class TypeGraphNode
-	{
-		readonly ITypeDefinition typeDef;
-		readonly List<TypeGraphNode> baseTypes = new List<TypeGraphNode>();
-		readonly List<TypeGraphNode> derivedTypes = new List<TypeGraphNode>();
-		
-		/// <summary>
-		/// Creates a new unconnected type graph node.
-		/// </summary>
-		public TypeGraphNode(ITypeDefinition typeDef)
-		{
-			this.typeDef = typeDef;
-		}
-		
-		public ITypeDefinition TypeDefinition {
-			get { return typeDef; }
-		}
-		
-		public IList<TypeGraphNode> DerivedTypes {
-			get { return derivedTypes; }
-		}
-		
-		public IList<TypeGraphNode> BaseTypes {
-			get { return baseTypes; }
-		}
-	}
+    public sealed class TypeGraphNode
+    {
+        readonly ITypeDefinition typeDef;
+        readonly List<TypeGraphNode> baseTypes = new List<TypeGraphNode>();
+        readonly List<TypeGraphNode> derivedTypes = new List<TypeGraphNode>();
+
+        /// <summary>
+        /// Creates a new unconnected type graph node.
+        /// </summary>
+        public TypeGraphNode(ITypeDefinition typeDef)
+        {
+            this.typeDef = typeDef;
+        }
+
+        public ITypeDefinition TypeDefinition {
+            get { return typeDef; }
+        }
+
+        public IList<TypeGraphNode> DerivedTypes {
+            get { return derivedTypes; }
+        }
+
+        public IList<TypeGraphNode> BaseTypes {
+            get { return baseTypes; }
+        }
+    }
 }

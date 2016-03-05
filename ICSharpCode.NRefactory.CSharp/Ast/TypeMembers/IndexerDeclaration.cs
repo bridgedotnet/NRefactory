@@ -30,93 +30,93 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public class IndexerDeclaration : EntityDeclaration
-	{
-		public static readonly TokenRole ThisKeywordRole = new TokenRole ("this");
-		public static readonly Role<Accessor> GetterRole = PropertyDeclaration.GetterRole;
-		public static readonly Role<Accessor> SetterRole = PropertyDeclaration.SetterRole;
-		
-		public override SymbolKind SymbolKind {
-			get { return SymbolKind.Indexer; }
-		}
-		
-		/// <summary>
-		/// Gets/Sets the type reference of the interface that is explicitly implemented.
-		/// Null node if this member is not an explicit interface implementation.
-		/// </summary>
-		public AstType PrivateImplementationType {
-			get { return GetChildByRole (PrivateImplementationTypeRole); }
-			set { SetChildByRole (PrivateImplementationTypeRole, value); }
-		}
-		
-		public override string Name {
-			get { return "Item"; }
-			set { throw new NotSupportedException(); }
-		}
-		
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public override Identifier NameToken {
-			get { return Identifier.Null; }
-			set { throw new NotSupportedException(); }
-		}
+    public class IndexerDeclaration : EntityDeclaration
+    {
+        public static readonly TokenRole ThisKeywordRole = new TokenRole ("this");
+        public static readonly Role<Accessor> GetterRole = PropertyDeclaration.GetterRole;
+        public static readonly Role<Accessor> SetterRole = PropertyDeclaration.SetterRole;
 
-		public CSharpTokenNode LBracketToken {
-			get { return GetChildByRole (Roles.LBracket); }
-		}
+        public override SymbolKind SymbolKind {
+            get { return SymbolKind.Indexer; }
+        }
 
-		public CSharpTokenNode ThisToken {
-			get { return GetChildByRole (ThisKeywordRole); }
-		}
-		
-		public AstNodeCollection<ParameterDeclaration> Parameters {
-			get { return GetChildrenByRole (Roles.Parameter); }
-		}
-		
-		public CSharpTokenNode RBracketToken {
-			get { return GetChildByRole (Roles.RBracket); }
-		}
-		
-		public CSharpTokenNode LBraceToken {
-			get { return GetChildByRole (Roles.LBrace); }
-		}
-		
-		public Accessor Getter {
-			get { return GetChildByRole(GetterRole); }
-			set { SetChildByRole(GetterRole, value); }
-		}
-		
-		public Accessor Setter {
-			get { return GetChildByRole(SetterRole); }
-			set { SetChildByRole(SetterRole, value); }
-		}
-		
-		public CSharpTokenNode RBraceToken {
-			get { return GetChildByRole (Roles.RBrace); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitIndexerDeclaration (this);
-		}
-		
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitIndexerDeclaration (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitIndexerDeclaration (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			IndexerDeclaration o = other as IndexerDeclaration;
-			return o != null
-				&& this.MatchAttributesAndModifiers(o, match) && this.ReturnType.DoMatch(o.ReturnType, match)
-				&& this.PrivateImplementationType.DoMatch(o.PrivateImplementationType, match)
-				&& this.Parameters.DoMatch(o.Parameters, match)
-				&& this.Getter.DoMatch(o.Getter, match) && this.Setter.DoMatch(o.Setter, match);
-		}
-	}
+        /// <summary>
+        /// Gets/Sets the type reference of the interface that is explicitly implemented.
+        /// Null node if this member is not an explicit interface implementation.
+        /// </summary>
+        public AstType PrivateImplementationType {
+            get { return GetChildByRole (PrivateImplementationTypeRole); }
+            set { SetChildByRole (PrivateImplementationTypeRole, value); }
+        }
+
+        public override string Name {
+            get { return "Item"; }
+            set { throw new NotSupportedException(); }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override Identifier NameToken {
+            get { return Identifier.Null; }
+            set { throw new NotSupportedException(); }
+        }
+
+        public CSharpTokenNode LBracketToken {
+            get { return GetChildByRole (Roles.LBracket); }
+        }
+
+        public CSharpTokenNode ThisToken {
+            get { return GetChildByRole (ThisKeywordRole); }
+        }
+
+        public AstNodeCollection<ParameterDeclaration> Parameters {
+            get { return GetChildrenByRole (Roles.Parameter); }
+        }
+
+        public CSharpTokenNode RBracketToken {
+            get { return GetChildByRole (Roles.RBracket); }
+        }
+
+        public CSharpTokenNode LBraceToken {
+            get { return GetChildByRole (Roles.LBrace); }
+        }
+
+        public Accessor Getter {
+            get { return GetChildByRole(GetterRole); }
+            set { SetChildByRole(GetterRole, value); }
+        }
+
+        public Accessor Setter {
+            get { return GetChildByRole(SetterRole); }
+            set { SetChildByRole(SetterRole, value); }
+        }
+
+        public CSharpTokenNode RBraceToken {
+            get { return GetChildByRole (Roles.RBrace); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitIndexerDeclaration (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitIndexerDeclaration (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitIndexerDeclaration (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            IndexerDeclaration o = other as IndexerDeclaration;
+            return o != null
+                && this.MatchAttributesAndModifiers(o, match) && this.ReturnType.DoMatch(o.ReturnType, match)
+                && this.PrivateImplementationType.DoMatch(o.PrivateImplementationType, match)
+                && this.Parameters.DoMatch(o.Parameters, match)
+                && this.Getter.DoMatch(o.Getter, match) && this.Setter.DoMatch(o.Setter, match);
+        }
+    }
 }

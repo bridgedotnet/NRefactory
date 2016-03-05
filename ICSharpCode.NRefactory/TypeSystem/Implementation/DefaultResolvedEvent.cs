@@ -22,48 +22,48 @@ using ICSharpCode.NRefactory.Utils;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	public class DefaultResolvedEvent : AbstractResolvedMember, IEvent
-	{
-		protected new readonly IUnresolvedEvent unresolved;
-		IMethod addAccessor;
-		IMethod removeAccessor;
-		IMethod invokeAccessor;
-		
-		public DefaultResolvedEvent(IUnresolvedEvent unresolved, ITypeResolveContext parentContext)
-			: base(unresolved, parentContext)
-		{
-			this.unresolved = unresolved;
-		}
-		
-		public bool CanAdd {
-			get { return unresolved.CanAdd; }
-		}
-		
-		public bool CanRemove {
-			get { return unresolved.CanRemove; }
-		}
-		
-		public bool CanInvoke {
-			get { return unresolved.CanInvoke; }
-		}
-		
-		public IMethod AddAccessor {
-			get { return GetAccessor(ref addAccessor, unresolved.AddAccessor); }
-		}
-		
-		public IMethod RemoveAccessor {
-			get { return GetAccessor(ref removeAccessor, unresolved.RemoveAccessor); }
-		}
-		
-		public IMethod InvokeAccessor {
-			get { return GetAccessor(ref invokeAccessor, unresolved.InvokeAccessor); }
-		}
-		
-		public override IMember Specialize(TypeParameterSubstitution substitution)
-		{
-			if (TypeParameterSubstitution.Identity.Equals(substitution))
-				return this;
-			return new SpecializedEvent(this, substitution);
-		}
-	}
+    public class DefaultResolvedEvent : AbstractResolvedMember, IEvent
+    {
+        protected new readonly IUnresolvedEvent unresolved;
+        IMethod addAccessor;
+        IMethod removeAccessor;
+        IMethod invokeAccessor;
+
+        public DefaultResolvedEvent(IUnresolvedEvent unresolved, ITypeResolveContext parentContext)
+            : base(unresolved, parentContext)
+        {
+            this.unresolved = unresolved;
+        }
+
+        public bool CanAdd {
+            get { return unresolved.CanAdd; }
+        }
+
+        public bool CanRemove {
+            get { return unresolved.CanRemove; }
+        }
+
+        public bool CanInvoke {
+            get { return unresolved.CanInvoke; }
+        }
+
+        public IMethod AddAccessor {
+            get { return GetAccessor(ref addAccessor, unresolved.AddAccessor); }
+        }
+
+        public IMethod RemoveAccessor {
+            get { return GetAccessor(ref removeAccessor, unresolved.RemoveAccessor); }
+        }
+
+        public IMethod InvokeAccessor {
+            get { return GetAccessor(ref invokeAccessor, unresolved.InvokeAccessor); }
+        }
+
+        public override IMember Specialize(TypeParameterSubstitution substitution)
+        {
+            if (TypeParameterSubstitution.Identity.Equals(substitution))
+                return this;
+            return new SpecializedEvent(this, substitution);
+        }
+    }
 }

@@ -21,30 +21,30 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.PatternMatching
 {
-	/// <summary>
-	/// Matches the last entry in the specified named group.
-	/// </summary>
-	public class Backreference : Pattern
-	{
-		readonly string referencedGroupName;
-		
-		public string ReferencedGroupName {
-			get { return referencedGroupName; }
-		}
-		
-		public Backreference(string referencedGroupName)
-		{
-			if (referencedGroupName == null)
-				throw new ArgumentNullException("referencedGroupName");
-			this.referencedGroupName = referencedGroupName;
-		}
-		
-		public override bool DoMatch(INode other, Match match)
-		{
-			var last = match.Get (referencedGroupName).Last ();
-			if (last == null && other == null)
-				return true;
-			return last.IsMatch(other);
-		}
-	}
+    /// <summary>
+    /// Matches the last entry in the specified named group.
+    /// </summary>
+    public class Backreference : Pattern
+    {
+        readonly string referencedGroupName;
+
+        public string ReferencedGroupName {
+            get { return referencedGroupName; }
+        }
+
+        public Backreference(string referencedGroupName)
+        {
+            if (referencedGroupName == null)
+                throw new ArgumentNullException("referencedGroupName");
+            this.referencedGroupName = referencedGroupName;
+        }
+
+        public override bool DoMatch(INode other, Match match)
+        {
+            var last = match.Get (referencedGroupName).Last ();
+            if (last == null && other == null)
+                return true;
+            return last.IsMatch(other);
+        }
+    }
 }

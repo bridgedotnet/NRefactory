@@ -25,177 +25,177 @@ using ICSharpCode.NRefactory.Semantics;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	/// <summary>
-	/// Helper methods for managing using declarations.
-	/// </summary>
-	public class UsingHelper
-	{
-		/// <summary>
-		/// Inserts 'using ns;' in the current scope, and then removes all explicit
-		/// usages of ns that were made redundant by the new using.
-		/// </summary>
-		public static void InsertUsingAndRemoveRedundantNamespaceUsage(RefactoringContext context, Script script, string ns)
-		{
-			InsertUsing(context, script, new UsingDeclaration(ns));
-			// TODO: remove the usages that were made redundant
-		}
-		
-		/// <summary>
-		/// Inserts 'newUsing' in the current scope.
-		/// This method will try to insert new usings in the correct position (depending on
-		/// where the existing usings are; and maintaining the sort order).
-		/// </summary>
-		public static void InsertUsing(RefactoringContext context, Script script, AstNode newUsing)
-		{
-			UsingInfo newUsingInfo = new UsingInfo(newUsing, context);
-			AstNode enclosingNamespace = context.GetNode<NamespaceDeclaration>() ?? context.RootNode;
-			// Find nearest enclosing parent that has usings:
-			AstNode usingParent = enclosingNamespace;
-			while (usingParent != null && !usingParent.Children.OfType<UsingDeclaration>().Any())
-				usingParent = usingParent.Parent;
-			if (usingParent == null) {
-				// No existing usings at all -> use the default location
-				if (script.FormattingOptions.UsingPlacement == UsingPlacement.TopOfFile) {
-					usingParent = context.RootNode;
-				} else {
-					usingParent = enclosingNamespace;
-				}
-			}
-			// Find the main block of using declarations in the chosen scope:
-			AstNode blockStart = usingParent.Children.FirstOrDefault(IsUsingDeclaration);
-			AstNode insertionPoint;
-			bool insertAfter = false;
-			if (blockStart == null) {
-				// no using declarations in the file
-				Debug.Assert(SyntaxTree.MemberRole == NamespaceDeclaration.MemberRole);
-				insertionPoint = usingParent.GetChildrenByRole(SyntaxTree.MemberRole).SkipWhile(CanAppearBeforeUsings).FirstOrDefault();
-			} else {
-				insertionPoint = blockStart;
-				while (IsUsingFollowing (ref insertionPoint) && newUsingInfo.CompareTo(new UsingInfo(insertionPoint, context)) > 0)
-					insertionPoint = insertionPoint.NextSibling;
-				if (!IsUsingDeclaration(insertionPoint)) {
-					// Insert after last using instead of before next node
-					// This affects where empty lines get placed.
-					insertionPoint = insertionPoint.PrevSibling;
-					insertAfter = true;
-				}
-			}
-			if (insertionPoint != null) {
-				if (insertAfter)
-					script.InsertAfter(insertionPoint, newUsing);
-				else
-					script.InsertBefore(insertionPoint, newUsing);
-			}
-		}
+    /// <summary>
+    /// Helper methods for managing using declarations.
+    /// </summary>
+    public class UsingHelper
+    {
+        /// <summary>
+        /// Inserts 'using ns;' in the current scope, and then removes all explicit
+        /// usages of ns that were made redundant by the new using.
+        /// </summary>
+        public static void InsertUsingAndRemoveRedundantNamespaceUsage(RefactoringContext context, Script script, string ns)
+        {
+            InsertUsing(context, script, new UsingDeclaration(ns));
+            // TODO: remove the usages that were made redundant
+        }
 
-		static bool IsUsingFollowing(ref AstNode insertionPoint)
-		{
-			var node = insertionPoint;
-			while (node != null && node.Role == Roles.NewLine)
-				node = node.NextSibling;
-			if (IsUsingDeclaration(node)) {
-				insertionPoint = node;
-				return true;
-			}
-			return false;
-		}
-		
-		static bool IsUsingDeclaration(AstNode node)
-		{
-			return node is UsingDeclaration || node is UsingAliasDeclaration;
-		}
-		
-		static bool CanAppearBeforeUsings(AstNode node)
-		{
-			if (node is ExternAliasDeclaration)
-				return true;
-			if (node is PreProcessorDirective)
-				return true;
-			if (node is NewLineNode)
-				return true;
-			Comment c = node as Comment;
-			if (c != null)
-				return !c.IsDocumentation;
-			return false;
-		}
-		
-		/// <summary>
-		/// Sorts the specified usings.
-		/// </summary>
-		public static IEnumerable<AstNode> SortUsingBlock(IEnumerable<AstNode> nodes, BaseRefactoringContext context)
-		{
-			var infos = nodes.Select(_ => new UsingInfo(_, context));
-			var orderedInfos = infos.OrderBy(_ => _);
-			var orderedNodes = orderedInfos.Select(_ => _.Node);
+        /// <summary>
+        /// Inserts 'newUsing' in the current scope.
+        /// This method will try to insert new usings in the correct position (depending on
+        /// where the existing usings are; and maintaining the sort order).
+        /// </summary>
+        public static void InsertUsing(RefactoringContext context, Script script, AstNode newUsing)
+        {
+            UsingInfo newUsingInfo = new UsingInfo(newUsing, context);
+            AstNode enclosingNamespace = context.GetNode<NamespaceDeclaration>() ?? context.RootNode;
+            // Find nearest enclosing parent that has usings:
+            AstNode usingParent = enclosingNamespace;
+            while (usingParent != null && !usingParent.Children.OfType<UsingDeclaration>().Any())
+                usingParent = usingParent.Parent;
+            if (usingParent == null) {
+                // No existing usings at all -> use the default location
+                if (script.FormattingOptions.UsingPlacement == UsingPlacement.TopOfFile) {
+                    usingParent = context.RootNode;
+                } else {
+                    usingParent = enclosingNamespace;
+                }
+            }
+            // Find the main block of using declarations in the chosen scope:
+            AstNode blockStart = usingParent.Children.FirstOrDefault(IsUsingDeclaration);
+            AstNode insertionPoint;
+            bool insertAfter = false;
+            if (blockStart == null) {
+                // no using declarations in the file
+                Debug.Assert(SyntaxTree.MemberRole == NamespaceDeclaration.MemberRole);
+                insertionPoint = usingParent.GetChildrenByRole(SyntaxTree.MemberRole).SkipWhile(CanAppearBeforeUsings).FirstOrDefault();
+            } else {
+                insertionPoint = blockStart;
+                while (IsUsingFollowing (ref insertionPoint) && newUsingInfo.CompareTo(new UsingInfo(insertionPoint, context)) > 0)
+                    insertionPoint = insertionPoint.NextSibling;
+                if (!IsUsingDeclaration(insertionPoint)) {
+                    // Insert after last using instead of before next node
+                    // This affects where empty lines get placed.
+                    insertionPoint = insertionPoint.PrevSibling;
+                    insertAfter = true;
+                }
+            }
+            if (insertionPoint != null) {
+                if (insertAfter)
+                    script.InsertAfter(insertionPoint, newUsing);
+                else
+                    script.InsertBefore(insertionPoint, newUsing);
+            }
+        }
 
-			return orderedNodes;
-		}
+        static bool IsUsingFollowing(ref AstNode insertionPoint)
+        {
+            var node = insertionPoint;
+            while (node != null && node.Role == Roles.NewLine)
+                node = node.NextSibling;
+            if (IsUsingDeclaration(node)) {
+                insertionPoint = node;
+                return true;
+            }
+            return false;
+        }
+
+        static bool IsUsingDeclaration(AstNode node)
+        {
+            return node is UsingDeclaration || node is UsingAliasDeclaration;
+        }
+
+        static bool CanAppearBeforeUsings(AstNode node)
+        {
+            if (node is ExternAliasDeclaration)
+                return true;
+            if (node is PreProcessorDirective)
+                return true;
+            if (node is NewLineNode)
+                return true;
+            Comment c = node as Comment;
+            if (c != null)
+                return !c.IsDocumentation;
+            return false;
+        }
+
+        /// <summary>
+        /// Sorts the specified usings.
+        /// </summary>
+        public static IEnumerable<AstNode> SortUsingBlock(IEnumerable<AstNode> nodes, BaseRefactoringContext context)
+        {
+            var infos = nodes.Select(_ => new UsingInfo(_, context));
+            var orderedInfos = infos.OrderBy(_ => _);
+            var orderedNodes = orderedInfos.Select(_ => _.Node);
+
+            return orderedNodes;
+        }
 
 
-		private sealed class UsingInfo : IComparable<UsingInfo>
-		{
-			public AstNode Node;
+        private sealed class UsingInfo : IComparable<UsingInfo>
+        {
+            public AstNode Node;
 
-			public string Alias;
-			public string Name;
+            public string Alias;
+            public string Name;
 
-			public bool IsAlias;
-			public bool HasTypesFromOtherAssemblies;
-			public bool IsSystem;
+            public bool IsAlias;
+            public bool HasTypesFromOtherAssemblies;
+            public bool IsSystem;
 
-			public UsingInfo(AstNode node, BaseRefactoringContext context)
-			{
-				var importAndAlias = GetImportAndAlias(node);
+            public UsingInfo(AstNode node, BaseRefactoringContext context)
+            {
+                var importAndAlias = GetImportAndAlias(node);
 
-				Node = node;
+                Node = node;
 
-				Alias = importAndAlias.Item2;
-				Name = importAndAlias.Item1.ToString();
+                Alias = importAndAlias.Item2;
+                Name = importAndAlias.Item1.ToString();
 
-				IsAlias = Alias != null;
+                IsAlias = Alias != null;
 
-				ResolveResult rr;
-				if (node.Ancestors.Contains(context.RootNode)) {
-					rr = context.Resolve(importAndAlias.Item1);
-				} else {
-					// It's possible that we're looking at a new using that
-					// isn't part of the AST.
-					var resolver = new CSharpAstResolver(new CSharpResolver(context.Compilation), node);
-					rr = resolver.Resolve(importAndAlias.Item1);
-				}
-				
-				var nrr = rr as NamespaceResolveResult;
-				HasTypesFromOtherAssemblies = nrr != null && nrr.Namespace.ContributingAssemblies.Any(a => !a.IsMainAssembly);
+                ResolveResult rr;
+                if (node.Ancestors.Contains(context.RootNode)) {
+                    rr = context.Resolve(importAndAlias.Item1);
+                } else {
+                    // It's possible that we're looking at a new using that
+                    // isn't part of the AST.
+                    var resolver = new CSharpAstResolver(new CSharpResolver(context.Compilation), node);
+                    rr = resolver.Resolve(importAndAlias.Item1);
+                }
 
-				IsSystem = HasTypesFromOtherAssemblies && (Name == "System" || Name.StartsWith("System.", StringComparison.Ordinal));
-			}
+                var nrr = rr as NamespaceResolveResult;
+                HasTypesFromOtherAssemblies = nrr != null && nrr.Namespace.ContributingAssemblies.Any(a => !a.IsMainAssembly);
 
-			private static Tuple<AstType, string> GetImportAndAlias(AstNode node)
-			{
-				var plainUsing = node as UsingDeclaration;
-				if (plainUsing != null)
-					return Tuple.Create(plainUsing.Import, (string)null);
-				
-				var aliasUsing = node as UsingAliasDeclaration;
-				if (aliasUsing != null)
-					return Tuple.Create(aliasUsing.Import, aliasUsing.Alias);
+                IsSystem = HasTypesFromOtherAssemblies && (Name == "System" || Name.StartsWith("System.", StringComparison.Ordinal));
+            }
 
-				throw new InvalidOperationException(string.Format("Invalid using node: {0}", node));
-			}
+            private static Tuple<AstType, string> GetImportAndAlias(AstNode node)
+            {
+                var plainUsing = node as UsingDeclaration;
+                if (plainUsing != null)
+                    return Tuple.Create(plainUsing.Import, (string)null);
 
-			public int CompareTo(UsingInfo y)
-			{
-				UsingInfo x = this;
-				if (x.IsAlias != y.IsAlias)
-					return x.IsAlias ? 1 : -1;
-				if (x.IsAlias)
-					return StringComparer.OrdinalIgnoreCase.Compare(x.Alias, y.Alias);
-//				if (x.HasTypesFromOtherAssemblies != y.HasTypesFromOtherAssemblies)
-//					return x.HasTypesFromOtherAssemblies ? -1 : 1;
-				if (x.IsSystem != y.IsSystem)
-					return x.IsSystem ? -1 : 1;
-				return StringComparer.OrdinalIgnoreCase.Compare(x.Name, y.Name);
-			}
-		}
-	}
+                var aliasUsing = node as UsingAliasDeclaration;
+                if (aliasUsing != null)
+                    return Tuple.Create(aliasUsing.Import, aliasUsing.Alias);
+
+                throw new InvalidOperationException(string.Format("Invalid using node: {0}", node));
+            }
+
+            public int CompareTo(UsingInfo y)
+            {
+                UsingInfo x = this;
+                if (x.IsAlias != y.IsAlias)
+                    return x.IsAlias ? 1 : -1;
+                if (x.IsAlias)
+                    return StringComparer.OrdinalIgnoreCase.Compare(x.Alias, y.Alias);
+//                if (x.HasTypesFromOtherAssemblies != y.HasTypesFromOtherAssemblies)
+//                    return x.HasTypesFromOtherAssemblies ? -1 : 1;
+                if (x.IsSystem != y.IsSystem)
+                    return x.IsSystem ? -1 : 1;
+                return StringComparer.OrdinalIgnoreCase.Compare(x.Name, y.Name);
+            }
+        }
+    }
 }

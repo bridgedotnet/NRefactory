@@ -37,72 +37,72 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	public abstract class RefactoringContext : BaseRefactoringContext
-	{
-		public RefactoringContext(CSharpAstResolver resolver, CancellationToken cancellationToken) : base (resolver, cancellationToken)
-		{
+    public abstract class RefactoringContext : BaseRefactoringContext
+    {
+        public RefactoringContext(CSharpAstResolver resolver, CancellationToken cancellationToken) : base (resolver, cancellationToken)
+        {
 
-		}
+        }
 
-		public abstract TextLocation Location { get; }
-		
-		public TypeSystemAstBuilder CreateTypeSystemAstBuilder()
-		{
-			var astNode = GetNode() ?? RootNode.GetNodeAt(Location) ?? RootNode;
-			var csResolver = Resolver.GetResolverStateBefore(astNode);
-			return new TypeSystemAstBuilder(csResolver);
-		}
-		
-		public virtual AstType CreateShortType (IType fullType)
-		{
-			var builder = CreateTypeSystemAstBuilder();
-			return builder.ConvertType(fullType);
-		}
-		
-		public virtual AstType CreateShortType(string ns, string name, int typeParameterCount = 0)
-		{
-			var builder = CreateTypeSystemAstBuilder();
-			return builder.ConvertType(new TopLevelTypeName(ns, name, typeParameterCount));
-		}
+        public abstract TextLocation Location { get; }
 
-		public virtual IEnumerable<AstNode> GetSelectedNodes()
-		{
-			if (!IsSomethingSelected) {
-				return Enumerable.Empty<AstNode> ();
-			}
-			
-			return RootNode.GetNodesBetween(SelectionStart, SelectionEnd);
-		}
+        public TypeSystemAstBuilder CreateTypeSystemAstBuilder()
+        {
+            var astNode = GetNode() ?? RootNode.GetNodeAt(Location) ?? RootNode;
+            var csResolver = Resolver.GetResolverStateBefore(astNode);
+            return new TypeSystemAstBuilder(csResolver);
+        }
 
-		public AstNode GetNode ()
-		{
-			return RootNode.GetNodeAt (Location);
-		}
-		
-		public AstNode GetNode (Predicate<AstNode> pred)
-		{
-			return RootNode.GetNodeAt (Location, pred);
-		}
-		
-		public T GetNode<T> () where T : AstNode
-		{
-			return RootNode.GetNodeAt<T> (Location);
-		}
-		
-		public CSharpTypeResolveContext GetTypeResolveContext()
-		{
-			if (UnresolvedFile != null)
-				return UnresolvedFile.GetTypeResolveContext(Compilation, Location);
-			else
-				return null;
-		}
+        public virtual AstType CreateShortType (IType fullType)
+        {
+            var builder = CreateTypeSystemAstBuilder();
+            return builder.ConvertType(fullType);
+        }
 
-		#region Naming
-		public virtual string GetNameProposal (string name, bool camelCase = true)
-		{
-			return GetNameProposal(name, Location, camelCase);
-		}
-		#endregion
-	}
+        public virtual AstType CreateShortType(string ns, string name, int typeParameterCount = 0)
+        {
+            var builder = CreateTypeSystemAstBuilder();
+            return builder.ConvertType(new TopLevelTypeName(ns, name, typeParameterCount));
+        }
+
+        public virtual IEnumerable<AstNode> GetSelectedNodes()
+        {
+            if (!IsSomethingSelected) {
+                return Enumerable.Empty<AstNode> ();
+            }
+
+            return RootNode.GetNodesBetween(SelectionStart, SelectionEnd);
+        }
+
+        public AstNode GetNode ()
+        {
+            return RootNode.GetNodeAt (Location);
+        }
+
+        public AstNode GetNode (Predicate<AstNode> pred)
+        {
+            return RootNode.GetNodeAt (Location, pred);
+        }
+
+        public T GetNode<T> () where T : AstNode
+        {
+            return RootNode.GetNodeAt<T> (Location);
+        }
+
+        public CSharpTypeResolveContext GetTypeResolveContext()
+        {
+            if (UnresolvedFile != null)
+                return UnresolvedFile.GetTypeResolveContext(Compilation, Location);
+            else
+                return null;
+        }
+
+        #region Naming
+        public virtual string GetNameProposal (string name, bool camelCase = true)
+        {
+            return GetNameProposal(name, Location, camelCase);
+        }
+        #endregion
+    }
 }
 

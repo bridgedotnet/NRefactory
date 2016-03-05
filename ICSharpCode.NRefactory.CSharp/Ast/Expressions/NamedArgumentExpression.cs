@@ -20,68 +20,68 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Represents a named argument passed to a method or attribute.
-	/// name: expression
-	/// </summary>
-	public class NamedArgumentExpression : Expression
-	{
-		public NamedArgumentExpression()
-		{
-		}
-		
-		public NamedArgumentExpression(string name, Expression expression)
-		{
-			this.Name = name;
-			this.Expression = expression;
-		}
-		
-		public string Name {
-			get {
-				return GetChildByRole (Roles.Identifier).Name;
-			}
-			set {
-				SetChildByRole(Roles.Identifier, CSharp.Identifier.Create (value));
-			}
-		}
-		
-		public Identifier NameToken {
-			get {
-				return GetChildByRole (Roles.Identifier);
-			}
-			set {
-				SetChildByRole(Roles.Identifier, value);
-			}
-		}
-		
-		public CSharpTokenNode ColonToken {
-			get { return GetChildByRole (Roles.Colon); }
-		}
-		
-		public Expression Expression {
-			get { return GetChildByRole (Roles.Expression); }
-			set { SetChildByRole (Roles.Expression, value); }
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitNamedArgumentExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitNamedArgumentExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitNamedArgumentExpression(this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			NamedArgumentExpression o = other as NamedArgumentExpression;
-			return o != null && MatchString(this.Name, o.Name) && this.Expression.DoMatch(o.Expression, match);
-		}
-	}
+    /// <summary>
+    /// Represents a named argument passed to a method or attribute.
+    /// name: expression
+    /// </summary>
+    public class NamedArgumentExpression : Expression
+    {
+        public NamedArgumentExpression()
+        {
+        }
+
+        public NamedArgumentExpression(string name, Expression expression)
+        {
+            this.Name = name;
+            this.Expression = expression;
+        }
+
+        public string Name {
+            get {
+                return GetChildByRole (Roles.Identifier).Name;
+            }
+            set {
+                SetChildByRole(Roles.Identifier, CSharp.Identifier.Create (value));
+            }
+        }
+
+        public Identifier NameToken {
+            get {
+                return GetChildByRole (Roles.Identifier);
+            }
+            set {
+                SetChildByRole(Roles.Identifier, value);
+            }
+        }
+
+        public CSharpTokenNode ColonToken {
+            get { return GetChildByRole (Roles.Colon); }
+        }
+
+        public Expression Expression {
+            get { return GetChildByRole (Roles.Expression); }
+            set { SetChildByRole (Roles.Expression, value); }
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitNamedArgumentExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitNamedArgumentExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitNamedArgumentExpression(this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            NamedArgumentExpression o = other as NamedArgumentExpression;
+            return o != null && MatchString(this.Name, o.Name) && this.Expression.DoMatch(o.Expression, match);
+        }
+    }
 }

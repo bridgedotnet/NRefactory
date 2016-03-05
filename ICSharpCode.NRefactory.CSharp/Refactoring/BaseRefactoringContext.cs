@@ -1,6 +1,6 @@
 ﻿// 
 // BaseRefactoringContext.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -41,279 +41,279 @@ using ICSharpCode.NRefactory.Analysis;
 
 namespace ICSharpCode.NRefactory.CSharp.Refactoring
 {
-	public abstract class BaseRefactoringContext : IServiceProvider
-	{
-		readonly CSharpAstResolver resolver;
-		readonly CancellationToken cancellationToken;
-		
-		public virtual bool Supports(Version version)
-		{
-			return true;
-		}
+    public abstract class BaseRefactoringContext : IServiceProvider
+    {
+        readonly CSharpAstResolver resolver;
+        readonly CancellationToken cancellationToken;
 
-		/// <summary>
-		/// Gets the default namespace which should be defined in this file.
-		/// </summary>
-		public abstract string DefaultNamespace {
-			get;
-		}
+        public virtual bool Supports(Version version)
+        {
+            return true;
+        }
 
-		/// <summary>
-		/// Gets a value indicating if 'var' keyword should be used or explicit types.
-		/// </summary>
-		public virtual bool UseExplicitTypes {
-			get;
-			set;
-		}
-		
-		public CancellationToken CancellationToken {
-			get { return cancellationToken; }
-		}
-		
-		public virtual AstNode RootNode {
-			get {
-				return resolver.RootNode;
-			}
-		}
+        /// <summary>
+        /// Gets the default namespace which should be defined in this file.
+        /// </summary>
+        public abstract string DefaultNamespace {
+            get;
+        }
 
-		public CSharpAstResolver Resolver {
-			get {
-				return resolver;
-			}
-		}
+        /// <summary>
+        /// Gets a value indicating if 'var' keyword should be used or explicit types.
+        /// </summary>
+        public virtual bool UseExplicitTypes {
+            get;
+            set;
+        }
 
-		public virtual CSharpUnresolvedFile UnresolvedFile {
-			get {
-				return resolver.UnresolvedFile;
-			}
-		}
+        public CancellationToken CancellationToken {
+            get { return cancellationToken; }
+        }
 
-		public ICompilation Compilation {
-			get { return resolver.Compilation; }
-		}
+        public virtual AstNode RootNode {
+            get {
+                return resolver.RootNode;
+            }
+        }
 
-		/// <summary>
-		/// Gets the type graph for the current compilation.
-		/// </summary>
-		public virtual TypeGraph TypeGraph {
-			get { return new TypeGraph(Compilation.Assemblies); }
-		}
-		
-		public BaseRefactoringContext (ICSharpCode.NRefactory.CSharp.Resolver.CSharpAstResolver resolver, System.Threading.CancellationToken cancellationToken)
-		{
-			this.resolver = resolver;
-			this.cancellationToken = cancellationToken;
-			this.referenceFinder = new LocalReferenceFinder(resolver);
-		}
+        public CSharpAstResolver Resolver {
+            get {
+                return resolver;
+            }
+        }
 
+        public virtual CSharpUnresolvedFile UnresolvedFile {
+            get {
+                return resolver.UnresolvedFile;
+            }
+        }
 
-		#region Resolving
-		public ResolveResult Resolve (AstNode node)
-		{
-			return resolver.Resolve (node, cancellationToken);
-		}
-		
-		public CSharpResolver GetResolverStateBefore(AstNode node)
-		{
-			return resolver.GetResolverStateBefore (node, cancellationToken);
-		}
-		
-		public CSharpResolver GetResolverStateAfter(AstNode node)
-		{
-			return resolver.GetResolverStateAfter (node, cancellationToken);
-		}
+        public ICompilation Compilation {
+            get { return resolver.Compilation; }
+        }
 
-		public IType ResolveType (AstType type)
-		{
-			return resolver.Resolve (type, cancellationToken).Type;
-		}
-		
-		public IType GetExpectedType (Expression expression)
-		{
-			return resolver.GetExpectedType(expression, cancellationToken);
-		}
-		
-		public Conversion GetConversion (Expression expression)
-		{
-			return resolver.GetConversion(expression, cancellationToken);
-		}
-		
-		public TypeSystemAstBuilder CreateTypeSystemAstBuilder(AstNode node)
-		{
-			var csResolver = resolver.GetResolverStateBefore(node);
-			return new TypeSystemAstBuilder(csResolver);
-		}
-		#endregion
+        /// <summary>
+        /// Gets the type graph for the current compilation.
+        /// </summary>
+        public virtual TypeGraph TypeGraph {
+            get { return new TypeGraph(Compilation.Assemblies); }
+        }
 
-		#region Code Analyzation
-		/// <summary>
-		/// Creates a new definite assignment analysis object with a given root statement.
-		/// </summary>
-		/// <returns>
-		/// The definite assignment analysis object.
-		/// </returns>
-		/// <param name='root'>
-		/// The root statement.
-		/// </param>
-		public DefiniteAssignmentAnalysis CreateDefiniteAssignmentAnalysis (Statement root)
-		{
-			return new DefiniteAssignmentAnalysis (root, resolver, CancellationToken);
-		}
-
-		/// <summary>
-		/// Creates a new reachability analysis object with a given statement.
-		/// </summary>
-		/// <param name="statement">
-		/// The statement to start the analysis.
-		/// </param>
-		/// <param name="recursiveDetectorVisitor">
-		/// TODO.
-		/// </param>
-		/// <returns>
-		/// The reachability analysis object.
-		/// </returns>
-		public ReachabilityAnalysis CreateReachabilityAnalysis (Statement statement, ReachabilityAnalysis.RecursiveDetectorVisitor recursiveDetectorVisitor = null)
-		{
-			return ReachabilityAnalysis.Create (statement, resolver, recursiveDetectorVisitor, CancellationToken);
-		}
-
-		/// <summary>
-		/// Parses a composite format string.
-		/// </summary>
-		/// <returns>
-		/// The format string parsing result.
-		/// </returns>
-		public virtual FormatStringParseResult ParseFormatString(string source)
-		{
-			return new CompositeFormatStringParser().Parse(source);
-		}
-
-		LocalReferenceFinder referenceFinder;
-
-		public IList<ReferenceResult> FindReferences(AstNode rootNode, IVariable variable)
-		{
-			return referenceFinder.FindReferences(rootNode, variable);
-		}
-
-		#endregion
+        public BaseRefactoringContext (ICSharpCode.NRefactory.CSharp.Resolver.CSharpAstResolver resolver, System.Threading.CancellationToken cancellationToken)
+        {
+            this.resolver = resolver;
+            this.cancellationToken = cancellationToken;
+            this.referenceFinder = new LocalReferenceFinder(resolver);
+        }
 
 
-		#region Naming
-		public virtual string GetNameProposal (string name, TextLocation loc, bool camelCase = true)
-		{
-			string baseName = (camelCase ? char.ToLower (name [0]) : char.ToUpper (name [0])) + name.Substring (1);
+        #region Resolving
+        public ResolveResult Resolve (AstNode node)
+        {
+            return resolver.Resolve (node, cancellationToken);
+        }
 
-			var type = RootNode.GetNodeAt<TypeDeclaration>(loc);
-			if (type == null)
-				return baseName;
+        public CSharpResolver GetResolverStateBefore(AstNode node)
+        {
+            return resolver.GetResolverStateBefore (node, cancellationToken);
+        }
 
-			int number = -1;
-			string proposedName;
-			do {
-				proposedName = AppendNumberToName (baseName, number++);
-			} while (type.Members.Select (m => m.GetChildByRole (Roles.Identifier)).Any (n => n.Name == proposedName));
-			return proposedName;
-		}
-		
-		public virtual string GetLocalNameProposal (string name, TextLocation loc, bool camelCase = true)
-		{
-			string baseName = (camelCase ? char.ToLower (name [0]) : char.ToUpper (name [0])) + name.Substring (1);
-			var node = RootNode.GetNodeAt(loc);
-			if (node == null)
-				return baseName;
-			
-			var context = GetResolverStateBefore (node);
-			int number = -1;
-			string proposedName;
-			do {
-				proposedName = AppendNumberToName (baseName, number++);
-			} while (!(context.ResolveSimpleName (proposedName, EmptyList<IType>.Instance) is UnknownIdentifierResolveResult));
-			return proposedName;
-		}
+        public CSharpResolver GetResolverStateAfter(AstNode node)
+        {
+            return resolver.GetResolverStateAfter (node, cancellationToken);
+        }
 
-		static string AppendNumberToName (string baseName, int number)
-		{
-			return baseName + (number > 0 ? (number + 1).ToString () : "");
-		}
-		#endregion
+        public IType ResolveType (AstType type)
+        {
+            return resolver.Resolve (type, cancellationToken).Type;
+        }
 
-		#region Text stuff
-		public virtual TextEditorOptions TextEditorOptions {
-			get {
-				return TextEditorOptions.Default;
-			}
-		}
+        public IType GetExpectedType (Expression expression)
+        {
+            return resolver.GetExpectedType(expression, cancellationToken);
+        }
 
-		public virtual bool IsSomethingSelected {
-			get {
-				return SelectionStart != TextLocation.Empty;
-			}
-		}
+        public Conversion GetConversion (Expression expression)
+        {
+            return resolver.GetConversion(expression, cancellationToken);
+        }
 
-		public virtual string SelectedText {
-			get { return string.Empty; }
-		}
+        public TypeSystemAstBuilder CreateTypeSystemAstBuilder(AstNode node)
+        {
+            var csResolver = resolver.GetResolverStateBefore(node);
+            return new TypeSystemAstBuilder(csResolver);
+        }
+        #endregion
 
-		public virtual TextLocation SelectionStart {
-			get {
-				return TextLocation.Empty;
-			}
-		}
+        #region Code Analyzation
+        /// <summary>
+        /// Creates a new definite assignment analysis object with a given root statement.
+        /// </summary>
+        /// <returns>
+        /// The definite assignment analysis object.
+        /// </returns>
+        /// <param name='root'>
+        /// The root statement.
+        /// </param>
+        public DefiniteAssignmentAnalysis CreateDefiniteAssignmentAnalysis (Statement root)
+        {
+            return new DefiniteAssignmentAnalysis (root, resolver, CancellationToken);
+        }
 
-		public virtual TextLocation SelectionEnd {
-			get {
-				return TextLocation.Empty;
-			}
-		}
+        /// <summary>
+        /// Creates a new reachability analysis object with a given statement.
+        /// </summary>
+        /// <param name="statement">
+        /// The statement to start the analysis.
+        /// </param>
+        /// <param name="recursiveDetectorVisitor">
+        /// TODO.
+        /// </param>
+        /// <returns>
+        /// The reachability analysis object.
+        /// </returns>
+        public ReachabilityAnalysis CreateReachabilityAnalysis (Statement statement, ReachabilityAnalysis.RecursiveDetectorVisitor recursiveDetectorVisitor = null)
+        {
+            return ReachabilityAnalysis.Create (statement, resolver, recursiveDetectorVisitor, CancellationToken);
+        }
 
-		public abstract int GetOffset (TextLocation location);
+        /// <summary>
+        /// Parses a composite format string.
+        /// </summary>
+        /// <returns>
+        /// The format string parsing result.
+        /// </returns>
+        public virtual FormatStringParseResult ParseFormatString(string source)
+        {
+            return new CompositeFormatStringParser().Parse(source);
+        }
 
-		public abstract IDocumentLine GetLineByOffset (int offset);
+        LocalReferenceFinder referenceFinder;
 
-		public int GetOffset (int line, int col)
-		{
-			return GetOffset (new TextLocation (line, col));
-		}
+        public IList<ReferenceResult> FindReferences(AstNode rootNode, IVariable variable)
+        {
+            return referenceFinder.FindReferences(rootNode, variable);
+        }
 
-		public abstract TextLocation GetLocation (int offset);
-
-		public abstract string GetText (int offset, int length);
-
-		public abstract string GetText (ISegment segment);
-		#endregion
+        #endregion
 
 
-		/// <summary>
-		/// Translates the english input string to the context language.
-		/// </summary>
-		/// <returns>
-		/// The translated string.
-		/// </returns>
-		public virtual string TranslateString(string str)
-		{
-			return str;
-		}
+        #region Naming
+        public virtual string GetNameProposal (string name, TextLocation loc, bool camelCase = true)
+        {
+            string baseName = (camelCase ? char.ToLower (name [0]) : char.ToUpper (name [0])) + name.Substring (1);
 
-		#region IServiceProvider implementation
-		IServiceContainer services = new ServiceContainer();
-		
-		/// <summary>
-		/// Gets a service container used to associate services with this context.
-		/// </summary>
-		public IServiceContainer Services {
-			get { return services; }
-			protected set { services = value; }
-		}
-		
-		/// <summary>
-		/// Retrieves a service from the refactoring context.
-		/// If the service is not found in the <see cref="Services"/> container.
-		/// </summary>
-		public object GetService(Type serviceType)
-		{
-			return services.GetService(serviceType);
-		}
-		#endregion
-	}
-	
+            var type = RootNode.GetNodeAt<TypeDeclaration>(loc);
+            if (type == null)
+                return baseName;
+
+            int number = -1;
+            string proposedName;
+            do {
+                proposedName = AppendNumberToName (baseName, number++);
+            } while (type.Members.Select (m => m.GetChildByRole (Roles.Identifier)).Any (n => n.Name == proposedName));
+            return proposedName;
+        }
+
+        public virtual string GetLocalNameProposal (string name, TextLocation loc, bool camelCase = true)
+        {
+            string baseName = (camelCase ? char.ToLower (name [0]) : char.ToUpper (name [0])) + name.Substring (1);
+            var node = RootNode.GetNodeAt(loc);
+            if (node == null)
+                return baseName;
+
+            var context = GetResolverStateBefore (node);
+            int number = -1;
+            string proposedName;
+            do {
+                proposedName = AppendNumberToName (baseName, number++);
+            } while (!(context.ResolveSimpleName (proposedName, EmptyList<IType>.Instance) is UnknownIdentifierResolveResult));
+            return proposedName;
+        }
+
+        static string AppendNumberToName (string baseName, int number)
+        {
+            return baseName + (number > 0 ? (number + 1).ToString () : "");
+        }
+        #endregion
+
+        #region Text stuff
+        public virtual TextEditorOptions TextEditorOptions {
+            get {
+                return TextEditorOptions.Default;
+            }
+        }
+
+        public virtual bool IsSomethingSelected {
+            get {
+                return SelectionStart != TextLocation.Empty;
+            }
+        }
+
+        public virtual string SelectedText {
+            get { return string.Empty; }
+        }
+
+        public virtual TextLocation SelectionStart {
+            get {
+                return TextLocation.Empty;
+            }
+        }
+
+        public virtual TextLocation SelectionEnd {
+            get {
+                return TextLocation.Empty;
+            }
+        }
+
+        public abstract int GetOffset (TextLocation location);
+
+        public abstract IDocumentLine GetLineByOffset (int offset);
+
+        public int GetOffset (int line, int col)
+        {
+            return GetOffset (new TextLocation (line, col));
+        }
+
+        public abstract TextLocation GetLocation (int offset);
+
+        public abstract string GetText (int offset, int length);
+
+        public abstract string GetText (ISegment segment);
+        #endregion
+
+
+        /// <summary>
+        /// Translates the english input string to the context language.
+        /// </summary>
+        /// <returns>
+        /// The translated string.
+        /// </returns>
+        public virtual string TranslateString(string str)
+        {
+            return str;
+        }
+
+        #region IServiceProvider implementation
+        IServiceContainer services = new ServiceContainer();
+
+        /// <summary>
+        /// Gets a service container used to associate services with this context.
+        /// </summary>
+        public IServiceContainer Services {
+            get { return services; }
+            protected set { services = value; }
+        }
+
+        /// <summary>
+        /// Retrieves a service from the refactoring context.
+        /// If the service is not found in the <see cref="Services"/> container.
+        /// </summary>
+        public object GetService(Type serviceType)
+        {
+            return services.GetService(serviceType);
+        }
+        #endregion
+    }
+
 }

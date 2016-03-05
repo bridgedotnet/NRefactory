@@ -22,33 +22,33 @@ using ICSharpCode.NRefactory.PatternMatching;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Matches identifier expressions that have the same identifier as the referenced variable/type definition/method definition.
-	/// </summary>
-	public class IdentifierExpressionBackreference : Pattern
-	{
-		readonly string referencedGroupName;
-		
-		public string ReferencedGroupName {
-			get { return referencedGroupName; }
-		}
-		
-		public IdentifierExpressionBackreference(string referencedGroupName)
-		{
-			if (referencedGroupName == null)
-				throw new ArgumentNullException("referencedGroupName");
-			this.referencedGroupName = referencedGroupName;
-		}
-		
-		public override bool DoMatch(INode other, Match match)
-		{
-			CSharp.IdentifierExpression ident = other as CSharp.IdentifierExpression;
-			if (ident == null || ident.TypeArguments.Any())
-				return false;
-			CSharp.AstNode referenced = (CSharp.AstNode)match.Get(referencedGroupName).Last();
-			if (referenced == null)
-				return false;
-			return ident.Identifier == referenced.GetChildByRole(CSharp.Roles.Identifier).Name;
-		}
-	}
+    /// <summary>
+    /// Matches identifier expressions that have the same identifier as the referenced variable/type definition/method definition.
+    /// </summary>
+    public class IdentifierExpressionBackreference : Pattern
+    {
+        readonly string referencedGroupName;
+
+        public string ReferencedGroupName {
+            get { return referencedGroupName; }
+        }
+
+        public IdentifierExpressionBackreference(string referencedGroupName)
+        {
+            if (referencedGroupName == null)
+                throw new ArgumentNullException("referencedGroupName");
+            this.referencedGroupName = referencedGroupName;
+        }
+
+        public override bool DoMatch(INode other, Match match)
+        {
+            CSharp.IdentifierExpression ident = other as CSharp.IdentifierExpression;
+            if (ident == null || ident.TypeArguments.Any())
+                return false;
+            CSharp.AstNode referenced = (CSharp.AstNode)match.Get(referencedGroupName).Last();
+            if (referenced == null)
+                return false;
+            return ident.Identifier == referenced.GetChildByRole(CSharp.Roles.Identifier).Name;
+        }
+    }
 }

@@ -23,86 +23,86 @@ using ICSharpCode.NRefactory.Utils;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	public class DefaultResolvedProperty : AbstractResolvedMember, IProperty
-	{
-		protected new readonly IUnresolvedProperty unresolved;
-		readonly IList<IParameter> parameters;
-		IMethod getter;
-		IMethod setter;
-		const Accessibility InvalidAccessibility = (Accessibility)0xff;
-		volatile Accessibility cachedAccessiblity = InvalidAccessibility;
-		
-		public DefaultResolvedProperty(IUnresolvedProperty unresolved, ITypeResolveContext parentContext)
-			: base(unresolved, parentContext)
-		{
-			this.unresolved = unresolved;
-			this.parameters = unresolved.Parameters.CreateResolvedParameters(context);
-		}
-		
-		public IList<IParameter> Parameters {
-			get { return parameters; }
-		}
-		
-		public override Accessibility Accessibility {
-			get {
-				var acc = cachedAccessiblity;
-				if (acc == InvalidAccessibility)
-					return cachedAccessiblity = ComputeAccessibility();
-				else
-					return acc;
-			}
-		}
-		
-		Accessibility ComputeAccessibility()
-		{
-			var baseAcc = base.Accessibility;
-			if (IsOverride && !(CanGet && CanSet)) {
-				foreach (var baseMember in InheritanceHelper.GetBaseMembers(this, false)) {
-					if (!baseMember.IsOverride)
-						return baseMember.Accessibility;
-				}
-			}
-			return baseAcc;
-		}
-		
-		public bool CanGet {
-			get { return unresolved.CanGet; }
-		}
-		
-		public bool CanSet {
-			get { return unresolved.CanSet; }
-		}
-		
-		public IMethod Getter {
-			get { return GetAccessor(ref getter, unresolved.Getter); }
-		}
-		
-		public IMethod Setter {
-			get { return GetAccessor(ref setter, unresolved.Setter); }
-		}
-		
-		public bool IsIndexer {
-			get { return unresolved.IsIndexer; }
-		}
-		
-		public override ISymbolReference ToReference()
-		{
-			var declType = this.DeclaringType;
-			var declTypeRef = declType != null ? declType.ToTypeReference() : SpecialType.UnknownType;
-			if (IsExplicitInterfaceImplementation && ImplementedInterfaceMembers.Count == 1) {
-				return new ExplicitInterfaceImplementationMemberReference(declTypeRef, ImplementedInterfaceMembers[0].ToReference());
-			} else {
-				return new DefaultMemberReference(
-					this.SymbolKind, declTypeRef, this.Name, 0,
-					this.Parameters.Select(p => p.Type.ToTypeReference()).ToList());
-			}
-		}
-		
-		public override IMember Specialize(TypeParameterSubstitution substitution)
-		{
-			if (TypeParameterSubstitution.Identity.Equals(substitution))
-				return this;
-			return new SpecializedProperty(this, substitution);
-		}
-	}
+    public class DefaultResolvedProperty : AbstractResolvedMember, IProperty
+    {
+        protected new readonly IUnresolvedProperty unresolved;
+        readonly IList<IParameter> parameters;
+        IMethod getter;
+        IMethod setter;
+        const Accessibility InvalidAccessibility = (Accessibility)0xff;
+        volatile Accessibility cachedAccessiblity = InvalidAccessibility;
+
+        public DefaultResolvedProperty(IUnresolvedProperty unresolved, ITypeResolveContext parentContext)
+            : base(unresolved, parentContext)
+        {
+            this.unresolved = unresolved;
+            this.parameters = unresolved.Parameters.CreateResolvedParameters(context);
+        }
+
+        public IList<IParameter> Parameters {
+            get { return parameters; }
+        }
+
+        public override Accessibility Accessibility {
+            get {
+                var acc = cachedAccessiblity;
+                if (acc == InvalidAccessibility)
+                    return cachedAccessiblity = ComputeAccessibility();
+                else
+                    return acc;
+            }
+        }
+
+        Accessibility ComputeAccessibility()
+        {
+            var baseAcc = base.Accessibility;
+            if (IsOverride && !(CanGet && CanSet)) {
+                foreach (var baseMember in InheritanceHelper.GetBaseMembers(this, false)) {
+                    if (!baseMember.IsOverride)
+                        return baseMember.Accessibility;
+                }
+            }
+            return baseAcc;
+        }
+
+        public bool CanGet {
+            get { return unresolved.CanGet; }
+        }
+
+        public bool CanSet {
+            get { return unresolved.CanSet; }
+        }
+
+        public IMethod Getter {
+            get { return GetAccessor(ref getter, unresolved.Getter); }
+        }
+
+        public IMethod Setter {
+            get { return GetAccessor(ref setter, unresolved.Setter); }
+        }
+
+        public bool IsIndexer {
+            get { return unresolved.IsIndexer; }
+        }
+
+        public override ISymbolReference ToReference()
+        {
+            var declType = this.DeclaringType;
+            var declTypeRef = declType != null ? declType.ToTypeReference() : SpecialType.UnknownType;
+            if (IsExplicitInterfaceImplementation && ImplementedInterfaceMembers.Count == 1) {
+                return new ExplicitInterfaceImplementationMemberReference(declTypeRef, ImplementedInterfaceMembers[0].ToReference());
+            } else {
+                return new DefaultMemberReference(
+                    this.SymbolKind, declTypeRef, this.Name, 0,
+                    this.Parameters.Select(p => p.Type.ToTypeReference()).ToList());
+            }
+        }
+
+        public override IMember Specialize(TypeParameterSubstitution substitution)
+        {
+            if (TypeParameterSubstitution.Identity.Equals(substitution))
+                return this;
+            return new SpecializedProperty(this, substitution);
+        }
+    }
 }

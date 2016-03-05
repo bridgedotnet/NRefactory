@@ -23,65 +23,65 @@ using ICSharpCode.NRefactory.Utils;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	public class DefaultResolvedField : AbstractResolvedMember, IField
-	{
-		volatile ResolveResult constantValue;
-		
-		public DefaultResolvedField(IUnresolvedField unresolved, ITypeResolveContext parentContext)
-			: base(unresolved, parentContext)
-		{
-		}
-		
-		public bool IsReadOnly {
-			get { return ((IUnresolvedField)unresolved).IsReadOnly; }
-		}
-		
-		public bool IsVolatile {
-			get { return ((IUnresolvedField)unresolved).IsVolatile; }
-		}
-		
-		IType IVariable.Type {
-			get { return this.ReturnType; }
-		}
-		
-		public bool IsConst {
-			get { return ((IUnresolvedField)unresolved).IsConst; }
-		}
+    public class DefaultResolvedField : AbstractResolvedMember, IField
+    {
+        volatile ResolveResult constantValue;
 
-		public bool IsFixed {
-			get { return ((IUnresolvedField)unresolved).IsFixed; }
-		}
+        public DefaultResolvedField(IUnresolvedField unresolved, ITypeResolveContext parentContext)
+            : base(unresolved, parentContext)
+        {
+        }
 
-		public object ConstantValue {
-			get {
-				ResolveResult rr = this.constantValue;
-				if (rr == null) {
-					using (var busyLock = BusyManager.Enter(this)) {
-						if (!busyLock.Success)
-							return null;
+        public bool IsReadOnly {
+            get { return ((IUnresolvedField)unresolved).IsReadOnly; }
+        }
 
-						IConstantValue unresolvedCV = ((IUnresolvedField)unresolved).ConstantValue;
-						if (unresolvedCV != null)
-							rr = unresolvedCV.Resolve(context);
-						else
-							rr = ErrorResolveResult.UnknownError;
-						this.constantValue = rr;
-					}
-				}
-				return rr.ConstantValue;
-			}
-		}
-		
-		public override IMember Specialize(TypeParameterSubstitution substitution)
-		{
-			if (TypeParameterSubstitution.Identity.Equals(substitution))
-				return this;
-			return new SpecializedField(this, substitution);
-		}
-		
-		IMemberReference IField.ToReference()
-		{
-			return (IMemberReference)ToReference();
-		}
-	}
+        public bool IsVolatile {
+            get { return ((IUnresolvedField)unresolved).IsVolatile; }
+        }
+
+        IType IVariable.Type {
+            get { return this.ReturnType; }
+        }
+
+        public bool IsConst {
+            get { return ((IUnresolvedField)unresolved).IsConst; }
+        }
+
+        public bool IsFixed {
+            get { return ((IUnresolvedField)unresolved).IsFixed; }
+        }
+
+        public object ConstantValue {
+            get {
+                ResolveResult rr = this.constantValue;
+                if (rr == null) {
+                    using (var busyLock = BusyManager.Enter(this)) {
+                        if (!busyLock.Success)
+                            return null;
+
+                        IConstantValue unresolvedCV = ((IUnresolvedField)unresolved).ConstantValue;
+                        if (unresolvedCV != null)
+                            rr = unresolvedCV.Resolve(context);
+                        else
+                            rr = ErrorResolveResult.UnknownError;
+                        this.constantValue = rr;
+                    }
+                }
+                return rr.ConstantValue;
+            }
+        }
+
+        public override IMember Specialize(TypeParameterSubstitution substitution)
+        {
+            if (TypeParameterSubstitution.Identity.Equals(substitution))
+                return this;
+            return new SpecializedField(this, substitution);
+        }
+
+        IMemberReference IField.ToReference()
+        {
+            return (IMemberReference)ToReference();
+        }
+    }
 }

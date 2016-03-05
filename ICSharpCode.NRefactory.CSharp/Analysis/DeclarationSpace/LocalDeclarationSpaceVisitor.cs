@@ -28,111 +28,111 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp.Analysis
 {
-	public class LocalDeclarationSpaceVisitor : DepthFirstAstVisitor
-	{
-		LocalDeclarationSpace currentDeclarationSpace;
-		Dictionary<AstNode, LocalDeclarationSpace> nodeDeclarationSpaces = new Dictionary<AstNode, LocalDeclarationSpace>();
-		
-		public LocalDeclarationSpace GetDeclarationSpace(AstNode node)
-		{
-			if (node == null)
-				throw new ArgumentNullException("node");
-			while (node != null) {
-				LocalDeclarationSpace declarationSpace;
-				if (nodeDeclarationSpaces.TryGetValue(node, out declarationSpace))
-					return declarationSpace;
-				node = node.Parent;
-			}
-			return null;
-		}
+    public class LocalDeclarationSpaceVisitor : DepthFirstAstVisitor
+    {
+        LocalDeclarationSpace currentDeclarationSpace;
+        Dictionary<AstNode, LocalDeclarationSpace> nodeDeclarationSpaces = new Dictionary<AstNode, LocalDeclarationSpace>();
 
-		#region Visitor
+        public LocalDeclarationSpace GetDeclarationSpace(AstNode node)
+        {
+            if (node == null)
+                throw new ArgumentNullException("node");
+            while (node != null) {
+                LocalDeclarationSpace declarationSpace;
+                if (nodeDeclarationSpaces.TryGetValue(node, out declarationSpace))
+                    return declarationSpace;
+                node = node.Parent;
+            }
+            return null;
+        }
 
-		void AddDeclaration(string name, AstNode node)
-		{
-			if (currentDeclarationSpace != null)
-				currentDeclarationSpace.AddDeclaration(name, node);
-		}
+        #region Visitor
 
-		public override void VisitVariableInitializer(VariableInitializer variableInitializer)
-		{
-			AddDeclaration(variableInitializer.Name, variableInitializer);
-			base.VisitVariableInitializer(variableInitializer);
-		}
+        void AddDeclaration(string name, AstNode node)
+        {
+            if (currentDeclarationSpace != null)
+                currentDeclarationSpace.AddDeclaration(name, node);
+        }
 
-		public override void VisitParameterDeclaration(ParameterDeclaration parameterDeclaration)
-		{
-			AddDeclaration(parameterDeclaration.Name, parameterDeclaration);
-			base.VisitParameterDeclaration(parameterDeclaration);
-		}
+        public override void VisitVariableInitializer(VariableInitializer variableInitializer)
+        {
+            AddDeclaration(variableInitializer.Name, variableInitializer);
+            base.VisitVariableInitializer(variableInitializer);
+        }
 
-		void VisitNewDeclarationSpace(AstNode node)
-		{
-			var oldDeclarationSpace = currentDeclarationSpace;
-			currentDeclarationSpace = new LocalDeclarationSpace();
-			if (oldDeclarationSpace != null)
-				oldDeclarationSpace.AddChildSpace(currentDeclarationSpace);
+        public override void VisitParameterDeclaration(ParameterDeclaration parameterDeclaration)
+        {
+            AddDeclaration(parameterDeclaration.Name, parameterDeclaration);
+            base.VisitParameterDeclaration(parameterDeclaration);
+        }
 
-			VisitChildren(node);
+        void VisitNewDeclarationSpace(AstNode node)
+        {
+            var oldDeclarationSpace = currentDeclarationSpace;
+            currentDeclarationSpace = new LocalDeclarationSpace();
+            if (oldDeclarationSpace != null)
+                oldDeclarationSpace.AddChildSpace(currentDeclarationSpace);
 
-			nodeDeclarationSpaces.Add(node, currentDeclarationSpace);
-			currentDeclarationSpace = oldDeclarationSpace;
-		}
+            VisitChildren(node);
 
-		#region Declaration space creating nodes
-		
-		public override void VisitMethodDeclaration(MethodDeclaration methodDeclaration)
-		{
-			VisitNewDeclarationSpace(methodDeclaration);
-		}
+            nodeDeclarationSpaces.Add(node, currentDeclarationSpace);
+            currentDeclarationSpace = oldDeclarationSpace;
+        }
 
-		public override void VisitBlockStatement(BlockStatement blockStatement)
-		{
-			VisitNewDeclarationSpace(blockStatement);
-		}
+        #region Declaration space creating nodes
 
-		public override void VisitSwitchStatement(SwitchStatement switchStatement)
-		{
-			VisitNewDeclarationSpace(switchStatement);
-		}
+        public override void VisitMethodDeclaration(MethodDeclaration methodDeclaration)
+        {
+            VisitNewDeclarationSpace(methodDeclaration);
+        }
 
-		public override void VisitForeachStatement(ForeachStatement foreachStatement)
-		{
-			AddDeclaration(foreachStatement.VariableName, foreachStatement);
-			VisitNewDeclarationSpace(foreachStatement);
-		}
-		
-		public override void VisitForStatement(ForStatement forStatement)
-		{
-			VisitNewDeclarationSpace(forStatement);
-		}
+        public override void VisitBlockStatement(BlockStatement blockStatement)
+        {
+            VisitNewDeclarationSpace(blockStatement);
+        }
 
-		public override void VisitUsingStatement(UsingStatement usingStatement)
-		{
-			VisitNewDeclarationSpace(usingStatement);
-		}
+        public override void VisitSwitchStatement(SwitchStatement switchStatement)
+        {
+            VisitNewDeclarationSpace(switchStatement);
+        }
 
-		public override void VisitLambdaExpression(LambdaExpression lambdaExpression)
-		{
-			VisitNewDeclarationSpace(lambdaExpression);
-		}
+        public override void VisitForeachStatement(ForeachStatement foreachStatement)
+        {
+            AddDeclaration(foreachStatement.VariableName, foreachStatement);
+            VisitNewDeclarationSpace(foreachStatement);
+        }
 
-		public override void VisitAnonymousMethodExpression(AnonymousMethodExpression anonymousMethodExpression)
-		{
-			VisitNewDeclarationSpace(anonymousMethodExpression);
-		}
+        public override void VisitForStatement(ForStatement forStatement)
+        {
+            VisitNewDeclarationSpace(forStatement);
+        }
 
-		public override void VisitEventDeclaration(EventDeclaration eventDeclaration)
-		{
-			AddDeclaration(eventDeclaration.Name, eventDeclaration);
-		}
+        public override void VisitUsingStatement(UsingStatement usingStatement)
+        {
+            VisitNewDeclarationSpace(usingStatement);
+        }
 
-		public override void VisitCustomEventDeclaration(CustomEventDeclaration eventDeclaration)
-		{
-			VisitNewDeclarationSpace(eventDeclaration);
-		}
+        public override void VisitLambdaExpression(LambdaExpression lambdaExpression)
+        {
+            VisitNewDeclarationSpace(lambdaExpression);
+        }
 
-		#endregion
-		#endregion
-	}
+        public override void VisitAnonymousMethodExpression(AnonymousMethodExpression anonymousMethodExpression)
+        {
+            VisitNewDeclarationSpace(anonymousMethodExpression);
+        }
+
+        public override void VisitEventDeclaration(EventDeclaration eventDeclaration)
+        {
+            AddDeclaration(eventDeclaration.Name, eventDeclaration);
+        }
+
+        public override void VisitCustomEventDeclaration(CustomEventDeclaration eventDeclaration)
+        {
+            VisitNewDeclarationSpace(eventDeclaration);
+        }
+
+        #endregion
+        #endregion
+    }
 }

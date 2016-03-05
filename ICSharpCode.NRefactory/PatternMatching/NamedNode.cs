@@ -20,34 +20,34 @@ using System;
 
 namespace ICSharpCode.NRefactory.PatternMatching
 {
-	/// <summary>
-	/// Represents a named node within a pattern.
-	/// </summary>
-	public class NamedNode : Pattern
-	{
-		readonly string groupName;
-		readonly INode childNode;
-		
-		public string GroupName {
-			get { return groupName; }
-		}
-		
-		public INode ChildNode {
-			get { return childNode; }
-		}
-		
-		public NamedNode(string groupName, INode childNode)
-		{
-			if (childNode == null)
-				throw new ArgumentNullException("childNode");
-			this.groupName = groupName;
-			this.childNode = childNode;
-		}
-		
-		public override bool DoMatch(INode other, Match match)
-		{
-			match.Add(this.groupName, other);
-			return childNode.DoMatch(other, match);
-		}
-	}
+    /// <summary>
+    /// Represents a named node within a pattern.
+    /// </summary>
+    public class NamedNode : Pattern
+    {
+        readonly string groupName;
+        readonly INode childNode;
+
+        public string GroupName {
+            get { return groupName; }
+        }
+
+        public INode ChildNode {
+            get { return childNode; }
+        }
+
+        public NamedNode(string groupName, INode childNode)
+        {
+            if (childNode == null)
+                throw new ArgumentNullException("childNode");
+            this.groupName = groupName;
+            this.childNode = childNode;
+        }
+
+        public override bool DoMatch(INode other, Match match)
+        {
+            match.Add(this.groupName, other);
+            return childNode.DoMatch(other, match);
+        }
+    }
 }

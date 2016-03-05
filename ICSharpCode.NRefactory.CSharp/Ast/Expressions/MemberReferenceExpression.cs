@@ -28,92 +28,92 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Target.MemberName
-	/// </summary>
-	public class MemberReferenceExpression : Expression
-	{
-		public Expression Target {
-			get {
-				return GetChildByRole(Roles.TargetExpression);
-			}
-			set {
-				SetChildByRole(Roles.TargetExpression, value);
-			}
-		}
+    /// <summary>
+    /// Target.MemberName
+    /// </summary>
+    public class MemberReferenceExpression : Expression
+    {
+        public Expression Target {
+            get {
+                return GetChildByRole(Roles.TargetExpression);
+            }
+            set {
+                SetChildByRole(Roles.TargetExpression, value);
+            }
+        }
 
-		public CSharpTokenNode DotToken {
-			get { return GetChildByRole (Roles.Dot); }
-		}
-		
-		public string MemberName {
-			get {
-				return GetChildByRole (Roles.Identifier).Name;
-			}
-			set {
-				SetChildByRole (Roles.Identifier, Identifier.Create (value));
-			}
-		}
-		
-		public Identifier MemberNameToken {
-			get {
-				return GetChildByRole (Roles.Identifier);
-			}
-			set {
-				SetChildByRole (Roles.Identifier, value);
-			}
-		}
-		
-		public CSharpTokenNode LChevronToken {
-			get { return GetChildByRole (Roles.LChevron); }
-		}
-		
-		public AstNodeCollection<AstType> TypeArguments {
-			get { return GetChildrenByRole (Roles.TypeArgument); }
-		}
-		
-		public CSharpTokenNode RChevronToken {
-			get { return GetChildByRole (Roles.RChevron); }
-		}
-		
-		public MemberReferenceExpression ()
-		{
-		}
-		
-		public MemberReferenceExpression (Expression target, string memberName, IEnumerable<AstType> arguments = null)
-		{
-			AddChild (target, Roles.TargetExpression);
-			MemberName = memberName;
-			if (arguments != null) {
-				foreach (var arg in arguments) {
-					AddChild (arg, Roles.TypeArgument);
-				}
-			}
-		}
-		
-		public MemberReferenceExpression (Expression target, string memberName, params AstType[] arguments) : this (target, memberName, (IEnumerable<AstType>)arguments)
-		{
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitMemberReferenceExpression (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitMemberReferenceExpression (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitMemberReferenceExpression (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			MemberReferenceExpression o = other as MemberReferenceExpression;
-			return o != null && this.Target.DoMatch(o.Target, match) && MatchString(this.MemberName, o.MemberName) && this.TypeArguments.DoMatch(o.TypeArguments, match);
-		}
-	}
+        public CSharpTokenNode DotToken {
+            get { return GetChildByRole (Roles.Dot); }
+        }
+
+        public string MemberName {
+            get {
+                return GetChildByRole (Roles.Identifier).Name;
+            }
+            set {
+                SetChildByRole (Roles.Identifier, Identifier.Create (value));
+            }
+        }
+
+        public Identifier MemberNameToken {
+            get {
+                return GetChildByRole (Roles.Identifier);
+            }
+            set {
+                SetChildByRole (Roles.Identifier, value);
+            }
+        }
+
+        public CSharpTokenNode LChevronToken {
+            get { return GetChildByRole (Roles.LChevron); }
+        }
+
+        public AstNodeCollection<AstType> TypeArguments {
+            get { return GetChildrenByRole (Roles.TypeArgument); }
+        }
+
+        public CSharpTokenNode RChevronToken {
+            get { return GetChildByRole (Roles.RChevron); }
+        }
+
+        public MemberReferenceExpression ()
+        {
+        }
+
+        public MemberReferenceExpression (Expression target, string memberName, IEnumerable<AstType> arguments = null)
+        {
+            AddChild (target, Roles.TargetExpression);
+            MemberName = memberName;
+            if (arguments != null) {
+                foreach (var arg in arguments) {
+                    AddChild (arg, Roles.TypeArgument);
+                }
+            }
+        }
+
+        public MemberReferenceExpression (Expression target, string memberName, params AstType[] arguments) : this (target, memberName, (IEnumerable<AstType>)arguments)
+        {
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitMemberReferenceExpression (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitMemberReferenceExpression (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitMemberReferenceExpression (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            MemberReferenceExpression o = other as MemberReferenceExpression;
+            return o != null && this.Target.DoMatch(o.Target, match) && MatchString(this.MemberName, o.MemberName) && this.TypeArguments.DoMatch(o.TypeArguments, match);
+        }
+    }
 }

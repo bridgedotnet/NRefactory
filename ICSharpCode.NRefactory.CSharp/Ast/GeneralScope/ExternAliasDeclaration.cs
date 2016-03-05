@@ -1,6 +1,6 @@
 ﻿// 
 // ExternAliasDeclaration.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -26,66 +26,66 @@
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// extern alias <Identifier>;
-	/// </summary>
-	public class ExternAliasDeclaration : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
+    /// <summary>
+    /// extern alias <Identifier>;
+    /// </summary>
+    public class ExternAliasDeclaration : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-		public CSharpTokenNode ExternToken {
-			get { return GetChildByRole (Roles.ExternKeyword); }
-		}
+        public CSharpTokenNode ExternToken {
+            get { return GetChildByRole (Roles.ExternKeyword); }
+        }
 
-		public CSharpTokenNode AliasToken {
-			get { return GetChildByRole (Roles.AliasKeyword); }
-		}
+        public CSharpTokenNode AliasToken {
+            get { return GetChildByRole (Roles.AliasKeyword); }
+        }
 
-		public string Name {
-			get {
-				return GetChildByRole (Roles.Identifier).Name;
-			}
-			set {
-				SetChildByRole (Roles.Identifier, Identifier.Create (value));
-			}
-		}
-		
-		public Identifier NameToken {
-			get {
-				return GetChildByRole (Roles.Identifier);
-			}
-			set {
-				SetChildByRole (Roles.Identifier, value);
-			}
-		}
+        public string Name {
+            get {
+                return GetChildByRole (Roles.Identifier).Name;
+            }
+            set {
+                SetChildByRole (Roles.Identifier, Identifier.Create (value));
+            }
+        }
 
-		public CSharpTokenNode SemicolonToken {
-			get { return GetChildByRole (Roles.Semicolon); }
-		}
+        public Identifier NameToken {
+            get {
+                return GetChildByRole (Roles.Identifier);
+            }
+            set {
+                SetChildByRole (Roles.Identifier, value);
+            }
+        }
 
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitExternAliasDeclaration (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitExternAliasDeclaration (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitExternAliasDeclaration (this, data);
-		}
+        public CSharpTokenNode SemicolonToken {
+            get { return GetChildByRole (Roles.Semicolon); }
+        }
 
-		protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
-		{
-			var o = other as ExternAliasDeclaration;
-			return o != null && MatchString (this.Name, o.Name);
-		}
-	}
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitExternAliasDeclaration (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitExternAliasDeclaration (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitExternAliasDeclaration (this, data);
+        }
+
+        protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
+        {
+            var o = other as ExternAliasDeclaration;
+            return o != null && MatchString (this.Name, o.Name);
+        }
+    }
 }

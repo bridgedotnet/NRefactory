@@ -21,76 +21,76 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.TypeSystem
 {
-	public sealed class CSharpTypeResolveContext : ITypeResolveContext
-	{
-		readonly IAssembly assembly;
-		readonly ResolvedUsingScope currentUsingScope;
-		readonly ITypeDefinition currentTypeDefinition;
-		readonly IMember currentMember;
-		readonly string[] methodTypeParameterNames;
-		
-		public CSharpTypeResolveContext(IAssembly assembly, ResolvedUsingScope usingScope = null, ITypeDefinition typeDefinition = null, IMember member = null)
-		{
-			if (assembly == null)
-				throw new ArgumentNullException("assembly");
-			this.assembly = assembly;
-			this.currentUsingScope = usingScope;
-			this.currentTypeDefinition = typeDefinition;
-			this.currentMember = member;
-		}
-		
-		private CSharpTypeResolveContext(IAssembly assembly, ResolvedUsingScope usingScope, ITypeDefinition typeDefinition, IMember member, string[] methodTypeParameterNames)
-		{
-			this.assembly = assembly;
-			this.currentUsingScope = usingScope;
-			this.currentTypeDefinition = typeDefinition;
-			this.currentMember = member;
-			this.methodTypeParameterNames = methodTypeParameterNames;
-		}
-		
-		public ResolvedUsingScope CurrentUsingScope {
-			get { return currentUsingScope; }
-		}
-		
-		public ICompilation Compilation {
-			get { return assembly.Compilation; }
-		}
-		
-		public IAssembly CurrentAssembly {
-			get { return assembly; }
-		}
-		
-		public ITypeDefinition CurrentTypeDefinition {
-			get { return currentTypeDefinition; }
-		}
-		
-		public IMember CurrentMember {
-			get { return currentMember; }
-		}
-		
-		public CSharpTypeResolveContext WithCurrentTypeDefinition(ITypeDefinition typeDefinition)
-		{
-			return new CSharpTypeResolveContext(assembly, currentUsingScope, typeDefinition, currentMember, methodTypeParameterNames);
-		}
-		
-		ITypeResolveContext ITypeResolveContext.WithCurrentTypeDefinition(ITypeDefinition typeDefinition)
-		{
-			return WithCurrentTypeDefinition(typeDefinition);
-		}
-		
-		public CSharpTypeResolveContext WithCurrentMember(IMember member)
-		{
-			return new CSharpTypeResolveContext(assembly, currentUsingScope, currentTypeDefinition, member, methodTypeParameterNames);
-		}
-		
-		ITypeResolveContext ITypeResolveContext.WithCurrentMember(IMember member)
-		{
-			return WithCurrentMember(member);
-		}
-		
-		public CSharpTypeResolveContext WithUsingScope(ResolvedUsingScope usingScope)
-		{
-			return new CSharpTypeResolveContext(assembly, usingScope, currentTypeDefinition, currentMember, methodTypeParameterNames);
-		}
-	}
+    public sealed class CSharpTypeResolveContext : ITypeResolveContext
+    {
+        readonly IAssembly assembly;
+        readonly ResolvedUsingScope currentUsingScope;
+        readonly ITypeDefinition currentTypeDefinition;
+        readonly IMember currentMember;
+        readonly string[] methodTypeParameterNames;
+
+        public CSharpTypeResolveContext(IAssembly assembly, ResolvedUsingScope usingScope = null, ITypeDefinition typeDefinition = null, IMember member = null)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+            this.assembly = assembly;
+            this.currentUsingScope = usingScope;
+            this.currentTypeDefinition = typeDefinition;
+            this.currentMember = member;
+        }
+
+        private CSharpTypeResolveContext(IAssembly assembly, ResolvedUsingScope usingScope, ITypeDefinition typeDefinition, IMember member, string[] methodTypeParameterNames)
+        {
+            this.assembly = assembly;
+            this.currentUsingScope = usingScope;
+            this.currentTypeDefinition = typeDefinition;
+            this.currentMember = member;
+            this.methodTypeParameterNames = methodTypeParameterNames;
+        }
+
+        public ResolvedUsingScope CurrentUsingScope {
+            get { return currentUsingScope; }
+        }
+
+        public ICompilation Compilation {
+            get { return assembly.Compilation; }
+        }
+
+        public IAssembly CurrentAssembly {
+            get { return assembly; }
+        }
+
+        public ITypeDefinition CurrentTypeDefinition {
+            get { return currentTypeDefinition; }
+        }
+
+        public IMember CurrentMember {
+            get { return currentMember; }
+        }
+
+        public CSharpTypeResolveContext WithCurrentTypeDefinition(ITypeDefinition typeDefinition)
+        {
+            return new CSharpTypeResolveContext(assembly, currentUsingScope, typeDefinition, currentMember, methodTypeParameterNames);
+        }
+
+        ITypeResolveContext ITypeResolveContext.WithCurrentTypeDefinition(ITypeDefinition typeDefinition)
+        {
+            return WithCurrentTypeDefinition(typeDefinition);
+        }
+
+        public CSharpTypeResolveContext WithCurrentMember(IMember member)
+        {
+            return new CSharpTypeResolveContext(assembly, currentUsingScope, currentTypeDefinition, member, methodTypeParameterNames);
+        }
+
+        ITypeResolveContext ITypeResolveContext.WithCurrentMember(IMember member)
+        {
+            return WithCurrentMember(member);
+        }
+
+        public CSharpTypeResolveContext WithUsingScope(ResolvedUsingScope usingScope)
+        {
+            return new CSharpTypeResolveContext(assembly, usingScope, currentTypeDefinition, currentMember, methodTypeParameterNames);
+        }
+    }
 }

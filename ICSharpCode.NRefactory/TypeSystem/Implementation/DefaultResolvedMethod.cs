@@ -25,299 +25,299 @@ using ICSharpCode.NRefactory.Semantics;
 
 namespace ICSharpCode.NRefactory.TypeSystem.Implementation
 {
-	/// <summary>
-	/// Default implementation of <see cref="IMethod"/> that resolves an unresolved method.
-	/// </summary>
-	public class DefaultResolvedMethod : AbstractResolvedMember, IMethod
-	{
-		IUnresolvedMethod[] parts;
-		
-		public DefaultResolvedMethod(DefaultUnresolvedMethod unresolved, ITypeResolveContext parentContext)
-			: this(unresolved, parentContext, unresolved.IsExtensionMethod)
-		{
-		}
-		
-		public DefaultResolvedMethod(IUnresolvedMethod unresolved, ITypeResolveContext parentContext, bool isExtensionMethod)
-			: base(unresolved, parentContext)
-		{
-			this.Parameters = unresolved.Parameters.CreateResolvedParameters(context);
-			this.ReturnTypeAttributes = unresolved.ReturnTypeAttributes.CreateResolvedAttributes(parentContext);
-			this.TypeParameters = unresolved.TypeParameters.CreateResolvedTypeParameters(context);
-			this.IsExtensionMethod = isExtensionMethod;
-		}
+    /// <summary>
+    /// Default implementation of <see cref="IMethod"/> that resolves an unresolved method.
+    /// </summary>
+    public class DefaultResolvedMethod : AbstractResolvedMember, IMethod
+    {
+        IUnresolvedMethod[] parts;
 
-		class ListOfLists<T> : IList<T>
-		{
-			List<IList<T>> lists =new List<IList<T>> ();
+        public DefaultResolvedMethod(DefaultUnresolvedMethod unresolved, ITypeResolveContext parentContext)
+            : this(unresolved, parentContext, unresolved.IsExtensionMethod)
+        {
+        }
 
-			public void AddList(IList<T> list)
-			{
-				lists.Add (list);
-			}
+        public DefaultResolvedMethod(IUnresolvedMethod unresolved, ITypeResolveContext parentContext, bool isExtensionMethod)
+            : base(unresolved, parentContext)
+        {
+            this.Parameters = unresolved.Parameters.CreateResolvedParameters(context);
+            this.ReturnTypeAttributes = unresolved.ReturnTypeAttributes.CreateResolvedAttributes(parentContext);
+            this.TypeParameters = unresolved.TypeParameters.CreateResolvedTypeParameters(context);
+            this.IsExtensionMethod = isExtensionMethod;
+        }
 
-			#region IEnumerable implementation
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-			#endregion
+        class ListOfLists<T> : IList<T>
+        {
+            List<IList<T>> lists =new List<IList<T>> ();
 
-			#region IEnumerable implementation
-			public IEnumerator<T> GetEnumerator ()
-			{
-				for (int i = 0; i < this.Count; i++) {
-					yield return this[i];
-				}
-			}
-			#endregion
+            public void AddList(IList<T> list)
+            {
+                lists.Add (list);
+            }
 
-			#region ICollection implementation
-			public void Add (T item)
-			{
-				throw new NotSupportedException();
-			}
+            #region IEnumerable implementation
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+            #endregion
 
-			public void Clear ()
-			{
-				throw new NotSupportedException();
-			}
+            #region IEnumerable implementation
+            public IEnumerator<T> GetEnumerator ()
+            {
+                for (int i = 0; i < this.Count; i++) {
+                    yield return this[i];
+                }
+            }
+            #endregion
 
-			public bool Contains (T item)
-			{
-				var comparer = EqualityComparer<T>.Default;
-				for (int i = 0; i < this.Count; i++) {
-					if (comparer.Equals(this[i], item))
-						return true;
-				}
-				return false;
-			}
+            #region ICollection implementation
+            public void Add (T item)
+            {
+                throw new NotSupportedException();
+            }
 
-			public void CopyTo (T[] array, int arrayIndex)
-			{
-				for (int i = 0; i < Count; i++) {
-					array[arrayIndex + i] = this[i];
-				}
-			}
+            public void Clear ()
+            {
+                throw new NotSupportedException();
+            }
 
-			public bool Remove (T item)
-			{
-				throw new NotSupportedException();
-			}
+            public bool Contains (T item)
+            {
+                var comparer = EqualityComparer<T>.Default;
+                for (int i = 0; i < this.Count; i++) {
+                    if (comparer.Equals(this[i], item))
+                        return true;
+                }
+                return false;
+            }
 
-			public int Count {
-				get {
-					return lists.Sum (l => l.Count);
-				}
-			}
+            public void CopyTo (T[] array, int arrayIndex)
+            {
+                for (int i = 0; i < Count; i++) {
+                    array[arrayIndex + i] = this[i];
+                }
+            }
 
-			public bool IsReadOnly {
-				get {
-					return true;
-				}
-			}
-			#endregion
+            public bool Remove (T item)
+            {
+                throw new NotSupportedException();
+            }
 
-			#region IList implementation
-			public int IndexOf (T item)
-			{
-				var comparer = EqualityComparer<T>.Default;
-				for (int i = 0; i < this.Count; i++) {
-					if (comparer.Equals(this[i], item))
-						return i;
-				}
-				return -1;
-			}
+            public int Count {
+                get {
+                    return lists.Sum (l => l.Count);
+                }
+            }
 
-			public void Insert (int index, T item)
-			{
-				throw new NotSupportedException();
-			}
+            public bool IsReadOnly {
+                get {
+                    return true;
+                }
+            }
+            #endregion
 
-			public void RemoveAt (int index)
-			{
-				throw new NotSupportedException();
-			}
+            #region IList implementation
+            public int IndexOf (T item)
+            {
+                var comparer = EqualityComparer<T>.Default;
+                for (int i = 0; i < this.Count; i++) {
+                    if (comparer.Equals(this[i], item))
+                        return i;
+                }
+                return -1;
+            }
 
-			public T this[int index] {
-				get {
-					foreach (var list in lists){
-						if (index < list.Count)
-							return list[index];
-						index -= list.Count;
-					}
-					throw new IndexOutOfRangeException ();
-				}
-				set {
-					throw new NotSupportedException();
-				}
-			}
-			#endregion
-		}
+            public void Insert (int index, T item)
+            {
+                throw new NotSupportedException();
+            }
 
-		public static DefaultResolvedMethod CreateFromMultipleParts(IUnresolvedMethod[] parts, ITypeResolveContext[] contexts, bool isExtensionMethod)
-		{
-			DefaultResolvedMethod method = new DefaultResolvedMethod(parts[0], contexts[0], isExtensionMethod);
-			method.parts = parts;
-			if (parts.Length > 1) {
-				var attrs = new ListOfLists <IAttribute>();
-				attrs.AddList (method.Attributes);
-				for (int i = 1; i < parts.Length; i++) {
-					attrs.AddList (parts[i].Attributes.CreateResolvedAttributes(contexts[i]));
-				}
-				method.Attributes = attrs;
-			}
-			return method;
-		}
-		
-		public IList<IParameter> Parameters { get; private set; }
-		public IList<IAttribute> ReturnTypeAttributes { get; private set; }
-		public IList<ITypeParameter> TypeParameters { get; private set; }
+            public void RemoveAt (int index)
+            {
+                throw new NotSupportedException();
+            }
 
-		public IList<IType> TypeArguments {
-			get {
-				// ToList() call is necessary because IList<> isn't covariant
-				return TypeParameters.ToList<IType>();
-			}
-		}
-		
-		bool IMethod.IsParameterized {
-			get { return false; }
-		}
+            public T this[int index] {
+                get {
+                    foreach (var list in lists){
+                        if (index < list.Count)
+                            return list[index];
+                        index -= list.Count;
+                    }
+                    throw new IndexOutOfRangeException ();
+                }
+                set {
+                    throw new NotSupportedException();
+                }
+            }
+            #endregion
+        }
 
-		public bool IsExtensionMethod { get; private set; }
-		
-		public IList<IUnresolvedMethod> Parts {
-			get {
-				return parts ?? new IUnresolvedMethod[] { (IUnresolvedMethod)unresolved };
-			}
-		}
-		
-		public bool IsConstructor {
-			get { return ((IUnresolvedMethod)unresolved).IsConstructor; }
-		}
-		
-		public bool IsDestructor {
-			get { return ((IUnresolvedMethod)unresolved).IsDestructor; }
-		}
-		
-		public bool IsOperator {
-			get { return ((IUnresolvedMethod)unresolved).IsOperator; }
-		}
-		
-		public bool IsPartial {
-			get { return ((IUnresolvedMethod)unresolved).IsPartial; }
-		}
+        public static DefaultResolvedMethod CreateFromMultipleParts(IUnresolvedMethod[] parts, ITypeResolveContext[] contexts, bool isExtensionMethod)
+        {
+            DefaultResolvedMethod method = new DefaultResolvedMethod(parts[0], contexts[0], isExtensionMethod);
+            method.parts = parts;
+            if (parts.Length > 1) {
+                var attrs = new ListOfLists <IAttribute>();
+                attrs.AddList (method.Attributes);
+                for (int i = 1; i < parts.Length; i++) {
+                    attrs.AddList (parts[i].Attributes.CreateResolvedAttributes(contexts[i]));
+                }
+                method.Attributes = attrs;
+            }
+            return method;
+        }
 
-		public bool IsAsync {
-			get { return ((IUnresolvedMethod)unresolved).IsAsync; }
-		}
+        public IList<IParameter> Parameters { get; private set; }
+        public IList<IAttribute> ReturnTypeAttributes { get; private set; }
+        public IList<ITypeParameter> TypeParameters { get; private set; }
 
-		public bool HasBody {
-			get { return ((IUnresolvedMethod)unresolved).HasBody; }
-		}
-		
-		public bool IsAccessor {
-			get { return ((IUnresolvedMethod)unresolved).AccessorOwner != null; }
-		}
+        public IList<IType> TypeArguments {
+            get {
+                // ToList() call is necessary because IList<> isn't covariant
+                return TypeParameters.ToList<IType>();
+            }
+        }
 
-		IMethod IMethod.ReducedFrom {
-			get { return null; }
-		}
+        bool IMethod.IsParameterized {
+            get { return false; }
+        }
 
-		public virtual IMember AccessorOwner {
-			get {
-				var reference = ((IUnresolvedMethod)unresolved).AccessorOwner;
-				if (reference != null)
-					return reference.Resolve(context);
-				else
-					return null;
-			}
-		}
-		
-		public override ISymbolReference ToReference()
-		{
-			var declType = this.DeclaringType;
-			var declTypeRef = declType != null ? declType.ToTypeReference() : SpecialType.UnknownType;
-			if (IsExplicitInterfaceImplementation && ImplementedInterfaceMembers.Count == 1) {
-				return new ExplicitInterfaceImplementationMemberReference(declTypeRef, ImplementedInterfaceMembers[0].ToReference());
-			} else {
-				return new DefaultMemberReference(
-					this.SymbolKind, declTypeRef, this.Name, this.TypeParameters.Count,
-					this.Parameters.Select(p => p.Type.ToTypeReference()).ToList());
-			}
-		}
-		
-		public override IMemberReference ToMemberReference()
-		{
-			return (IMemberReference)ToReference();
-		}
-		
-		public override IMember Specialize(TypeParameterSubstitution substitution)
-		{
-			if (TypeParameterSubstitution.Identity.Equals(substitution))
-				return this;
-			return new SpecializedMethod(this, substitution);
-		}
-		
-		IMethod IMethod.Specialize(TypeParameterSubstitution substitution)
-		{
-			if (TypeParameterSubstitution.Identity.Equals(substitution))
-				return this;
-			return new SpecializedMethod(this, substitution);
-		}
-		
-		public override string ToString()
-		{
-			StringBuilder b = new StringBuilder("[");
-			b.Append(this.SymbolKind);
-			b.Append(' ');
-			if (this.DeclaringType != null) {
-				b.Append(this.DeclaringType.ReflectionName);
-				b.Append('.');
-			}
-			b.Append(this.Name);
-			if (this.TypeParameters.Count > 0) {
-				b.Append("``");
-				b.Append(this.TypeParameters.Count);
-			}
-			b.Append('(');
-			for (int i = 0; i < this.Parameters.Count; i++) {
-				if (i > 0) b.Append(", ");
-				b.Append(this.Parameters[i].ToString());
-			}
-			b.Append("):");
-			b.Append(this.ReturnType.ReflectionName);
-			b.Append(']');
-			return b.ToString();
-		}
-		
-		/// <summary>
-		/// Gets a dummy constructor for the specified compilation.
-		/// </summary>
-		/// <returns>
-		/// A public instance constructor with IsSynthetic=true and no declaring type.
-		/// </returns>
-		/// <seealso cref="DefaultUnresolvedMethod.DummyConstructor"/>
-		public static IMethod GetDummyConstructor(ICompilation compilation)
-		{
-			var dummyConstructor = DefaultUnresolvedMethod.DummyConstructor;
-			// Reuse the same IMethod instance for all dummy constructors
-			// so that two occurrences of 'new T()' refer to the same constructor.
-			return (IMethod)compilation.CacheManager.GetOrAddShared(
-				dummyConstructor, _ => dummyConstructor.CreateResolved(compilation.TypeResolveContext));
-		}
-		
-		/// <summary>
-		/// Gets a dummy constructor for the specified type.
-		/// </summary>
-		/// <returns>
-		/// A public instance constructor with IsSynthetic=true and the specified declaring type.
-		/// </returns>
-		/// <seealso cref="DefaultUnresolvedMethod.DummyConstructor"/>
-		public static IMethod GetDummyConstructor(ICompilation compilation, IType declaringType)
-		{
-			var resolvedCtor = GetDummyConstructor(compilation);
-			return new SpecializedMethod(resolvedCtor, TypeParameterSubstitution.Identity) { DeclaringType = declaringType };
-		}
-	}
+        public bool IsExtensionMethod { get; private set; }
+
+        public IList<IUnresolvedMethod> Parts {
+            get {
+                return parts ?? new IUnresolvedMethod[] { (IUnresolvedMethod)unresolved };
+            }
+        }
+
+        public bool IsConstructor {
+            get { return ((IUnresolvedMethod)unresolved).IsConstructor; }
+        }
+
+        public bool IsDestructor {
+            get { return ((IUnresolvedMethod)unresolved).IsDestructor; }
+        }
+
+        public bool IsOperator {
+            get { return ((IUnresolvedMethod)unresolved).IsOperator; }
+        }
+
+        public bool IsPartial {
+            get { return ((IUnresolvedMethod)unresolved).IsPartial; }
+        }
+
+        public bool IsAsync {
+            get { return ((IUnresolvedMethod)unresolved).IsAsync; }
+        }
+
+        public bool HasBody {
+            get { return ((IUnresolvedMethod)unresolved).HasBody; }
+        }
+
+        public bool IsAccessor {
+            get { return ((IUnresolvedMethod)unresolved).AccessorOwner != null; }
+        }
+
+        IMethod IMethod.ReducedFrom {
+            get { return null; }
+        }
+
+        public virtual IMember AccessorOwner {
+            get {
+                var reference = ((IUnresolvedMethod)unresolved).AccessorOwner;
+                if (reference != null)
+                    return reference.Resolve(context);
+                else
+                    return null;
+            }
+        }
+
+        public override ISymbolReference ToReference()
+        {
+            var declType = this.DeclaringType;
+            var declTypeRef = declType != null ? declType.ToTypeReference() : SpecialType.UnknownType;
+            if (IsExplicitInterfaceImplementation && ImplementedInterfaceMembers.Count == 1) {
+                return new ExplicitInterfaceImplementationMemberReference(declTypeRef, ImplementedInterfaceMembers[0].ToReference());
+            } else {
+                return new DefaultMemberReference(
+                    this.SymbolKind, declTypeRef, this.Name, this.TypeParameters.Count,
+                    this.Parameters.Select(p => p.Type.ToTypeReference()).ToList());
+            }
+        }
+
+        public override IMemberReference ToMemberReference()
+        {
+            return (IMemberReference)ToReference();
+        }
+
+        public override IMember Specialize(TypeParameterSubstitution substitution)
+        {
+            if (TypeParameterSubstitution.Identity.Equals(substitution))
+                return this;
+            return new SpecializedMethod(this, substitution);
+        }
+
+        IMethod IMethod.Specialize(TypeParameterSubstitution substitution)
+        {
+            if (TypeParameterSubstitution.Identity.Equals(substitution))
+                return this;
+            return new SpecializedMethod(this, substitution);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder("[");
+            b.Append(this.SymbolKind);
+            b.Append(' ');
+            if (this.DeclaringType != null) {
+                b.Append(this.DeclaringType.ReflectionName);
+                b.Append('.');
+            }
+            b.Append(this.Name);
+            if (this.TypeParameters.Count > 0) {
+                b.Append("``");
+                b.Append(this.TypeParameters.Count);
+            }
+            b.Append('(');
+            for (int i = 0; i < this.Parameters.Count; i++) {
+                if (i > 0) b.Append(", ");
+                b.Append(this.Parameters[i].ToString());
+            }
+            b.Append("):");
+            b.Append(this.ReturnType.ReflectionName);
+            b.Append(']');
+            return b.ToString();
+        }
+
+        /// <summary>
+        /// Gets a dummy constructor for the specified compilation.
+        /// </summary>
+        /// <returns>
+        /// A public instance constructor with IsSynthetic=true and no declaring type.
+        /// </returns>
+        /// <seealso cref="DefaultUnresolvedMethod.DummyConstructor"/>
+        public static IMethod GetDummyConstructor(ICompilation compilation)
+        {
+            var dummyConstructor = DefaultUnresolvedMethod.DummyConstructor;
+            // Reuse the same IMethod instance for all dummy constructors
+            // so that two occurrences of 'new T()' refer to the same constructor.
+            return (IMethod)compilation.CacheManager.GetOrAddShared(
+                dummyConstructor, _ => dummyConstructor.CreateResolved(compilation.TypeResolveContext));
+        }
+
+        /// <summary>
+        /// Gets a dummy constructor for the specified type.
+        /// </summary>
+        /// <returns>
+        /// A public instance constructor with IsSynthetic=true and the specified declaring type.
+        /// </returns>
+        /// <seealso cref="DefaultUnresolvedMethod.DummyConstructor"/>
+        public static IMethod GetDummyConstructor(ICompilation compilation, IType declaringType)
+        {
+            var resolvedCtor = GetDummyConstructor(compilation);
+            return new SpecializedMethod(resolvedCtor, TypeParameterSubstitution.Identity) { DeclaringType = declaringType };
+        }
+    }
 }

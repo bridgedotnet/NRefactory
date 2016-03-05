@@ -1,6 +1,6 @@
 ﻿// 
 // NodeType.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -28,29 +28,29 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public enum NodeType
-	{
-		Unknown,
-		/// <summary>
-		/// AstType
-		/// </summary>
-		TypeReference,
-		/// <summary>
-		/// Type or delegate declaration
-		/// </summary>
-		TypeDeclaration,
-		Member,
-		Statement,
-		Expression,
-		Token,
-		QueryClause,
-		/// <summary>
-		/// Comment or whitespace or pre-processor directive 
-		/// </summary>
-		Whitespace,
-		/// <summary>
-		/// Placeholder for a pattern
-		/// </summary>
-		Pattern
-	}
+    public enum NodeType
+    {
+        Unknown,
+        /// <summary>
+        /// AstType
+        /// </summary>
+        TypeReference,
+        /// <summary>
+        /// Type or delegate declaration
+        /// </summary>
+        TypeDeclaration,
+        Member,
+        Statement,
+        Expression,
+        Token,
+        QueryClause,
+        /// <summary>
+        /// Comment or whitespace or pre-processor directive 
+        /// </summary>
+        Whitespace,
+        /// <summary>
+        /// Placeholder for a pattern
+        /// </summary>
+        Pattern
+    }
 }

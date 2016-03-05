@@ -1,6 +1,6 @@
 // 
 // NullValueAnalysis.cs
-//  
+//
 // Author:
 //       Luís Reis <luiscubal@gmail.com>
 // 
@@ -27,58 +27,58 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp.Analysis
 {
-	/// <summary>
-	/// Represents the null value status of a variable at a specific location.
-	/// </summary>
-	public enum NullValueStatus
-	{
-		/// <summary>
-		/// The value of the variable is unknown, possibly due to limitations
-		/// of the null value analysis.
-		/// </summary>
-		Unknown = 0,
-		/// <summary>
-		/// The value of the variable is unknown and even assigning it to a
-		/// value won't change its state, since it has been captured by a lambda
-		/// that may change it at any time (potentially even from a different thread).
-		/// Only going out of scope and creating a new variable may change the value
-		/// of this variable.
-		/// </summary>
-		CapturedUnknown,
-		/// <summary>
-		/// This variable is potentially unassigned.
-		/// </summary>
-		Unassigned,
-		/// <summary>
-		/// The value of the variable is provably null.
-		/// </summary>
-		DefinitelyNull,
-		/// <summary>
-		/// The value of the variable might or might not be null
-		/// </summary>
-		PotentiallyNull,
-		/// <summary>
-		/// The value of the variable is provably not null
-		/// </summary>
-		DefinitelyNotNull,
-		/// <summary>
-		/// The position of this node is unreachable, therefore the value
-		/// of the variable is not meaningful.
-		/// Alternatively, it might mean no local variable exists with the requested name.
-		/// </summary>
-		UnreachableOrInexistent,
-		/// <summary>
-		/// The analyser has encountered an error when attempting to find the value
-		/// of this variable.
-		/// </summary>
-		Error
-	}
+    /// <summary>
+    /// Represents the null value status of a variable at a specific location.
+    /// </summary>
+    public enum NullValueStatus
+    {
+        /// <summary>
+        /// The value of the variable is unknown, possibly due to limitations
+        /// of the null value analysis.
+        /// </summary>
+        Unknown = 0,
+        /// <summary>
+        /// The value of the variable is unknown and even assigning it to a
+        /// value won't change its state, since it has been captured by a lambda
+        /// that may change it at any time (potentially even from a different thread).
+        /// Only going out of scope and creating a new variable may change the value
+        /// of this variable.
+        /// </summary>
+        CapturedUnknown,
+        /// <summary>
+        /// This variable is potentially unassigned.
+        /// </summary>
+        Unassigned,
+        /// <summary>
+        /// The value of the variable is provably null.
+        /// </summary>
+        DefinitelyNull,
+        /// <summary>
+        /// The value of the variable might or might not be null
+        /// </summary>
+        PotentiallyNull,
+        /// <summary>
+        /// The value of the variable is provably not null
+        /// </summary>
+        DefinitelyNotNull,
+        /// <summary>
+        /// The position of this node is unreachable, therefore the value
+        /// of the variable is not meaningful.
+        /// Alternatively, it might mean no local variable exists with the requested name.
+        /// </summary>
+        UnreachableOrInexistent,
+        /// <summary>
+        /// The analyser has encountered an error when attempting to find the value
+        /// of this variable.
+        /// </summary>
+        Error
+    }
 
-	public static class NullValueStatusExtensions
-	{
-		public static bool IsDefiniteValue (this NullValueStatus self) {
-			return self == NullValueStatus.DefinitelyNull || self == NullValueStatus.DefinitelyNotNull;
-		}
-	}
+    public static class NullValueStatusExtensions
+    {
+        public static bool IsDefiniteValue (this NullValueStatus self) {
+            return self == NullValueStatus.DefinitelyNull || self == NullValueStatus.DefinitelyNotNull;
+        }
+    }
 }
 

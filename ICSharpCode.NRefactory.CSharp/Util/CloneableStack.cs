@@ -29,173 +29,173 @@ using System.Collections;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	class CloneableStack<T> : IEnumerable<T>, ICollection<T>, ICloneable, IEquatable<CloneableStack<T>>
-	{
-		int count;
-		StackItem top;
+    class CloneableStack<T> : IEnumerable<T>, ICollection<T>, ICloneable, IEquatable<CloneableStack<T>>
+    {
+        int count;
+        StackItem top;
 
-		#region IEnumerable[T] implementation
-		public IEnumerator<T> GetEnumerator ()
-		{
-			return new StackItemEnumerator (top);
-		}
+        #region IEnumerable[T] implementation
+        public IEnumerator<T> GetEnumerator ()
+        {
+            return new StackItemEnumerator (top);
+        }
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return new StackItemEnumerator (top);
-		}
-		#endregion
+        IEnumerator IEnumerable.GetEnumerator ()
+        {
+            return new StackItemEnumerator (top);
+        }
+        #endregion
 
-		#region ICloneable implementation
-		public CloneableStack<T> Clone ()
-		{
-			CloneableStack<T> result = new CloneableStack<T> ();
-			result.count = count;
-			result.top   = top;
-			return result;
-		}
+        #region ICloneable implementation
+        public CloneableStack<T> Clone ()
+        {
+            CloneableStack<T> result = new CloneableStack<T> ();
+            result.count = count;
+            result.top   = top;
+            return result;
+        }
 
-		object ICloneable.Clone ()
-		{
-			return Clone();
-		}
-		#endregion
+        object ICloneable.Clone ()
+        {
+            return Clone();
+        }
+        #endregion
 
-		public void Clear ()
-		{
-			top = null;
-			count = 0;
-		}
+        public void Clear ()
+        {
+            top = null;
+            count = 0;
+        }
 
-		public void Push (T item)
-		{
-			top = new StackItem (top, item);
-			count++;
-		}
+        public void Push (T item)
+        {
+            top = new StackItem (top, item);
+            count++;
+        }
 
-		public T Peek ()
-		{
-			return top.Item;
-		}
+        public T Peek ()
+        {
+            return top.Item;
+        }
 
-		public T Pop ()
-		{
-			T result = top.Item;
-			top = top.Parent;
-			count--;
-			return result;
-		}
+        public T Pop ()
+        {
+            T result = top.Item;
+            top = top.Parent;
+            count--;
+            return result;
+        }
 
-		#region IEquatable[T] implementation
-		public bool Equals (CloneableStack<T> other)
-		{
-			return ReferenceEquals (top, other.top);
-		}
-		#endregion
+        #region IEquatable[T] implementation
+        public bool Equals (CloneableStack<T> other)
+        {
+            return ReferenceEquals (top, other.top);
+        }
+        #endregion
 
-		#region ICollection[T] implementation
-		void ICollection<T>.Add (T item)
-		{
-			Push (item);
-		}
+        #region ICollection[T] implementation
+        void ICollection<T>.Add (T item)
+        {
+            Push (item);
+        }
 
-		void ICollection<T>.Clear ()
-		{
-			top = null;
-			count = 0;
-		}
+        void ICollection<T>.Clear ()
+        {
+            top = null;
+            count = 0;
+        }
 
-		bool ICollection<T>.Contains (T item)
-		{
-			foreach (T t in this) {
-				if (t.Equals (item))
-					return true;
-			}
-			return false;
-		}
+        bool ICollection<T>.Contains (T item)
+        {
+            foreach (T t in this) {
+                if (t.Equals (item))
+                    return true;
+            }
+            return false;
+        }
 
-		void ICollection<T>.CopyTo (T[] array, int arrayIndex)
-		{
-			int idx = arrayIndex;
-			foreach (T t in this) {
-				array[idx++] = t;
-			}
-		}
+        void ICollection<T>.CopyTo (T[] array, int arrayIndex)
+        {
+            int idx = arrayIndex;
+            foreach (T t in this) {
+                array[idx++] = t;
+            }
+        }
 
-		bool ICollection<T>.Remove (T item)
-		{
-			throw new NotImplementedException ();
-		}
+        bool ICollection<T>.Remove (T item)
+        {
+            throw new NotImplementedException ();
+        }
 
-		public int Count {
-			get {
-				return count;
-			}
-		}
+        public int Count {
+            get {
+                return count;
+            }
+        }
 
-		bool ICollection<T>.IsReadOnly {
-			get {
-				return false;
-			}
-		}
-		#endregion
+        bool ICollection<T>.IsReadOnly {
+            get {
+                return false;
+            }
+        }
+        #endregion
 
-		class StackItem
-		{
-			public readonly StackItem Parent;
-			public readonly T Item;
+        class StackItem
+        {
+            public readonly StackItem Parent;
+            public readonly T Item;
 
-			public StackItem (StackItem parent, T item)
-			{
-				Parent = parent;
-				Item = item;
-			}
-		}
+            public StackItem (StackItem parent, T item)
+            {
+                Parent = parent;
+                Item = item;
+            }
+        }
 
-		class StackItemEnumerator : IEnumerator<T>
-		{
-			StackItem cur, first;
+        class StackItemEnumerator : IEnumerator<T>
+        {
+            StackItem cur, first;
 
-			public StackItemEnumerator (StackItem cur)
-			{
-				this.cur = first = new StackItem (cur, default(T));
-			}
+            public StackItemEnumerator (StackItem cur)
+            {
+                this.cur = first = new StackItem (cur, default(T));
+            }
 
-			#region IDisposable implementation
-			void IDisposable.Dispose ()
-			{
-				cur = first = null;
-			}
-			#endregion
+            #region IDisposable implementation
+            void IDisposable.Dispose ()
+            {
+                cur = first = null;
+            }
+            #endregion
 
-			#region IEnumerator implementation
-			bool IEnumerator.MoveNext ()
-			{
-				if (cur == null)
-					return false;
-				cur = cur.Parent;
-				return cur != null;
-			}
+            #region IEnumerator implementation
+            bool IEnumerator.MoveNext ()
+            {
+                if (cur == null)
+                    return false;
+                cur = cur.Parent;
+                return cur != null;
+            }
 
-			void IEnumerator.Reset ()
-			{
-				cur = first;
-			}
+            void IEnumerator.Reset ()
+            {
+                cur = first;
+            }
 
-			object IEnumerator.Current {
-				get {
-					return cur.Item;
-				}
-			}
-			#endregion
+            object IEnumerator.Current {
+                get {
+                    return cur.Item;
+                }
+            }
+            #endregion
 
-			#region IEnumerator[T] implementation
-			T IEnumerator<T>.Current {
-				get {
-					return cur.Item;
-				}
-			}
-			#endregion
-		}
-	}
+            #region IEnumerator[T] implementation
+            T IEnumerator<T>.Current {
+                get {
+                    return cur.Item;
+                }
+            }
+            #endregion
+        }
+    }
 }

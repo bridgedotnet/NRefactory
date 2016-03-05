@@ -1,6 +1,6 @@
 ﻿// 
 // VariableDeclarationStatement.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@novell.com>
 // 
@@ -29,62 +29,62 @@ using System.Linq;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	public class VariableDeclarationStatement : Statement
-	{
-		public static readonly Role<CSharpModifierToken> ModifierRole = EntityDeclaration.ModifierRole;
-		
-		public VariableDeclarationStatement()
-		{
-		}
-		
-		public VariableDeclarationStatement(AstType type, string name, Expression initializer = null)
-		{
-			this.Type = type;
-			this.Variables.Add(new VariableInitializer(name, initializer));
-		}
-		
-		public Modifiers Modifiers {
-			get { return EntityDeclaration.GetModifiers(this); }
-			set { EntityDeclaration.SetModifiers(this, value); }
-		}
-		
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole (Roles.Type, value); }
-		}
-		
-		public AstNodeCollection<VariableInitializer> Variables {
-			get { return GetChildrenByRole (Roles.Variable); }
-		}
-		
-		public CSharpTokenNode SemicolonToken {
-			get { return GetChildByRole (Roles.Semicolon); }
-		}
-		
-		public VariableInitializer GetVariable (string name)
-		{
-			return Variables.FirstOrNullObject (vi => vi.Name == name);
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitVariableDeclarationStatement (this);
-		}
-			
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitVariableDeclarationStatement (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitVariableDeclarationStatement (this, data);
-		}
-		
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			VariableDeclarationStatement o = other as VariableDeclarationStatement;
-			return o != null && this.Modifiers == o.Modifiers && this.Type.DoMatch(o.Type, match) && this.Variables.DoMatch(o.Variables, match);
-		}
-	}
+    public class VariableDeclarationStatement : Statement
+    {
+        public static readonly Role<CSharpModifierToken> ModifierRole = EntityDeclaration.ModifierRole;
+
+        public VariableDeclarationStatement()
+        {
+        }
+
+        public VariableDeclarationStatement(AstType type, string name, Expression initializer = null)
+        {
+            this.Type = type;
+            this.Variables.Add(new VariableInitializer(name, initializer));
+        }
+
+        public Modifiers Modifiers {
+            get { return EntityDeclaration.GetModifiers(this); }
+            set { EntityDeclaration.SetModifiers(this, value); }
+        }
+
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole (Roles.Type, value); }
+        }
+
+        public AstNodeCollection<VariableInitializer> Variables {
+            get { return GetChildrenByRole (Roles.Variable); }
+        }
+
+        public CSharpTokenNode SemicolonToken {
+            get { return GetChildByRole (Roles.Semicolon); }
+        }
+
+        public VariableInitializer GetVariable (string name)
+        {
+            return Variables.FirstOrNullObject (vi => vi.Name == name);
+        }
+
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitVariableDeclarationStatement (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitVariableDeclarationStatement (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitVariableDeclarationStatement (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            VariableDeclarationStatement o = other as VariableDeclarationStatement;
+            return o != null && this.Modifiers == o.Modifiers && this.Type.DoMatch(o.Type, match) && this.Variables.DoMatch(o.Variables, match);
+        }
+    }
 }

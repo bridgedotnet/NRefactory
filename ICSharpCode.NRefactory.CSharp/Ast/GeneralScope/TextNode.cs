@@ -1,6 +1,6 @@
 // 
 // TextNode.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -27,68 +27,68 @@
 using System;
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// A text node contains text without syntactic or semantic information.
-	/// (non parseable part of a text)
-	/// </summary>
-	public class TextNode : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Whitespace;
-			}
-		}
+    /// <summary>
+    /// A text node contains text without syntactic or semantic information.
+    /// (non parseable part of a text)
+    /// </summary>
+    public class TextNode : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Whitespace;
+            }
+        }
 
-		public string Text {
-			get;
-			set;
-		}
+        public string Text {
+            get;
+            set;
+        }
 
-		TextLocation startLocation;
-		public override TextLocation StartLocation {
-			get { 
-				return startLocation;
-			}
-		}
-		
-		TextLocation endLocation;
-		public override TextLocation EndLocation {
-			get {
-				return endLocation;
-			}
-		}
+        TextLocation startLocation;
+        public override TextLocation StartLocation {
+            get { 
+                return startLocation;
+            }
+        }
 
-		public TextNode(string text) : this (text, TextLocation.Empty, TextLocation.Empty)
-		{
-		}
+        TextLocation endLocation;
+        public override TextLocation EndLocation {
+            get {
+                return endLocation;
+            }
+        }
 
-		public TextNode(string text, TextLocation startLocation, TextLocation endLocation)
-		{
-			this.Text = text;
-			this.startLocation = startLocation;
-			this.endLocation = endLocation;
-		}
+        public TextNode(string text) : this (text, TextLocation.Empty, TextLocation.Empty)
+        {
+        }
 
-		public override void AcceptVisitor(IAstVisitor visitor)
-		{
-			visitor.VisitText (this);
-		}
+        public TextNode(string text, TextLocation startLocation, TextLocation endLocation)
+        {
+            this.Text = text;
+            this.startLocation = startLocation;
+            this.endLocation = endLocation;
+        }
 
-		public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
-		{
-			return visitor.VisitText (this);
-		}
+        public override void AcceptVisitor(IAstVisitor visitor)
+        {
+            visitor.VisitText (this);
+        }
 
-		public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitText (this, data);
-		}
+        public override T AcceptVisitor<T>(IAstVisitor<T> visitor)
+        {
+            return visitor.VisitText (this);
+        }
 
-		protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
-		{
-			var o = other as TextNode;
-			return o != null && o.Text == Text;
-		}
-	}
+        public override S AcceptVisitor<T, S>(IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitText (this, data);
+        }
+
+        protected internal override bool DoMatch(AstNode other, PatternMatching.Match match)
+        {
+            var o = other as TextNode;
+            return o != null && o.Text == Text;
+        }
+    }
 }
 

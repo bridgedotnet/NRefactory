@@ -1,6 +1,6 @@
 // 
 // IEntityCompletionData.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -28,10 +28,10 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.Completion
 {
-	public interface IEntityCompletionData : ICompletionData
-	{
-		IEntity Entity {
-			get;
-		}
-	}
+    public interface IEntityCompletionData : ICompletionData
+    {
+        IEntity Entity {
+            get;
+        }
+    }
 }

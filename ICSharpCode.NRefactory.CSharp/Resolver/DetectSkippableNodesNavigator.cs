@@ -23,66 +23,66 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.CSharp.Resolver
 {
-	/// <summary>
-	/// When an <see cref="IResolveVisitorNavigator"/> is searching for specific nodes
-	/// (e.g. all IdentifierExpressions), it has to scan the whole syntax tree for those nodes.
-	/// However, scanning in the ResolveVisitor is expensive (e.g. any lambda that is scanned must be resolved),
-	/// so it makes sense to detect when a whole subtree is scan-only, and skip that tree instead.
-	/// 
-	/// The DetectSkippableNodesNavigator performs this job by running the input IResolveVisitorNavigator
-	/// over the whole AST, and detecting subtrees that are scan-only, and replaces them with Skip.
-	/// </summary>
-	public sealed class DetectSkippableNodesNavigator : IResolveVisitorNavigator
-	{
-		readonly Dictionary<AstNode, ResolveVisitorNavigationMode> dict = new Dictionary<AstNode, ResolveVisitorNavigationMode>();
-		IResolveVisitorNavigator navigator;
-		
-		public DetectSkippableNodesNavigator(IResolveVisitorNavigator navigator, AstNode root)
-		{
-			this.navigator = navigator;
-			Init(root);
-		}
-		
-		bool Init(AstNode node)
-		{
-			var mode = navigator.Scan(node);
-			if (mode == ResolveVisitorNavigationMode.Skip)
-				return false;
-			
-			bool needsResolve = (mode != ResolveVisitorNavigationMode.Scan);
-			
-			for (AstNode child = node.FirstChild; child != null; child = child.NextSibling) {
-				needsResolve |= Init(child);
-			}
-			
-			if (needsResolve) {
-				// If this node or any child node needs resolving, store the mode in the dictionary.
-				dict.Add(node, mode);
-			}
-			return needsResolve;
-		}
-		
-		/// <inheritdoc/>
-		public ResolveVisitorNavigationMode Scan(AstNode node)
-		{
-			ResolveVisitorNavigationMode mode;
-			if (dict.TryGetValue(node, out mode)) {
-				return mode;
-			} else {
-				return ResolveVisitorNavigationMode.Skip;
-			}
-		}
-		
-		/// <inheritdoc/>
-		public void Resolved(AstNode node, ResolveResult result)
-		{
-			navigator.Resolved(node, result);
-		}
-		
-		/// <inheritdoc/>
-		public void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
-		{
-			navigator.ProcessConversion(expression, result, conversion, targetType);
-		}
-	}
+    /// <summary>
+    /// When an <see cref="IResolveVisitorNavigator"/> is searching for specific nodes
+    /// (e.g. all IdentifierExpressions), it has to scan the whole syntax tree for those nodes.
+    /// However, scanning in the ResolveVisitor is expensive (e.g. any lambda that is scanned must be resolved),
+    /// so it makes sense to detect when a whole subtree is scan-only, and skip that tree instead.
+    /// 
+    /// The DetectSkippableNodesNavigator performs this job by running the input IResolveVisitorNavigator
+    /// over the whole AST, and detecting subtrees that are scan-only, and replaces them with Skip.
+    /// </summary>
+    public sealed class DetectSkippableNodesNavigator : IResolveVisitorNavigator
+    {
+        readonly Dictionary<AstNode, ResolveVisitorNavigationMode> dict = new Dictionary<AstNode, ResolveVisitorNavigationMode>();
+        IResolveVisitorNavigator navigator;
+
+        public DetectSkippableNodesNavigator(IResolveVisitorNavigator navigator, AstNode root)
+        {
+            this.navigator = navigator;
+            Init(root);
+        }
+
+        bool Init(AstNode node)
+        {
+            var mode = navigator.Scan(node);
+            if (mode == ResolveVisitorNavigationMode.Skip)
+                return false;
+
+            bool needsResolve = (mode != ResolveVisitorNavigationMode.Scan);
+
+            for (AstNode child = node.FirstChild; child != null; child = child.NextSibling) {
+                needsResolve |= Init(child);
+            }
+
+            if (needsResolve) {
+                // If this node or any child node needs resolving, store the mode in the dictionary.
+                dict.Add(node, mode);
+            }
+            return needsResolve;
+        }
+
+        /// <inheritdoc/>
+        public ResolveVisitorNavigationMode Scan(AstNode node)
+        {
+            ResolveVisitorNavigationMode mode;
+            if (dict.TryGetValue(node, out mode)) {
+                return mode;
+            } else {
+                return ResolveVisitorNavigationMode.Skip;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Resolved(AstNode node, ResolveResult result)
+        {
+            navigator.Resolved(node, result);
+        }
+
+        /// <inheritdoc/>
+        public void ProcessConversion(Expression expression, ResolveResult result, Conversion conversion, IType targetType)
+        {
+            navigator.ProcessConversion(expression, result, conversion, targetType);
+        }
+    }
 }

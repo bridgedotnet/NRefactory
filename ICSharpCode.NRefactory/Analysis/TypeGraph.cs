@@ -22,61 +22,61 @@ using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.NRefactory.Analysis
 {
-	/// <summary>
-	/// A graph where type definitions are nodes; and edges are given by inheritance.
-	/// </summary>
-	public class TypeGraph
-	{
-		Dictionary<AssemblyQualifiedTypeName, TypeGraphNode> dict;
-		
-		/// <summary>
-		/// Builds a graph of all type definitions in the specified set of assemblies.
-		/// </summary>
-		/// <param name="assemblies">The input assemblies. The assemblies may belong to multiple compilations.</param>
-		/// <remarks>The resulting graph may be cyclic if there are cyclic type definitions.</remarks>
-		public TypeGraph(IEnumerable<IAssembly> assemblies)
-		{
-			if (assemblies == null)
-				throw new ArgumentNullException("assemblies");
-			dict = new Dictionary<AssemblyQualifiedTypeName, TypeGraphNode>();
-			foreach (IAssembly assembly in assemblies) {
-				foreach (ITypeDefinition typeDef in assembly.GetAllTypeDefinitions()) {
-					// Overwrite previous entry - duplicates can occur if there are multiple versions of the
-					// same project loaded in the solution (e.g. separate .csprojs for separate target frameworks)
-					dict[new AssemblyQualifiedTypeName(typeDef)] = new TypeGraphNode(typeDef);
-				}
-			}
-			foreach (IAssembly assembly in assemblies) {
-				foreach (ITypeDefinition typeDef in assembly.GetAllTypeDefinitions()) {
-					TypeGraphNode typeNode = dict[new AssemblyQualifiedTypeName(typeDef)];
-					foreach (IType baseType in typeDef.DirectBaseTypes) {
-						ITypeDefinition baseTypeDef = baseType.GetDefinition();
-						if (baseTypeDef != null) {
-							TypeGraphNode baseTypeNode;
-							if (dict.TryGetValue(new AssemblyQualifiedTypeName(baseTypeDef), out baseTypeNode)) {
-								typeNode.BaseTypes.Add(baseTypeNode);
-								baseTypeNode.DerivedTypes.Add(typeNode);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		public TypeGraphNode GetNode(ITypeDefinition typeDefinition)
-		{
-			if (typeDefinition == null)
-				return null;
-			return GetNode(new AssemblyQualifiedTypeName(typeDefinition));
-		}
-		
-		public TypeGraphNode GetNode(AssemblyQualifiedTypeName typeName)
-		{
-			TypeGraphNode node;
-			if (dict.TryGetValue(typeName, out node))
-				return node;
-			else
-				return null;
-		}
-	}
+    /// <summary>
+    /// A graph where type definitions are nodes; and edges are given by inheritance.
+    /// </summary>
+    public class TypeGraph
+    {
+        Dictionary<AssemblyQualifiedTypeName, TypeGraphNode> dict;
+
+        /// <summary>
+        /// Builds a graph of all type definitions in the specified set of assemblies.
+        /// </summary>
+        /// <param name="assemblies">The input assemblies. The assemblies may belong to multiple compilations.</param>
+        /// <remarks>The resulting graph may be cyclic if there are cyclic type definitions.</remarks>
+        public TypeGraph(IEnumerable<IAssembly> assemblies)
+        {
+            if (assemblies == null)
+                throw new ArgumentNullException("assemblies");
+            dict = new Dictionary<AssemblyQualifiedTypeName, TypeGraphNode>();
+            foreach (IAssembly assembly in assemblies) {
+                foreach (ITypeDefinition typeDef in assembly.GetAllTypeDefinitions()) {
+                    // Overwrite previous entry - duplicates can occur if there are multiple versions of the
+                    // same project loaded in the solution (e.g. separate .csprojs for separate target frameworks)
+                    dict[new AssemblyQualifiedTypeName(typeDef)] = new TypeGraphNode(typeDef);
+                }
+            }
+            foreach (IAssembly assembly in assemblies) {
+                foreach (ITypeDefinition typeDef in assembly.GetAllTypeDefinitions()) {
+                    TypeGraphNode typeNode = dict[new AssemblyQualifiedTypeName(typeDef)];
+                    foreach (IType baseType in typeDef.DirectBaseTypes) {
+                        ITypeDefinition baseTypeDef = baseType.GetDefinition();
+                        if (baseTypeDef != null) {
+                            TypeGraphNode baseTypeNode;
+                            if (dict.TryGetValue(new AssemblyQualifiedTypeName(baseTypeDef), out baseTypeNode)) {
+                                typeNode.BaseTypes.Add(baseTypeNode);
+                                baseTypeNode.DerivedTypes.Add(typeNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public TypeGraphNode GetNode(ITypeDefinition typeDefinition)
+        {
+            if (typeDefinition == null)
+                return null;
+            return GetNode(new AssemblyQualifiedTypeName(typeDefinition));
+        }
+
+        public TypeGraphNode GetNode(AssemblyQualifiedTypeName typeName)
+        {
+            TypeGraphNode node;
+            if (dict.TryGetValue(typeName, out node))
+                return node;
+            else
+                return null;
+        }
+    }
 }

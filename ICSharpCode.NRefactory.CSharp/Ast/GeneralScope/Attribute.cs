@@ -28,66 +28,66 @@ using System.Collections.Generic;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Attribute(Arguments)
-	/// </summary>
-	public class Attribute : AstNode
-	{
-		public override NodeType NodeType {
-			get {
-				return NodeType.Unknown;
-			}
-		}
+    /// <summary>
+    /// Attribute(Arguments)
+    /// </summary>
+    public class Attribute : AstNode
+    {
+        public override NodeType NodeType {
+            get {
+                return NodeType.Unknown;
+            }
+        }
 
-		public AstType Type {
-			get { return GetChildByRole (Roles.Type); }
-			set { SetChildByRole (Roles.Type, value); }
-		}
+        public AstType Type {
+            get { return GetChildByRole (Roles.Type); }
+            set { SetChildByRole (Roles.Type, value); }
+        }
 
-		public CSharpTokenNode LParToken {
-			get { return GetChildByRole (Roles.LPar); }
-		}
+        public CSharpTokenNode LParToken {
+            get { return GetChildByRole (Roles.LPar); }
+        }
 
-		public AstNodeCollection<Expression> Arguments {
-			get { return base.GetChildrenByRole (Roles.Argument); }
-		}
+        public AstNodeCollection<Expression> Arguments {
+            get { return base.GetChildrenByRole (Roles.Argument); }
+        }
 
-		public CSharpTokenNode RParToken {
-			get { return GetChildByRole (Roles.RPar); }
-		}
+        public CSharpTokenNode RParToken {
+            get { return GetChildByRole (Roles.RPar); }
+        }
 
-		// HasArgumentList == false: [Empty]
-		public bool HasArgumentList {
-			get;
-			set;
-		}
-		
-		public override void AcceptVisitor (IAstVisitor visitor)
-		{
-			visitor.VisitAttribute (this);
-		}
-		
-		public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
-		{
-			return visitor.VisitAttribute (this);
-		}
-		
-		public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
-		{
-			return visitor.VisitAttribute (this, data);
-		}
-		
-		protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
-		{
-			Attribute o = other as Attribute;
-			return o != null && this.Type.DoMatch (o.Type, match) && this.Arguments.DoMatch (o.Arguments, match);
-		}
+        // HasArgumentList == false: [Empty]
+        public bool HasArgumentList {
+            get;
+            set;
+        }
 
-		public override string ToString(CSharpFormattingOptions formattingOptions)
-		{
-			if (IsNull)
-				return "Null";
-			return base.ToString(formattingOptions);
-		}
-	}
+        public override void AcceptVisitor (IAstVisitor visitor)
+        {
+            visitor.VisitAttribute (this);
+        }
+
+        public override T AcceptVisitor<T> (IAstVisitor<T> visitor)
+        {
+            return visitor.VisitAttribute (this);
+        }
+
+        public override S AcceptVisitor<T, S> (IAstVisitor<T, S> visitor, T data)
+        {
+            return visitor.VisitAttribute (this, data);
+        }
+
+        protected internal override bool DoMatch (AstNode other, PatternMatching.Match match)
+        {
+            Attribute o = other as Attribute;
+            return o != null && this.Type.DoMatch (o.Type, match) && this.Arguments.DoMatch (o.Arguments, match);
+        }
+
+        public override string ToString(CSharpFormattingOptions formattingOptions)
+        {
+            if (IsNull)
+                return "Null";
+            return base.ToString(formattingOptions);
+        }
+    }
 }

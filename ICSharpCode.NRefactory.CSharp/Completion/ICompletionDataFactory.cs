@@ -1,6 +1,6 @@
 ﻿// 
 // ICompletionDataFactory.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -30,60 +30,60 @@ using ICSharpCode.NRefactory.Completion;
 
 namespace ICSharpCode.NRefactory.CSharp.Completion
 {
-	public interface ICompletionDataFactory
-	{
-		ICompletionData CreateEntityCompletionData (IEntity entity);
-		ICompletionData CreateEntityCompletionData (IEntity entity, string text);
-		
-		ICompletionData CreateTypeCompletionData (IType type, bool showFullName, bool isInAttributeContext, bool addForTypeCreation);
+    public interface ICompletionDataFactory
+    {
+        ICompletionData CreateEntityCompletionData (IEntity entity);
+        ICompletionData CreateEntityCompletionData (IEntity entity, string text);
 
-		/// <summary>
-		/// Creates the member completion data. 
-		/// Form: Type.Member
-		/// Used for generating enum members Foo.A, Foo.B where the enum 'Foo' is valid.
-		/// </summary>
-		ICompletionData CreateMemberCompletionData(IType type, IEntity member);
+        ICompletionData CreateTypeCompletionData (IType type, bool showFullName, bool isInAttributeContext, bool addForTypeCreation);
 
-		/// <summary>
-		/// Creates a generic completion data.
-		/// </summary>
-		/// <param name='title'>
-		/// The title of the completion data
-		/// </param>
-		/// <param name='description'>
-		/// The description of the literal.
-		/// </param>
-		/// <param name='insertText'>
-		/// The insert text. If null, title is taken.
-		/// </param>
-		ICompletionData CreateLiteralCompletionData (string title, string description = null, string insertText = null);
-		
-		ICompletionData CreateNamespaceCompletionData (INamespace name);
-		
-		ICompletionData CreateVariableCompletionData (IVariable variable);
+        /// <summary>
+        /// Creates the member completion data. 
+        /// Form: Type.Member
+        /// Used for generating enum members Foo.A, Foo.B where the enum 'Foo' is valid.
+        /// </summary>
+        ICompletionData CreateMemberCompletionData(IType type, IEntity member);
 
-		ICompletionData CreateVariableCompletionData (ITypeParameter parameter);
-		
-		ICompletionData CreateEventCreationCompletionData (string delegateMethodName, IType delegateType, IEvent evt, string parameterDefinition, IUnresolvedMember currentMember, IUnresolvedTypeDefinition currentType);
+        /// <summary>
+        /// Creates a generic completion data.
+        /// </summary>
+        /// <param name='title'>
+        /// The title of the completion data
+        /// </param>
+        /// <param name='description'>
+        /// The description of the literal.
+        /// </param>
+        /// <param name='insertText'>
+        /// The insert text. If null, title is taken.
+        /// </param>
+        ICompletionData CreateLiteralCompletionData (string title, string description = null, string insertText = null);
 
-		ICompletionData CreateNewOverrideCompletionData (int declarationBegin, IUnresolvedTypeDefinition type, IMember m);
-		ICompletionData CreateNewPartialCompletionData (int declarationBegin, IUnresolvedTypeDefinition type, IUnresolvedMember m);
-		
-		IEnumerable<ICompletionData> CreateCodeTemplateCompletionData ();
-		
-		IEnumerable<ICompletionData> CreatePreProcessorDefinesCompletionData ();
+        ICompletionData CreateNamespaceCompletionData (INamespace name);
 
-		/// <summary>
-		/// Creates a completion data that adds the required using for the created type.
-		/// </summary>
-		/// <param name="type">The type to import</param>
-		/// <param name="useFullName">If set to true the full name of the type needs to be used.</param>
-		/// <param name="addForTypeCreation">If true the completion data is used in 'new' context.</param>
-		ICompletionData CreateImportCompletionData(IType type, bool useFullName, bool addForTypeCreation);
+        ICompletionData CreateVariableCompletionData (IVariable variable);
 
-		ICompletionData CreateFormatItemCompletionData(string format, string description, object example);
+        ICompletionData CreateVariableCompletionData (ITypeParameter parameter);
 
-		ICompletionData CreateXmlDocCompletionData (string tag, string description = null, string tagInsertionText = null);
+        ICompletionData CreateEventCreationCompletionData (string delegateMethodName, IType delegateType, IEvent evt, string parameterDefinition, IUnresolvedMember currentMember, IUnresolvedTypeDefinition currentType);
 
-	}
+        ICompletionData CreateNewOverrideCompletionData (int declarationBegin, IUnresolvedTypeDefinition type, IMember m);
+        ICompletionData CreateNewPartialCompletionData (int declarationBegin, IUnresolvedTypeDefinition type, IUnresolvedMember m);
+
+        IEnumerable<ICompletionData> CreateCodeTemplateCompletionData ();
+
+        IEnumerable<ICompletionData> CreatePreProcessorDefinesCompletionData ();
+
+        /// <summary>
+        /// Creates a completion data that adds the required using for the created type.
+        /// </summary>
+        /// <param name="type">The type to import</param>
+        /// <param name="useFullName">If set to true the full name of the type needs to be used.</param>
+        /// <param name="addForTypeCreation">If true the completion data is used in 'new' context.</param>
+        ICompletionData CreateImportCompletionData(IType type, bool useFullName, bool addForTypeCreation);
+
+        ICompletionData CreateFormatItemCompletionData(string format, string description, object example);
+
+        ICompletionData CreateXmlDocCompletionData (string tag, string description = null, string tagInsertionText = null);
+
+    }
 }

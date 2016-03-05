@@ -30,187 +30,187 @@ using ICSharpCode.NRefactory.PatternMatching;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// Combines query expressions and removes transparent identifiers.
-	/// </summary>
-	public class CombineQueryExpressions
-	{
-		static readonly InvocationExpression castPattern = new InvocationExpression {
-			Target = new MemberReferenceExpression {
-				Target = new AnyNode("inExpr"),
-				MemberName = "Cast",
-				TypeArguments = { new AnyNode("targetType") }
-			}};
+    /// <summary>
+    /// Combines query expressions and removes transparent identifiers.
+    /// </summary>
+    public class CombineQueryExpressions
+    {
+        static readonly InvocationExpression castPattern = new InvocationExpression {
+            Target = new MemberReferenceExpression {
+                Target = new AnyNode("inExpr"),
+                MemberName = "Cast",
+                TypeArguments = { new AnyNode("targetType") }
+            }};
 
-		public string CombineQuery(AstNode node, AstNode rootQuery = null)
-		{
-			if (rootQuery == null) {
-				rootQuery = node;
-			}
+        public string CombineQuery(AstNode node, AstNode rootQuery = null)
+        {
+            if (rootQuery == null) {
+                rootQuery = node;
+            }
 
-			QueryExpression query = node as QueryExpression;
-			if (query != null) {
-				string continuationIdentifier = null;
+            QueryExpression query = node as QueryExpression;
+            if (query != null) {
+                string continuationIdentifier = null;
 
-				foreach (var clause in query.Clauses) {
-					var continuation = clause as QueryContinuationClause;
-					if (continuation != null) {
-						CombineQuery(continuation.PrecedingQuery);
-					}
+                foreach (var clause in query.Clauses) {
+                    var continuation = clause as QueryContinuationClause;
+                    if (continuation != null) {
+                        CombineQuery(continuation.PrecedingQuery);
+                    }
 
-					var from = clause as QueryFromClause;
-					if (from != null) {
-						continuationIdentifier = CombineQuery(from.Expression, rootQuery);
-					}
-				}
+                    var from = clause as QueryFromClause;
+                    if (from != null) {
+                        continuationIdentifier = CombineQuery(from.Expression, rootQuery);
+                    }
+                }
 
-				QueryFromClause fromClause = (QueryFromClause)query.Clauses.First();
-				QueryExpression innerQuery = fromClause.Expression as QueryExpression;
-				if (innerQuery != null) {
-					continuationIdentifier = continuationIdentifier ?? ((QueryFromClause)innerQuery.Clauses.First()).Identifier;
+                QueryFromClause fromClause = (QueryFromClause)query.Clauses.First();
+                QueryExpression innerQuery = fromClause.Expression as QueryExpression;
+                if (innerQuery != null) {
+                    continuationIdentifier = continuationIdentifier ?? ((QueryFromClause)innerQuery.Clauses.First()).Identifier;
 
-					string transparentIdentifier;
-					if (TryRemoveTransparentIdentifier(query, fromClause, innerQuery, continuationIdentifier, out transparentIdentifier)) {
-						RemoveTransparentIdentifierReferences(rootQuery, transparentIdentifier);
-					} else if (fromClause.Type.IsNull) {
-						QueryContinuationClause continuation = new QueryContinuationClause();
-						continuation.PrecedingQuery = innerQuery.Detach();
-						continuation.Identifier = fromClause.Identifier;
-						fromClause.ReplaceWith(continuation);
-					}
+                    string transparentIdentifier;
+                    if (TryRemoveTransparentIdentifier(query, fromClause, innerQuery, continuationIdentifier, out transparentIdentifier)) {
+                        RemoveTransparentIdentifierReferences(rootQuery, transparentIdentifier);
+                    } else if (fromClause.Type.IsNull) {
+                        QueryContinuationClause continuation = new QueryContinuationClause();
+                        continuation.PrecedingQuery = innerQuery.Detach();
+                        continuation.Identifier = fromClause.Identifier;
+                        fromClause.ReplaceWith(continuation);
+                    }
 
-					return transparentIdentifier;
-				} else {
-					Match m = castPattern.Match(fromClause.Expression);
-					if (m.Success) {
-						fromClause.Type = m.Get<AstType>("targetType").Single().Detach();
-						fromClause.Expression = m.Get<Expression>("inExpr").Single().Detach();
-					}
-				}
-			}
+                    return transparentIdentifier;
+                } else {
+                    Match m = castPattern.Match(fromClause.Expression);
+                    if (m.Success) {
+                        fromClause.Type = m.Get<AstType>("targetType").Single().Detach();
+                        fromClause.Expression = m.Get<Expression>("inExpr").Single().Detach();
+                    }
+                }
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		static readonly QuerySelectClause selectTransparentIdentifierPattern = new QuerySelectClause {
-			Expression = new AnonymousTypeCreateExpression {
-					Initializers = {
-						new AnyNode("nae1"),
-						new AnyNode("nae2")
-					}
-				}
-			};
+        static readonly QuerySelectClause selectTransparentIdentifierPattern = new QuerySelectClause {
+            Expression = new AnonymousTypeCreateExpression {
+                    Initializers = {
+                        new AnyNode("nae1"),
+                        new AnyNode("nae2")
+                    }
+                }
+            };
 
-		bool TryRemoveTransparentIdentifier(QueryExpression query, QueryFromClause fromClause, QueryExpression innerQuery, string continuationIdentifier, out string transparentIdentifier)
-		{
-			transparentIdentifier = fromClause.Identifier;
+        bool TryRemoveTransparentIdentifier(QueryExpression query, QueryFromClause fromClause, QueryExpression innerQuery, string continuationIdentifier, out string transparentIdentifier)
+        {
+            transparentIdentifier = fromClause.Identifier;
 
-			Match match = selectTransparentIdentifierPattern.Match(innerQuery.Clauses.Last());
-			if (!match.Success)
-				return false;
-			QuerySelectClause selectClause = (QuerySelectClause)innerQuery.Clauses.Last();
-			Expression nae1 = match.Get<Expression>("nae1").SingleOrDefault();
-			string nae1Name = ExtractExpressionName(ref nae1);
-			if (nae1Name == null)
-				return false;
+            Match match = selectTransparentIdentifierPattern.Match(innerQuery.Clauses.Last());
+            if (!match.Success)
+                return false;
+            QuerySelectClause selectClause = (QuerySelectClause)innerQuery.Clauses.Last();
+            Expression nae1 = match.Get<Expression>("nae1").SingleOrDefault();
+            string nae1Name = ExtractExpressionName(ref nae1);
+            if (nae1Name == null)
+                return false;
 
-			Expression nae2 = match.Get<Expression>("nae2").SingleOrDefault();
-			string nae2Name = ExtractExpressionName(ref nae2);
-			if (nae1Name == null)
-				return false;
+            Expression nae2 = match.Get<Expression>("nae2").SingleOrDefault();
+            string nae2Name = ExtractExpressionName(ref nae2);
+            if (nae1Name == null)
+                return false;
 
-			bool introduceLetClause = true;
-			var nae1Identifier = nae1 as IdentifierExpression;
-			var nae2Identifier = nae2 as IdentifierExpression;
-			if (nae1Identifier != null && nae2Identifier != null && nae1Identifier.Identifier == nae1Name && nae2Identifier.Identifier == nae2Name) {
-				introduceLetClause = false;
-			}
+            bool introduceLetClause = true;
+            var nae1Identifier = nae1 as IdentifierExpression;
+            var nae2Identifier = nae2 as IdentifierExpression;
+            if (nae1Identifier != null && nae2Identifier != null && nae1Identifier.Identifier == nae1Name && nae2Identifier.Identifier == nae2Name) {
+                introduceLetClause = false;
+            }
 
-			if (nae1Name != continuationIdentifier) {
-				if (nae2Name == continuationIdentifier) {
-					//Members are in reversed order
-					string tempName = nae1Name;
-					Expression tempNae = nae1;
+            if (nae1Name != continuationIdentifier) {
+                if (nae2Name == continuationIdentifier) {
+                    //Members are in reversed order
+                    string tempName = nae1Name;
+                    Expression tempNae = nae1;
 
-					nae1Name = nae2Name;
-					nae1 = nae2;
-					nae2Name = tempName;
-					nae2 = tempNae;
-				} else {
-					return false;
-				}
-			}
+                    nae1Name = nae2Name;
+                    nae1 = nae2;
+                    nae2Name = tempName;
+                    nae2 = tempNae;
+                } else {
+                    return false;
+                }
+            }
 
-			if (introduceLetClause && innerQuery.Clauses.OfType<QueryFromClause>().Any(from => from.Identifier == nae2Name)) {
-				return false;
-			}
-			if (introduceLetClause && innerQuery.Clauses.OfType<QueryJoinClause>().Any(join => join.JoinIdentifier == nae2Name)) {
-				return false;
-			}
+            if (introduceLetClause && innerQuery.Clauses.OfType<QueryFromClause>().Any(from => from.Identifier == nae2Name)) {
+                return false;
+            }
+            if (introduceLetClause && innerQuery.Clauses.OfType<QueryJoinClause>().Any(join => join.JoinIdentifier == nae2Name)) {
+                return false;
+            }
 
-			// from * in (from x in ... select new { x = x, y = expr }) ...
-			// =>
-			// from x in ... let y = expr ...
-			fromClause.Remove();
-			selectClause.Remove();
-			// Move clauses from innerQuery to query
-			QueryClause insertionPos = null;
-			foreach (var clause in innerQuery.Clauses) {
-				query.Clauses.InsertAfter(insertionPos, insertionPos = clause.Detach());
-			}
-			if (introduceLetClause) {
-				query.Clauses.InsertAfter(insertionPos, new QueryLetClause { Identifier = nae2Name, Expression = nae2.Detach() });
-			}
-			return true;
-		}
+            // from * in (from x in ... select new { x = x, y = expr }) ...
+            // =>
+            // from x in ... let y = expr ...
+            fromClause.Remove();
+            selectClause.Remove();
+            // Move clauses from innerQuery to query
+            QueryClause insertionPos = null;
+            foreach (var clause in innerQuery.Clauses) {
+                query.Clauses.InsertAfter(insertionPos, insertionPos = clause.Detach());
+            }
+            if (introduceLetClause) {
+                query.Clauses.InsertAfter(insertionPos, new QueryLetClause { Identifier = nae2Name, Expression = nae2.Detach() });
+            }
+            return true;
+        }
 
-		/// <summary>
-		/// Removes all occurrences of transparent identifiers
-		/// </summary>
-		void RemoveTransparentIdentifierReferences(AstNode node, string transparentIdentifier)
-		{
-			foreach (AstNode child in node.Children) {
-				RemoveTransparentIdentifierReferences(child, transparentIdentifier);
-			}
-			MemberReferenceExpression mre = node as MemberReferenceExpression;
-			if (mre != null) {
-				IdentifierExpression ident = mre.Target as IdentifierExpression;
-				if (ident != null && ident.Identifier == transparentIdentifier) {
-					IdentifierExpression newIdent = new IdentifierExpression(mre.MemberName);
-					mre.TypeArguments.MoveTo(newIdent.TypeArguments);
-					newIdent.CopyAnnotationsFrom(mre);
-					newIdent.RemoveAnnotations<PropertyDeclaration>(); // remove the reference to the property of the anonymous type
-					mre.ReplaceWith(newIdent);
-					return;
-				} else if (mre.MemberName == transparentIdentifier) {
-					var newVar = mre.Target.Detach();
-					newVar.CopyAnnotationsFrom(mre);
-					newVar.RemoveAnnotations<PropertyDeclaration>(); // remove the reference to the property of the anonymous type
-					mre.ReplaceWith(newVar);
-					return;
-				}
-			}
-		}
+        /// <summary>
+        /// Removes all occurrences of transparent identifiers
+        /// </summary>
+        void RemoveTransparentIdentifierReferences(AstNode node, string transparentIdentifier)
+        {
+            foreach (AstNode child in node.Children) {
+                RemoveTransparentIdentifierReferences(child, transparentIdentifier);
+            }
+            MemberReferenceExpression mre = node as MemberReferenceExpression;
+            if (mre != null) {
+                IdentifierExpression ident = mre.Target as IdentifierExpression;
+                if (ident != null && ident.Identifier == transparentIdentifier) {
+                    IdentifierExpression newIdent = new IdentifierExpression(mre.MemberName);
+                    mre.TypeArguments.MoveTo(newIdent.TypeArguments);
+                    newIdent.CopyAnnotationsFrom(mre);
+                    newIdent.RemoveAnnotations<PropertyDeclaration>(); // remove the reference to the property of the anonymous type
+                    mre.ReplaceWith(newIdent);
+                    return;
+                } else if (mre.MemberName == transparentIdentifier) {
+                    var newVar = mre.Target.Detach();
+                    newVar.CopyAnnotationsFrom(mre);
+                    newVar.RemoveAnnotations<PropertyDeclaration>(); // remove the reference to the property of the anonymous type
+                    mre.ReplaceWith(newVar);
+                    return;
+                }
+            }
+        }
 
-		string ExtractExpressionName(ref Expression expr)
-		{
-			NamedExpression namedExpr = expr as NamedExpression;
-			if (namedExpr != null) {
-				expr = namedExpr.Expression;
-				return namedExpr.Name;
-			}
+        string ExtractExpressionName(ref Expression expr)
+        {
+            NamedExpression namedExpr = expr as NamedExpression;
+            if (namedExpr != null) {
+                expr = namedExpr.Expression;
+                return namedExpr.Name;
+            }
 
-			IdentifierExpression identifier = expr as IdentifierExpression;
-			if (identifier != null) {
-				return identifier.Identifier;
-			}
+            IdentifierExpression identifier = expr as IdentifierExpression;
+            if (identifier != null) {
+                return identifier.Identifier;
+            }
 
-			MemberReferenceExpression memberRef = expr as MemberReferenceExpression;
-			if (memberRef != null) {
-				return memberRef.MemberName;
-			}
+            MemberReferenceExpression memberRef = expr as MemberReferenceExpression;
+            if (memberRef != null) {
+                return memberRef.MemberName;
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

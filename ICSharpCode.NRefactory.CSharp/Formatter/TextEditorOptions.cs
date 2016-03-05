@@ -1,6 +1,6 @@
 ﻿// 
 // TextEditorOptions.cs
-//  
+//
 // Author:
 //       Mike Krüger <mkrueger@xamarin.com>
 // 
@@ -28,89 +28,89 @@ using System;
 
 namespace ICSharpCode.NRefactory.CSharp
 {
-	/// <summary>
-	/// The text editor options class holds basic information about the text editor settings that influences code generation and formatting beside
-	/// the CSharpFormattingOptions.
-	/// </summary>
-	public class TextEditorOptions
-	{
-		public static readonly TextEditorOptions Default = new TextEditorOptions ();
+    /// <summary>
+    /// The text editor options class holds basic information about the text editor settings that influences code generation and formatting beside
+    /// the CSharpFormattingOptions.
+    /// </summary>
+    public class TextEditorOptions
+    {
+        public static readonly TextEditorOptions Default = new TextEditorOptions ();
 
-		/// <summary>
-		/// Gets or sets a value indicating if tabs need to be replaced by spaces. If that is true, all indenting will be done with spaces only,
-		/// otherwise the indenting will start with tabs.
-		/// </summary>
-		public bool TabsToSpaces {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets a value indicating if tabs need to be replaced by spaces. If that is true, all indenting will be done with spaces only,
+        /// otherwise the indenting will start with tabs.
+        /// </summary>
+        public bool TabsToSpaces {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the size of the tab chacter as spaces.
-		/// </summary>
-		public int TabSize {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the size of the tab chacter as spaces.
+        /// </summary>
+        public int TabSize {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the size of a single indent as spaces.
-		/// </summary>
-		public int IndentSize {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the size of a single indent as spaces.
+        /// </summary>
+        public int IndentSize {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the continuation indent. A continuation indent is the indent that will be put after an embedded statement that is no block.
-		/// </summary>
-		public int ContinuationIndent {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the continuation indent. A continuation indent is the indent that will be put after an embedded statement that is no block.
+        /// </summary>
+        public int ContinuationIndent {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the label indent. A label indent is the indent that will be put before an label.
-		/// (Note: it may be negative -IndentSize would cause that labels are unindented)
-		/// </summary>
-		public int LabelIndent {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the label indent. A label indent is the indent that will be put before an label.
+        /// (Note: it may be negative -IndentSize would cause that labels are unindented)
+        /// </summary>
+        public int LabelIndent {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the eol marker.
-		/// </summary>
-		public string EolMarker {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the eol marker.
+        /// </summary>
+        public string EolMarker {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// If true blank lines will be indented up to the indent level, otherwise blank lines will have the length 0.
-		/// </summary>
-		public bool IndentBlankLines {
-			get;
-			set;
-		}
+        /// <summary>
+        /// If true blank lines will be indented up to the indent level, otherwise blank lines will have the length 0.
+        /// </summary>
+        public bool IndentBlankLines {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets or sets the length of the desired line length. The formatting engine will wrap at wrap points set to Wrapping.WrapIfTooLong if the line length is too long.
-		/// 0 means do not wrap.
-		/// </summary>
-		public int WrapLineLength {
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets the length of the desired line length. The formatting engine will wrap at wrap points set to Wrapping.WrapIfTooLong if the line length is too long.
+        /// 0 means do not wrap.
+        /// </summary>
+        public int WrapLineLength {
+            get;
+            set;
+        }
 
-		public TextEditorOptions()
-		{
-			TabsToSpaces = false;
-			TabSize = 4;
-			IndentSize = 4;
-			ContinuationIndent = 4;
-			WrapLineLength = 0;
-			EolMarker = Environment.NewLine;
-		}
-	}
+        public TextEditorOptions()
+        {
+            TabsToSpaces = false;
+            TabSize = 4;
+            IndentSize = 4;
+            ContinuationIndent = 4;
+            WrapLineLength = 0;
+            EolMarker = Environment.NewLine;
+        }
+    }
 }
