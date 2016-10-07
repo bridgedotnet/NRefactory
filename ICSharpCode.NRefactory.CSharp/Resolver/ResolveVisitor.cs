@@ -1826,7 +1826,13 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
 			if (rr is TypeResolveResult)
 				return true;
 			MemberResolveResult mrr = (rr is MethodGroupResolveResult ? invocationRR : rr) as MemberResolveResult;
-			return mrr != null && mrr.Member.IsStatic;
+
+		    var isExtensionMethodInvocation = false;
+		    if (rr is MethodGroupResolveResult && invocationRR is CSharpInvocationResolveResult)
+		    {
+		        isExtensionMethodInvocation = ((CSharpInvocationResolveResult) invocationRR).IsExtensionMethodInvocation;
+		    }
+			return mrr != null && mrr.Member.IsStatic && !isExtensionMethodInvocation;
 		}
 		
 		ResolveResult IAstVisitor<ResolveResult>.VisitIdentifierExpression(IdentifierExpression identifierExpression)
