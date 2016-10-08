@@ -1,14 +1,14 @@
 ﻿// Copyright (c) 2010-2013 AlphaSierraPapa for the SharpDevelop Team
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
 // software and associated documentation files (the "Software"), to deal in the Software
 // without restriction, including without limitation the rights to use, copy, modify, merge,
 // publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
 // to whom the Software is furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all copies or
 // substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
 // INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
 // PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
@@ -43,13 +43,13 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
     /// While scanning, the navigator will get asked about every node that the resolve visitor is about to enter.
     /// This allows the navigator whether to keep scanning, whether switch to resolving mode, or whether to completely skip the
     /// subtree rooted at that node.
-    /// 
+    ///
     /// In resolving mode, the context is tracked and nodes will be resolved.
     /// The resolve visitor may decide that it needs to resolve other nodes as well in order to resolve the current node.
     /// In this case, those nodes will be resolved automatically, without asking the navigator interface.
     /// For child nodes that are not essential to resolving, the resolve visitor will switch back to scanning mode (and thus will
     /// ask the navigator for further instructions).
-    /// 
+    ///
     /// Moreover, there is the <c>ResolveAll</c> mode - it works similar to resolving mode, but will not switch back to scanning mode.
     /// The whole subtree will be resolved without notifying the navigator.
     /// </remarks>
@@ -1825,8 +1825,18 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
         {
             if (rr is TypeResolveResult)
                 return true;
-            MemberResolveResult mrr = (rr is MethodGroupResolveResult ? invocationRR : rr) as MemberResolveResult;
-            return mrr != null && mrr.Member.IsStatic;
+
+            var isMethodGroupResolveResult = rr is MethodGroupResolveResult;
+            MemberResolveResult mrr = (isMethodGroupResolveResult ? invocationRR : rr) as MemberResolveResult;
+
+            var isExtensionMethodInvocation = false;
+            if (isMethodGroupResolveResult)
+            {
+                var csInvocation = invocationRR as CSharpInvocationResolveResult;
+                isExtensionMethodInvocation = csInvocation != null && csInvocation.IsExtensionMethodInvocation;
+            }
+
+            return mrr != null && mrr.Member.IsStatic && !isExtensionMethodInvocation;
         }
 
         ResolveResult IAstVisitor<ResolveResult>.VisitIdentifierExpression(IdentifierExpression identifierExpression)
@@ -2197,7 +2207,7 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
         // Implicitly-typed lambdas are really complex, as the lambda depends on the target type (the delegate to which
         // the lambda is converted), but figuring out the target type might involve overload resolution (for method
         // calls in which the lambda is used as argument), which requires knowledge about the lamdba.
-        // 
+        //
         // The implementation in NRefactory works like this:
         // 1. The lambda resolves to a ImplicitlyTypedLambda (derived from LambdaResolveResult).
         //     The lambda body is not resolved yet (one of the few places where ResolveVisitor
@@ -2399,7 +2409,7 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
         /// <summary>
         /// Every possible set of parameter types gets its own 'hypothetical world'.
         /// It uses a nested ResolveVisitor that has its own resolve cache, so that resolve results cannot leave the hypothetical world.
-        /// 
+        ///
         /// Only after overload resolution is applied and the actual parameter types are known, the winning hypothesis will be merged
         /// with the parent ResolveVisitor.
         /// This is done when the AnonymousFunctionConversion is applied on the parent visitor.
@@ -3416,10 +3426,10 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
             if (result.Kind == TypeKind.Unknown) {
                 var selectAccess = resolver.ResolveMemberAccess(new ResolveResult (type), "Select", EmptyList<IType>.Instance);
                 ResolveResult[] arguments = {
-                    new QueryExpressionLambda(1, voidResult) 
+                    new QueryExpressionLambda(1, voidResult)
                 };
 
-                var rr = resolver.ResolveInvocation(selectAccess, arguments) as CSharpInvocationResolveResult; 
+                var rr = resolver.ResolveInvocation(selectAccess, arguments) as CSharpInvocationResolveResult;
                 if (rr != null && rr.Arguments.Count == 2) {
                     var invokeMethod = rr.Arguments[1].Type.GetDelegateInvokeMethod();
                     if (invokeMethod != null && invokeMethod.Parameters.Count > 0)

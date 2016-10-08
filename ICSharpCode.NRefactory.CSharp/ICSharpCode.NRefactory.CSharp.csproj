@@ -86,7 +86,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ICSharpCode.NRefactory\Properties\GlobalAssemblyInfo.cs">
+    <Compile Include="..\.build\common\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Analysis\ControlFlow.cs" />
@@ -418,4 +418,22 @@
     <Folder Include="PatternMatching\" />
     <Folder Include="IndentEngine\" />
   </ItemGroup>
+  <!-- NuGet packaging starts -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NuGetBuildPackage>true</NuGetBuildPackage>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NuGetPackageSourcePath Include="$(SolutionDir).build\specs\Bridge.NRefactory.nuspec">
+      <Path>$(SolutionDir).build\specs\Bridge.NRefactory.nuspec</Path>
+    </NuGetPackageSourcePath>
+  </ItemGroup>
+  <Import Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " Project="$(SolutionDir).build\common\NuGet.Build.Package.targets" />
+  <Target Name="CleanProjectNuGetOutput" BeforeTargets="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(ProjectDir)$(OutDir)Bridge.*.nupkg" />
+    </ItemGroup>
+    <Message Text="Cleaning NuGet packages in $(ProjectDir)$(OutDir)" Importance="high" />
+    <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+  </Target>
+  <!-- NuGet packaging finishes -->
 </Project>
