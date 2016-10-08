@@ -1825,12 +1825,15 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
         {
             if (rr is TypeResolveResult)
                 return true;
-            MemberResolveResult mrr = (rr is MethodGroupResolveResult ? invocationRR : rr) as MemberResolveResult;
+
+            var isMethodGroupResolveResult = rr is MethodGroupResolveResult;
+            MemberResolveResult mrr = (isMethodGroupResolveResult ? invocationRR : rr) as MemberResolveResult;
 
             var isExtensionMethodInvocation = false;
-            if (rr is MethodGroupResolveResult && invocationRR is CSharpInvocationResolveResult)
+            if (isMethodGroupResolveResult)
             {
-                isExtensionMethodInvocation = ((CSharpInvocationResolveResult)invocationRR).IsExtensionMethodInvocation;
+                var csInvocation = invocationRR as CSharpInvocationResolveResult;
+                isExtensionMethodInvocation = csInvocation != null && csInvocation.IsExtensionMethodInvocation;
             }
 
             return mrr != null && mrr.Member.IsStatic && !isExtensionMethodInvocation;
