@@ -1187,9 +1187,20 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
             }
             if (TryConvert(ref lhs, rhs.Type)) {
                 return BinaryOperatorResolveResult(rhs.Type, lhs, BinaryOperatorType.NullCoalescing, rhs);
-            } else {
-                return new ErrorResolveResult(lhs.Type);
             }
+
+            if (NullableType.IsNullable(lhs.Type))
+            {
+                Conversion c = conversions.ImplicitConversion(NullableType.GetUnderlyingType(lhs.Type), rhs.Type);
+
+                if (c.IsValid)
+                {
+                    lhs = Convert(lhs, rhs.Type, c);
+                    return BinaryOperatorResolveResult(rhs.Type, lhs, BinaryOperatorType.NullCoalescing, rhs);
+                }
+            }
+
+            return new ErrorResolveResult(lhs.Type);
         }
         #endregion
         #endregion
