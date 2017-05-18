@@ -189,5 +189,11 @@ namespace ICSharpCode.NRefactory.CSharp
             var parser = new CSharpParser (settings);
             return parser.Parse (textSource, fileName);
         }
+
+        public string TextSource
+        {
+            get;
+            internal set;
+        }
     }
 }

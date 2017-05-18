@@ -4027,6 +4027,7 @@ namespace ICSharpCode.NRefactory.CSharp
                 var unit = Parse(top, fileName);
                 unit.Errors.AddRange(errorReportPrinter.Errors);
                 CompilerCallableEntryPoint.Reset();
+                unit.TextSource = program.Text;
                 return unit;
             }
         }
