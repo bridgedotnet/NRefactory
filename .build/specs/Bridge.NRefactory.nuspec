@@ -14,7 +14,7 @@
     <summary>Bridge.NET fork of NRefactory project</summary>
     <copyright />
     <dependencies>
-      <dependency id="Mono.Cecil" version="0.9.6.1" />
+      <dependency id="Mono.Cecil" version="0.9.6.4" />
     </dependencies>
   </metadata>
   <files>
