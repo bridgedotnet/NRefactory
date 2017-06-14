@@ -1331,7 +1331,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
             DefaultUnresolvedMethod m = new DefaultUnresolvedMethod(parentType, method.Name);
             m.SymbolKind = methodType;
             m.AccessorOwner = accessorOwner;
-            m.HasBody = method.HasBody;
+            m.HasBody = method.HasBody && method.Body.CodeSize > 0;
             if (method.HasGenericParameters) {
                 for (int i = 0; i < method.GenericParameters.Count; i++) {
                     if (method.GenericParameters[i].Position != i)
