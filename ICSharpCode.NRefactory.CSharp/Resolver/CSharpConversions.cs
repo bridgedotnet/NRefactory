@@ -942,6 +942,12 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
                     isApplicable = (IsEncompassedBy(fromType, sourceType) || ImplicitConstantExpressionConversion(fromResult, sourceType))
                         && IsEncompassedBy(targetType, toType);
                 }
+
+                if (!isApplicable && fromType.Kind == TypeKind.Null && sourceType.Kind == TypeKind.Interface)
+                {
+                    isApplicable = true;
+                }
+
                 // Try if the operator is applicable in lifted form:
                 if (isApplicable) {
                     result.Add(new OperatorInfo(op, sourceType, targetType, false));
