@@ -759,13 +759,13 @@ namespace ICSharpCode.NRefactory.CSharp.Resolver
         /// </summary>
         bool IsEncompassedBy(IType a, IType b)
         {
-            return a.Kind != TypeKind.Interface && b.Kind != TypeKind.Interface && StandardImplicitConversion(a, b).IsValid;
+            return /*a.Kind != TypeKind.Interface && b.Kind != TypeKind.Interface &&*/ StandardImplicitConversion(a, b).IsValid;
         }
 
         bool IsEncompassingOrEncompassedBy(IType a, IType b)
         {
-            return a.Kind != TypeKind.Interface && b.Kind != TypeKind.Interface
-                && (StandardImplicitConversion(a, b).IsValid || StandardImplicitConversion(b, a).IsValid);
+            return /*a.Kind != TypeKind.Interface && b.Kind != TypeKind.Interface
+                &&*/ (StandardImplicitConversion(a, b).IsValid || StandardImplicitConversion(b, a).IsValid);
         }
 
         IType FindMostEncompassedType(IEnumerable<IType> candidates)
