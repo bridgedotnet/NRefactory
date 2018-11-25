@@ -312,6 +312,11 @@ namespace ICSharpCode.NRefactory.TypeSystem
             {
                 return null;
             }
+
+            public void Dispose()
+            {
+                return;
+            }
         }
         #endregion
 
@@ -915,8 +920,8 @@ namespace ICSharpCode.NRefactory.TypeSystem
                     baseTypes.Add(ReadTypeReference(typeDefinition.BaseType));
                 }
                 if (typeDefinition.HasInterfaces) {
-                    foreach (TypeReference iface in typeDefinition.Interfaces) {
-                        baseTypes.Add(ReadTypeReference(iface));
+                    foreach (var iface in typeDefinition.Interfaces) {
+                        baseTypes.Add(ReadTypeReference(iface.InterfaceType));
                     }
                 }
             }
