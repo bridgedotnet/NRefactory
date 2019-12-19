@@ -24,7 +24,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using ICSharpCode.NRefactory.Documentation;
-using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
@@ -166,7 +165,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
             moduleAttributes = interningProvider.InternList(moduleAttributes);
 
             this.currentAssembly = new CecilUnresolvedAssembly(assemblyDefinition != null ? assemblyDefinition.Name.FullName : moduleDefinition.Name, this.DocumentationProvider);
-            currentAssembly.Location = moduleDefinition.FullyQualifiedName;
+            currentAssembly.Location = moduleDefinition.FileName;
             currentAssembly.AssemblyAttributes.AddRange(assemblyAttributes);
             currentAssembly.ModuleAttributes.AddRange(assemblyAttributes);
 
@@ -298,17 +297,7 @@ namespace ICSharpCode.NRefactory.TypeSystem
                 return null;
             }
 
-            public AssemblyDefinition Resolve(string fullName)
-            {
-                return null;
-            }
-
             public AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
-            {
-                return null;
-            }
-
-            public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters)
             {
                 return null;
             }
@@ -1605,8 +1594,8 @@ namespace ICSharpCode.NRefactory.TypeSystem
             tp.HasDefaultConstructorConstraint = g.HasDefaultConstructorConstraint;
 
             if (g.HasConstraints) {
-                foreach (TypeReference constraint in g.Constraints) {
-                    tp.Constraints.Add(ReadTypeReference(constraint));
+                foreach (var constraint in g.Constraints) {
+                    tp.Constraints.Add(ReadTypeReference(constraint.ConstraintType));
                 }
             }
         }
